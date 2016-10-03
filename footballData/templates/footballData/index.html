@@ -1,0 +1,9 @@
+{% if league_tables %}
+    <ul>
+    {% for league_table in league_tables %}
+        <li><a href="{% url 'leagueTable:detail' league_table.id %}">{{ league_table.leagueCaption }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No league tables are available.</p>
+{% endif %}

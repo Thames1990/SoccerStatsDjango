@@ -1,8 +1,14 @@
-{% if league_tables %}
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'footballData/style.css' %}"/>
+
+{% if league_table %}
     <ul>
-    {% for league_table in league_tables %}
-        <li><a href="{% url 'leagueTable:detail' league_table.id %}">{{ league_table.leagueCaption }}</a></li>
-    {% endfor %}
+        {% for name, value in league_table.get_fields %}
+            {% if value %}
+                <li><b>{{ name }}:</b> {{ value }}</li>
+            {% endif %}
+        {% endfor %}
     </ul>
 {% else %}
     <p>No league tables are available.</p>

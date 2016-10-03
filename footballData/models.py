@@ -20,7 +20,7 @@ class Away(models.Model):
 class Standing(models.Model):
     position = models.IntegerField()
     teamName = models.CharField(max_length=200)
-    crestURI = models.CharField(max_length=200)
+    crestURI = models.URLField()
     playedGames = models.IntegerField()
     points = models.IntegerField()
     goals = models.IntegerField()
@@ -37,6 +37,9 @@ class LeagueTable(models.Model):
     leagueCaption = models.CharField(max_length=200)
     matchday = models.IntegerField()
     standing = models.ForeignKey(Standing)
+
+    def get_fields(self):
+        return [(field.name, field.value_to_string(self)) for field in LeagueTable._meta.fields]
 
     def position_changed(self, last_matchday):
         if not isinstance(last_matchday, LeagueTable.standing.position):

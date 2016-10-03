@@ -1,17 +1,18 @@
-from django.shortcuts import get_object_or_404, render
+from django.views import generic
 
 from .models import LeagueTable
+from .util import get_league_table
 
 
-def index(request):
-    league_tables = LeagueTable.objects.all()
-    return render(request, 'footballData/index.html', {
-        'league_tables': league_tables
-    })
+class IndexView(generic.ListView):
+    template_name = 'footballData/index.html'
+    context_object_name = 'league_table'
+
+    def get_queryset(self):
+        return get_league_table('http://api.football-data.org/v1/competitions/426/leagueTable')
 
 
-def detail(request, football_data_id):
-    league_table = get_object_or_404(LeagueTable, pk=football_data_id)
-    return render(request, 'footballData/detail.html', {
-        'league_table': league_table
-    })
+class DetailView(generic.DetailView):
+    model = LeagueTable
+    context_object_name = 'league_table'
+    template_name = 'footballData/detail.html'

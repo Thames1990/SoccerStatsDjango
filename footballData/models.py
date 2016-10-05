@@ -1,57 +1,45 @@
 from django.db import models
 
 
-class Home(models.Model):
+class LeagueTable(models.Model):
+    league_caption = models.CharField(max_length=255)
+    matchday = models.IntegerField()
+
+    def __eq__(self, other):
+        return \
+            isinstance(other, LeagueTable) and \
+            self.league_caption == other.leagueCaption and \
+            self.matchday == other.matchday
+
+
+class Standing(models.Model):
+    league_table = models.ForeignKey(LeagueTable)
+    position = models.IntegerField()
+    team_name = models.CharField(max_length=255)
+    crest_uri = models.URLField()
+    played_games = models.IntegerField()
+    points = models.IntegerField()
     goals = models.IntegerField()
-    goalsAgainst = models.IntegerField()
+    goals_against = models.IntegerField()
+    goal_difference = models.IntegerField()
+    wins = models.IntegerField()
+    draws = models.IntegerField()
+    losses = models.IntegerField()
+
+
+class Home(models.Model):
+    standing = models.ForeignKey(Standing)
+    goals = models.IntegerField()
+    goals_against = models.IntegerField()
     wins = models.IntegerField()
     draws = models.IntegerField()
     losses = models.IntegerField()
 
 
 class Away(models.Model):
-    goals = models.IntegerField()
-    goalsAgainst = models.IntegerField()
-    wins = models.IntegerField()
-    draws = models.IntegerField()
-    losses = models.IntegerField()
-
-
-class Standing(models.Model):
-    position = models.IntegerField()
-    teamName = models.CharField(max_length=200)
-    crestURI = models.URLField()
-    playedGames = models.IntegerField()
-    points = models.IntegerField()
-    goals = models.IntegerField()
-    goalsAgainst = models.IntegerField()
-    goalDifference = models.IntegerField()
-    wins = models.IntegerField()
-    draws = models.IntegerField()
-    losses = models.IntegerField()
-    home = models.ForeignKey(Home)
-    away = models.ForeignKey(Away)
-
-
-class LeagueTable(models.Model):
-    leagueCaption = models.CharField(max_length=200)
-    matchday = models.IntegerField()
     standing = models.ForeignKey(Standing)
-
-    def get_fields(self):
-        return [(field.name, field.value_to_string(self)) for field in LeagueTable._meta.fields]
-
-    def position_changed(self, last_matchday):
-        if not isinstance(last_matchday, LeagueTable.standing.position):
-            raise TypeError
-        return self.standing.position != last_matchday
-
-    def position_increased(self, last_matchday):
-        if not isinstance(last_matchday, LeagueTable.standing.position):
-            raise TypeError
-        return self.standing.position > last_matchday
-
-    def position_decreased(self, last_matchday):
-        if not isinstance(last_matchday, LeagueTable.standing.position):
-            raise TypeError
-        return self.standing.position < last_matchday
+    goals = models.IntegerField()
+    goals_against = models.IntegerField()
+    wins = models.IntegerField()
+    draws = models.IntegerField()
+    losses = models.IntegerField()

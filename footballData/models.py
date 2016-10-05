@@ -6,10 +6,13 @@ class LeagueTable(models.Model):
     matchday = models.IntegerField()
 
     def __eq__(self, other):
-        return \
-            isinstance(other, LeagueTable) and \
-            self.league_caption == other.leagueCaption and \
-            self.matchday == other.matchday
+        if isinstance(other, LeagueTable):
+            return \
+                isinstance(other, LeagueTable) and \
+                self.league_caption == other.leagueCaption and \
+                self.matchday == other.matchday
+        else:
+            return NotImplemented
 
 
 class Standing(models.Model):
@@ -26,6 +29,16 @@ class Standing(models.Model):
     draws = models.IntegerField()
     losses = models.IntegerField()
 
+    def __eq__(self, other):
+        if isinstance(other, Standing):
+            return \
+                isinstance(other, Standing) and \
+                self.league_table == other.league_table and \
+                self.team_name == other.team_name and \
+                self.played_games == other.played_games
+        else:
+            return NotImplemented
+
 
 class Home(models.Model):
     standing = models.ForeignKey(Standing)
@@ -35,6 +48,12 @@ class Home(models.Model):
     draws = models.IntegerField()
     losses = models.IntegerField()
 
+    def __eq__(self, other):
+        if isinstance(other, Home):
+            return self.standing == other.standing
+        else:
+            return NotImplemented
+
 
 class Away(models.Model):
     standing = models.ForeignKey(Standing)
@@ -43,3 +62,9 @@ class Away(models.Model):
     wins = models.IntegerField()
     draws = models.IntegerField()
     losses = models.IntegerField()
+
+    def __eq__(self, other):
+        if isinstance(other, Away):
+            return self.standing == other.standing
+        else:
+            return NotImplemented

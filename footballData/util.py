@@ -4,45 +4,45 @@ from .models import LeagueTable, Standing, Home, Away
 
 
 def get_league_table(url):
-    json = requests.get(url).json()
+    json = requests.get(url, headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}).json()
 
-    league_table = LeagueTable.objects.create(
+    league_table, created = LeagueTable.objects.get_or_create(
         league_caption=json['leagueCaption'],
-        matchday=int(json['matchday']),
+        matchday=json['matchday'],
     )
 
     for team in json['standing']:
-        standing = Standing.objects.create(
+        standing, created = Standing.objects.get_or_create(
             league_table=league_table,
-            position=int(team['position']),
+            position=team['position'],
             team_name=team['teamName'],
             crest_uri=team['crestURI'],
-            played_games=int(team['playedGames']),
-            points=int(team['points']),
-            goals=int(team['goals']),
-            goals_against=int(team['goalsAgainst']),
-            goal_difference=int(team['goalDifference']),
-            wins=int(team['wins']),
-            draws=int(team['draws']),
-            losses=int(team['losses'])
+            played_games=team['playedGames'],
+            points=team['points'],
+            goals=team['goals'],
+            goals_against=team['goalsAgainst'],
+            goal_difference=team['goalDifference'],
+            wins=team['wins'],
+            draws=team['draws'],
+            losses=team['losses']
         )
 
-        Home.objects.create(
+        Home.objects.get_or_create(
             standing=standing,
-            goals=int(team['home']['goals']),
-            goals_against=int(team['home']['goalsAgainst']),
-            wins=int(team['home']['wins']),
-            draws=int(team['home']['draws']),
-            losses=int(team['home']['losses'])
+            goals=team['home']['goals'],
+            goals_against=team['home']['goalsAgainst'],
+            wins=team['home']['wins'],
+            draws=team['home']['draws'],
+            losses=team['home']['losses']
         )
 
-        Away.objects.create(
+        Away.objects.get_or_create(
             standing=standing,
-            goals=int(team['away']['goals']),
-            goals_against=int(team['home']['goalsAgainst']),
-            wins=int(team['away']['wins']),
-            draws=int(team['away']['draws']),
-            losses=int(team['away']['losses'])
+            goals=team['away']['goals'],
+            goals_against=team['home']['goalsAgainst'],
+            wins=team['away']['wins'],
+            draws=team['away']['draws'],
+            losses=team['away']['losses']
         )
 
     return league_table

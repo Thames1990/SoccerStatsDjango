@@ -1,44 +1,6 @@
 import requests
-from enum import Enum
-import logging
 
-from .models import LeagueTable, Standing, Home, Away
-
-
-class CupID(Enum):
-    EC = 424
-    """European Championships France 2016"""
-    DFB = 432
-    """DFB-Pokal 2016/17"""
-    CL = 440
-    """Champions League 2016/17"""
-
-
-class LeagueID(Enum):
-    PL = 426
-    """Premier League 2016/17"""
-    ELC = 427
-    """Championship 2016 / 17"""
-    EL1 = 428
-    """League One 2016 / 17"""
-    BL1 = 430
-    """1. Bundesliga 2016 / 17"""
-    BL2 = 431
-    """2. Bundesliga 2016 / 17"""
-    DED = 433
-    """Eredivisie 2016 / 17"""
-    FL1 = 434
-    """Ligue 1 2016 / 17"""
-    FL2 = 435
-    """Ligue 2 2016 / 17"""
-    PD = 436
-    """Primera Division 2016 / 17"""
-    SD = 437
-    """Liga Adelante 2016 / 17"""
-    SA = 438
-    """Serie A 2016 / 17"""
-    PPL = 439
-    """Primeira Liga 2016 / 17"""
+from footballData.models import LeagueTable, Standing, Home, Away, LeagueID
 
 
 def get_league_table(league_id):

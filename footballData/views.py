@@ -1,7 +1,7 @@
 from django.views import generic
 
-from .models import LeagueTable
-from .util import get_league_table, LeagueID
+from .models import LeagueTable, LeagueID
+from .util import get_league_table
 
 
 class IndexView(generic.ListView):

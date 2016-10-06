@@ -1,7 +1,7 @@
 from django.views import generic
 
 from .models import LeagueTable
-from .util import get_league_table
+from .util import get_league_table, LeagueID
 
 
 class IndexView(generic.ListView):
@@ -9,7 +9,7 @@ class IndexView(generic.ListView):
     context_object_name = 'league_table'
 
     def get_queryset(self):
-        return get_league_table('http://api.football-data.org/v1/competitions/426/leagueTable')
+        return get_league_table(LeagueID.PL)
 
 
 class DetailView(generic.DetailView):

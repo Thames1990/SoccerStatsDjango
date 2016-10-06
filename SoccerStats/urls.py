@@ -3,5 +3,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^leagueTable/', include('footballData.urls', namespace='leagueTable'))
+    url(r'^', include('footballData.urls'))
 ]

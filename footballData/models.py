@@ -1,6 +1,8 @@
 from django.db import models
 
 
+# TODO Refine eq functions (e.g. same team, but different macthday)
+
 class LeagueTable(models.Model):
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
@@ -36,6 +38,18 @@ class Standing(models.Model):
                 self.league_table == other.league_table and \
                 self.team_name == other.team_name and \
                 self.played_games == other.played_games
+        else:
+            return NotImplemented
+
+    def position_changed(self, last_matchday_position):
+        if isinstance(last_matchday_position, Standing.position):
+            return self.position != last_matchday_position
+        else:
+            return NotImplemented
+
+    def position_improved(self, last_matchday_position):
+        if isinstance(last_matchday_position, Standing.position):
+            return self.position > last_matchday_position
         else:
             return NotImplemented
 

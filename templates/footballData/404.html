@@ -1,0 +1,16 @@
+{% extends 'footballData/base.html' %}
+
+{% block content %}
+    {% if not messages %}
+        <card id="info" onclick='this.parentNode.removeChild(this); return false;'>
+            <grid>
+                <div col="1/6" class="border_right">
+                    <strong>INFO</strong>
+                </div>
+                <div col="5/6" class="border_left">
+                    <strong>Page not found</strong>
+                </div>
+            </grid>
+        </card>
+    {% endif %}
+{% endblock %}

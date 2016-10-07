@@ -40,6 +40,9 @@ class LeagueID(Enum):
     """Primeira Liga 2016 / 17"""
 
 
+# TODO Implement '_links'
+
+
 class LeagueTable(models.Model):
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
@@ -103,7 +106,7 @@ class Player(models.Model):
         (ATTACKING_MIDFIELD, 'Attacking Midfield'),
         (RIGHT_WING, 'Right Wing'),
         (CENTRE_FORWARD, 'Centre Forward'),
-        (LEFT_WING, 'Left Wing')
+        (LEFT_WING, 'Left Wing'),
     )
     position = models.CharField(max_length=255, choices=POSITION)
     jersey_number = models.PositiveSmallIntegerField

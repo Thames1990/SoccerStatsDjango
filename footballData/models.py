@@ -43,21 +43,6 @@ class LeagueID(Enum):
 # TODO Implement '_links'
 
 
-class LeagueTable(models.Model):
-    league_caption = models.CharField(max_length=255)
-    matchday = models.IntegerField()
-
-    def __eq__(self, other):
-        if isinstance(other, LeagueTable):
-            # TODO Check positions of all teams (same matchday, but different amount of matches played)
-            return \
-                isinstance(other, LeagueTable) and \
-                self.league_caption == other.leagueCaption and \
-                self.matchday == other.matchday
-        else:
-            return NotImplemented
-
-
 # TODO wait for Django 1.10 and serialization support for enum.Enum
 # class Competition(models.Model):
 #     id = models.PositiveSmallIntegerField(primary_key=True)
@@ -82,64 +67,6 @@ class LeagueTable(models.Model):
 #                 self.last_updated == other.last_updated
 #         else:
 #             return NotImplemented
-
-
-class Player(models.Model):
-    name = models.CharField(max_length=255)
-    KEEPER = 1
-    RIGHT_BACK = 2
-    CENTRE_BACK = 4
-    LEFT_BACK = 3
-    DEFENSIVE_MIDFIELD = 6
-    CENTRAL_MIDFIELD = 8
-    ATTACKING_MIDFIELD = 10
-    RIGHT_WING = 7
-    CENTRE_FORWARD = 9
-    LEFT_WING = 11
-    POSITION = (
-        (KEEPER, 'Keeper'),
-        (RIGHT_BACK, 'Right-Back'),
-        (CENTRE_BACK, 'Centre Back'),
-        (LEFT_BACK, 'Left-Back'),
-        (DEFENSIVE_MIDFIELD, 'Defensive Midfield'),
-        (CENTRAL_MIDFIELD, 'Central Midfield'),
-        (ATTACKING_MIDFIELD, 'Attacking Midfield'),
-        (RIGHT_WING, 'Right Wing'),
-        (CENTRE_FORWARD, 'Centre Forward'),
-        (LEFT_WING, 'Left Wing'),
-    )
-    position = models.CharField(max_length=255, choices=POSITION)
-    jersey_number = models.PositiveSmallIntegerField
-    date_of_birth = models.DateField()
-    nationality = models.CharField(max_length=255)
-    contract_until = models.DateField()
-    market_value = models.PositiveIntegerField()
-
-    def __eq__(self, other):
-        if isinstance(other, Player):
-            return \
-                self.name == other.name and \
-                self.date_of_birth == other.date_of_birth and \
-                self.nationality == other.nationality
-        else:
-            return NotImplemented
-
-
-class Team(models.Model):
-    name = models.CharField(max_length=255)
-    code = models.CharField(max_length=255)
-    short_name = models.CharField(max_length=255)
-    squad_market_value = models.PositiveIntegerField
-    crest_url = models.URLField()
-
-    def __eq__(self, other):
-        if isinstance(other, Team):
-            return \
-                self.name == other.name and \
-                self.code == other.code and \
-                self.short_name == other.short_name
-        else:
-            return NotImplemented
 
 
 class Fixture(models.Model):
@@ -193,6 +120,79 @@ class Odds(models.Model):
     home_win = models.DecimalField(max_digits=2, decimal_places=2)
     draw = models.DecimalField(max_digits=2, decimal_places=2)
     away_win = models.DecimalField(max_digits=2, decimal_places=2)
+
+
+class Team(models.Model):
+    name = models.CharField(max_length=255)
+    code = models.CharField(max_length=255)
+    short_name = models.CharField(max_length=255)
+    squad_market_value = models.PositiveIntegerField
+    crest_url = models.URLField()
+
+    def __eq__(self, other):
+        if isinstance(other, Team):
+            return \
+                self.name == other.name and \
+                self.code == other.code and \
+                self.short_name == other.short_name
+        else:
+            return NotImplemented
+
+
+class Player(models.Model):
+    name = models.CharField(max_length=255)
+    KEEPER = 1
+    RIGHT_BACK = 2
+    CENTRE_BACK = 4
+    LEFT_BACK = 3
+    DEFENSIVE_MIDFIELD = 6
+    CENTRAL_MIDFIELD = 8
+    ATTACKING_MIDFIELD = 10
+    RIGHT_WING = 7
+    CENTRE_FORWARD = 9
+    LEFT_WING = 11
+    POSITION = (
+        (KEEPER, 'Keeper'),
+        (RIGHT_BACK, 'Right-Back'),
+        (CENTRE_BACK, 'Centre Back'),
+        (LEFT_BACK, 'Left-Back'),
+        (DEFENSIVE_MIDFIELD, 'Defensive Midfield'),
+        (CENTRAL_MIDFIELD, 'Central Midfield'),
+        (ATTACKING_MIDFIELD, 'Attacking Midfield'),
+        (RIGHT_WING, 'Right Wing'),
+        (CENTRE_FORWARD, 'Centre Forward'),
+        (LEFT_WING, 'Left Wing'),
+    )
+    position = models.CharField(max_length=255, choices=POSITION)
+    jersey_number = models.PositiveSmallIntegerField
+    date_of_birth = models.DateField()
+    nationality = models.CharField(max_length=255)
+    contract_until = models.DateField()
+    market_value = models.PositiveIntegerField()
+
+    def __eq__(self, other):
+        if isinstance(other, Player):
+            return \
+                self.name == other.name and \
+                self.date_of_birth == other.date_of_birth and \
+                self.nationality == other.nationality
+        else:
+            return NotImplemented
+
+
+class LeagueTable(models.Model):
+    league_caption = models.CharField(max_length=255)
+    matchday = models.IntegerField()
+
+    def __eq__(self, other):
+        if isinstance(other, LeagueTable):
+            # TODO Check positions of all teams (same matchday, but different amount of matches played)
+            return \
+                isinstance(other, LeagueTable) and \
+                self.league_caption == other.leagueCaption and \
+                self.matchday == other.matchday
+        else:
+            return NotImplemented
 
 
 class Standing(models.Model):

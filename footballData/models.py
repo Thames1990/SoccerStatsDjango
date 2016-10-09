@@ -1,10 +1,35 @@
 import datetime
+import inspect
 from enum import Enum
 
 from django.db import models
 
 
-class CupID(Enum):
+# TODO Remove when Django updates to 1.10 (enum serializiation)
+class CompetitionTypeID(Enum):
+    """
+    Abstract enum for competition types (cup or league)
+    """
+
+    @classmethod
+    def choices(cls):
+        """
+        Creates the tuple structure for Django model choices
+        :return: Tuple of enum choices
+        """
+        # get all members of the class
+        members = inspect.getmembers(cls, lambda m: not (inspect.isroutine(m)))
+        # filter down to just properties
+        props = [m for m in members if not (m[0][:2] == '__')]
+        # format into django choice tuple
+        choices = tuple([(str(p[1].value), p[0]) for p in props])
+        return choices
+
+
+class CupID(CompetitionTypeID):
+    """
+    IDs for cups
+    """
     EC = 424
     """European Championships France 2016"""
     DFB = 432
@@ -13,7 +38,10 @@ class CupID(Enum):
     """Champions League 2016/17"""
 
 
-class LeagueID(Enum):
+class LeagueID(CompetitionTypeID):
+    """
+    IDs for leagues
+    """
     PL = 426
     """Premier League 2016/17"""
     ELC = 427
@@ -41,32 +69,33 @@ class LeagueID(Enum):
 
 
 # TODO Implement '_links'
+# TODO Figure out if NotImplemented raises a TypeError
+# TODO Figure out if __ne__ is required
 
 
-# TODO wait for Django 1.10 and serialization support for enum.Enum
-# class Competition(models.Model):
-#     id = models.PositiveSmallIntegerField(primary_key=True)
-#     caption = models.CharField(max_length=255)
-#     league = models.CharField(max_length=255, choices=LeagueID)
-#     YEARS = [(r, r) for r in range(1980, (datetime.datetime.now().year + 1))]
-#     year = models.IntegerField(choices=YEARS)
-#     current_matchday = models.PositiveSmallIntegerField()
-#     number_of_matchdays = models.PositiveSmallIntegerField()
-#     number_of_teams = models.PositiveSmallIntegerField()
-#     number_of_games = models.PositiveSmallIntegerField()
-#     last_updated = models.DateTimeField()
-#
-#     def __eq__(self, other):
-#         if isinstance(other, Competition):
-#             # TODO weaken equality
-#             return \
-#                 self.id == other.id and \
-#                 self.year == other.year and \
-#                 self.current_matchday == other.current_matchday and \
-#                 self.number_of_games == other.number_of_games and \
-#                 self.last_updated == other.last_updated
-#         else:
-#             return NotImplemented
+class Competition(models.Model):
+    id = models.PositiveSmallIntegerField(primary_key=True)
+    caption = models.CharField(max_length=255)
+    league = models.CharField(max_length=255, choices=LeagueID.choices())
+    YEARS = [(r, r) for r in range(1980, (datetime.datetime.now().year + 1))]
+    year = models.IntegerField(choices=YEARS)
+    current_matchday = models.PositiveSmallIntegerField()
+    number_of_matchdays = models.PositiveSmallIntegerField()
+    number_of_teams = models.PositiveSmallIntegerField()
+    number_of_games = models.PositiveSmallIntegerField()
+    last_updated = models.DateTimeField()
+
+    def __eq__(self, other):
+        if isinstance(other, Competition):
+            # TODO weaken equality
+            return \
+                self.id == other.id and \
+                self.year == other.year and \
+                self.current_matchday == other.current_matchday and \
+                self.number_of_games == other.number_of_games and \
+                self.last_updated == other.last_updated
+        else:
+            return NotImplemented
 
 
 class Fixture(models.Model):
@@ -90,6 +119,8 @@ class Fixture(models.Model):
     home_team_name = models.CharField(max_length=255)
     away_team_name = models.CharField(max_length=255)
 
+    # TODO Figure out default behaviour of non implemented __eq__ (each field equiality?)
+
 
 class Result(models.Model):
     fixture = models.ForeignKey(Fixture)
@@ -97,6 +128,7 @@ class Result(models.Model):
     goals_away_team = models.PositiveSmallIntegerField()
 
 
+# TODO DRY
 class HalfTime(models.Model):
     result = models.ForeignKey(Result)
     goals_home_team = models.PositiveSmallIntegerField()
@@ -186,7 +218,12 @@ class LeagueTable(models.Model):
 
     def __eq__(self, other):
         if isinstance(other, LeagueTable):
-            # TODO Check positions of all teams (same matchday, but different amount of matches played)
+            other_standing_set = other.standing_set.all()
+            for standing in self.standing_set.all():
+                other_standing = other_standing_set.get(team_name=standing.team_name)
+                # Check each team for equality
+                if standing != other_standing:
+                    return False
             return \
                 isinstance(other, LeagueTable) and \
                 self.league_caption == other.leagueCaption and \
@@ -209,23 +246,36 @@ class Standing(models.Model):
     draws = models.PositiveIntegerField()
     losses = models.PositiveIntegerField()
 
+    # TODO Refine equality
     def __eq__(self, other):
         if isinstance(other, Standing):
             return \
                 isinstance(other, Standing) and \
                 self.league_table == other.league_table and \
+                self.position == other.position and \
                 self.team_name == other.team_name and \
-                self.played_games == other.played_games
+                self.played_games == other.played_games and \
+                self.points == other.points
         else:
             return NotImplemented
 
     def has_position_changed(self, other_matchday_standing):
+        """
+        Checks position difference. Is normally used to compare matchday point differences.
+        :param other_matchday_standing: The standing of a another matchday
+        :return: True, if the position has changed; False otherwise.
+        """
         if isinstance(other_matchday_standing, Standing):
             return self.position != other_matchday_standing.position
         else:
             return NotImplemented
 
     def has_position_improved(self, other_matchday_standing):
+        """
+        Checks position improvement. Is normally used to compare matchday point improvements.
+        :param other_matchday_standing: The standing of a another matchday
+        :return: True, if the position has improved; False otherwise.
+        """
         if isinstance(other_matchday_standing, Standing):
             return self.position > other_matchday_standing.position
         else:

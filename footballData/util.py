@@ -141,7 +141,7 @@ def get_league_table_position_changes(league_table, league_id=LeagueID.BL1):
         return NotImplemented
 
 
-def get_cup_table_position_changes(cup_table, cup_id=CupID.EC):
+def get_cup_table_position_changes(cup_table, cup_id=CupID.CL):
     if isinstance(cup_table, CupTable):
         # TODO Use _links in model to reference league_id
         # TODO Dynamically load last or second to last matchday

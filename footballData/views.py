@@ -5,7 +5,7 @@ from .util import get_table, get_league_table_position_changes, get_cup_table_po
 
 
 def index_view(request):
-    table = get_table(CupID.EC, None)
+    table = get_table(CupID.CL, None)
     if isinstance(table, LeagueTable):
         return render(request, 'footballData/index.html', {
             'league_table': table,

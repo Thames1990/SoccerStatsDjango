@@ -161,7 +161,7 @@ class Team(models.Model):
     code = models.CharField(max_length=255)
     short_name = models.CharField(max_length=255)
     squad_market_value = models.PositiveIntegerField
-    crest_url = models.URLField()
+    crest_url = models.URLField(null=True)
 
     def __eq__(self, other):
         if isinstance(other, Team):
@@ -239,7 +239,7 @@ class Standing(models.Model):
     league_table = models.ForeignKey(LeagueTable)
     position = models.PositiveIntegerField()
     team_name = models.CharField(max_length=255)
-    crest_uri = models.URLField()
+    crest_uri = models.URLField(null=True)
     played_games = models.PositiveIntegerField()
     points = models.PositiveIntegerField()
     goals = models.PositiveIntegerField()
@@ -285,6 +285,24 @@ class Standing(models.Model):
             return NotImplemented
 
 
+class Home(models.Model):
+    standing = models.ForeignKey(Standing)
+    goals = models.PositiveIntegerField()
+    goals_against = models.PositiveIntegerField()
+    wins = models.PositiveIntegerField()
+    draws = models.PositiveIntegerField()
+    losses = models.PositiveIntegerField()
+
+
+class Away(models.Model):
+    standing = models.ForeignKey(Standing)
+    goals = models.PositiveIntegerField()
+    goals_against = models.PositiveIntegerField()
+    wins = models.PositiveIntegerField()
+    draws = models.PositiveIntegerField()
+    losses = models.PositiveIntegerField()
+
+
 class CupTable(models.Model):
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
@@ -309,8 +327,7 @@ class CupTable(models.Model):
                         return False
             return True
         else:
-            cli
-        return NotImplemented
+            return NotImplemented
 
 
 class Group(models.Model):
@@ -333,7 +350,7 @@ class GroupStanding(models.Model):
     team = models.CharField(max_length=255)
     team_id = models.PositiveSmallIntegerField()
     played_games = models.PositiveSmallIntegerField()
-    crest_uri = models.URLField()
+    crest_uri = models.URLField(null=True)
     points = models.PositiveSmallIntegerField()
     goals = models.PositiveSmallIntegerField()
     goals_against = models.PositiveSmallIntegerField()
@@ -365,21 +382,3 @@ class GroupStanding(models.Model):
             return self.rank > other_matchday_group_standing.rank
         else:
             return NotImplemented
-
-
-class Home(models.Model):
-    standing = models.ForeignKey(Standing)
-    goals = models.PositiveIntegerField()
-    goals_against = models.PositiveIntegerField()
-    wins = models.PositiveIntegerField()
-    draws = models.PositiveIntegerField()
-    losses = models.PositiveIntegerField()
-
-
-class Away(models.Model):
-    standing = models.ForeignKey(Standing)
-    goals = models.PositiveIntegerField()
-    goals_against = models.PositiveIntegerField()
-    wins = models.PositiveIntegerField()
-    draws = models.PositiveIntegerField()
-    losses = models.PositiveIntegerField()

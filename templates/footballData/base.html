@@ -1,76 +1,14 @@
 {% load staticfiles %}
 <html lang="de">
 <head>
-    <title>{% block title %}Bad Bat Bets{% endblock %}</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
-    <meta name="theme-color" content="#679">
-    <link rel="stylesheet" href="https://cdn.rawgit.com/mblode/marx/master/css/marx.min.css">
+    <title>{% block title %}Bad Bat Bets{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'footballData/style.css' %}"
     <link rel="icon" href="{% static 'footballData/icons/favicon.ico' %}">
     <script src="https://use.fontawesome.com/f21c3244d2.js"></script>
 </head>
 <body>
-{% if messages %}
-    {% for message in messages %}
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}
-            <card id="debug" onclick='this.parentNode.removeChild(this); return false;'>
-                <grid>
-                    <div col="1/6" class="border_right total_center">
-                        <strong>DEBUG</strong>
-                    </div>
-                    <div col="5/6" class="border_left">
-                        <strong class="formatted hyphenate">{{ message }}</strong>
-                    </div>
-                </grid>
-            </card>
-        {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
-            <card id="info" onclick='this.parentNode.removeChild(this); return false;'>
-                <grid>
-                    <div col="1/6" class="border_right total_center">
-                        <strong>INFO</strong>
-                    </div>
-                    <div col="5/6" class="border_left">
-                        <strong class="formatted hyphenate">{{ message }}</strong>
-                    </div>
-                </grid>
-            </card>
-        {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-            <card id="success" onclick='this.parentNode.removeChild(this); return false;'>
-                <grid>
-                    <div col="1/6" class="border_right total_center">
-                        <strong>SUCCESS</strong>
-                    </div>
-                    <div col="5/6" class="border_left">
-                        <strong class="formatted hyphenate">{{ message }}</strong>
-                    </div>
-                </grid>
-            </card>
-        {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-            <card id="warning" onclick='this.parentNode.removeChild(this); return false;'>
-                <grid>
-                    <div col="1/6" class="border_right total_center">
-                        <strong>WARNING</strong>
-                    </div>
-                    <div col="5/6" class="border_left">
-                        <strong class="formatted hyphenate">{{ message }}</strong>
-                    </div>
-                </grid>
-            </card>
-        {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            <card id="error" onclick='this.parentNode.removeChild(this); return false;'>
-                <grid>
-                    <div col="1/6" class="border_right total_center">
-                        <strong>ERROR</strong>
-                    </div>
-                    <div col="5/6" class="border_left">
-                        <strong class="formatted hyphenate">{{ message }}</strong>
-                    </div>
-                </grid>
-            </card>
-        {% endif %}
-    {% endfor %}
-{% endif %}
-
 {% block content %}{% endblock %}
 </body>
 </html>

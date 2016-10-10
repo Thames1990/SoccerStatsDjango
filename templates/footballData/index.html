@@ -4,12 +4,12 @@
 
 {% block content %}
     {% if league_table %}
-        <h5>{{ league_table.league_caption }} Tabelle</h5>
+        <h1>{{ league_table.league_caption }} Tabelle</h1>
         <table>
             <thead>
             <tr>
                 <th>Position</th>
-                <th>Verein</th>
+                <th width="30%">Verein</th>
                 <th>Spiele</th>
                 <th>g.</th>
                 <th>u.</th>
@@ -37,7 +37,7 @@
                         {% endif %}
                         {{ standing.position }}
                     </td>
-                    <td>{{ standing.team_name }}</td>
+                    <td width="30%">{{ standing.team_name }}</td>
                     <td>{{ standing.played_games }}</td>
                     <td>{{ standing.wins }}</td>
                     <td>{{ standing.draws }}</td>
@@ -50,49 +50,47 @@
             </tbody>
         </table>
     {% elif cup_table %}
-        <h5>{{ cup_table.league_caption }} Tabelle</h5>
-        <grid>
-            {% for group in cup_table.group_set.all %}
-                <table>
-                    <caption>Gruppe {{ group.name }}</caption>
-                    <thead>
+        <h1>{{ cup_table.league_caption }} Tabelle</h1>
+        {% for group in cup_table.group_set.all %}
+            <table>
+                <caption>Gruppe {{ group.name }}</caption>
+                <thead>
+                <tr>
+                    <th>Position</th>
+                    <th width="30%">Verein</th>
+                    <th>Spiele</th>
+                    <th>Tore</th>
+                    <th>Diff.</th>
+                    <th>Pkte.</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for group_standing in group.groupstanding_set.all %}
                     <tr>
-                        <th>Position</th>
-                        <th>Verein</th>
-                        <th>Spiele</th>
-                        <th>Tore</th>
-                        <th>Diff.</th>
-                        <th>Pkte.</th>
+                        <td>
+                            {% if cup_table_position_changes %}
+                                <tag>
+                                    {# TODO Figure out why position changes are inversed #}
+                                    {% if cup_table_position_changes|get_at_index:forloop.parentloop.counter0|get_at_index:forloop.counter0 == True %}
+                                        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                                    {% elif cup_table_position_changes|get_at_index:forloop.counter0 == False %}
+                                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                    {% else %}
+                                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                    {% endif %}
+                                </tag>
+                            {% endif %}
+                            {{ group_standing.rank }}
+                        </td>
+                        <td width="30%">{{ group_standing.team }}</td>
+                        <td>{{ group_standing.played_games }}</td>
+                        <td>{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
+                        <td>{{ group_standing.goal_difference }}</td>
+                        <td>{{ group_standing.points }}</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {% for group_standing in group.groupstanding_set.all %}
-                        <tr>
-                            <td>
-                                {% if cup_table_position_changes %}
-                                    <tag>
-                                        {# TODO Figure out why position changes are inversed #}
-                                        {% if cup_table_position_changes|get_at_index:forloop.parentloop.counter0|get_at_index:forloop.counter0 == True %}
-                                            <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                                        {% elif cup_table_position_changes|get_at_index:forloop.counter0 == False %}
-                                            <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                                        {% else %}
-                                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                                        {% endif %}
-                                    </tag>
-                                {% endif %}
-                                {{ group_standing.rank }}
-                            </td>
-                            <td>{{ group_standing.team }}</td>
-                            <td>{{ group_standing.played_games }}</td>
-                            <td>{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
-                            <td>{{ group_standing.goal_difference }}</td>
-                            <td>{{ group_standing.points }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% endfor %}
-        </grid>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
     {% endif %}
 {% endblock %}

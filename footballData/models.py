@@ -344,25 +344,25 @@ class GroupStanding(models.Model):
     #     if self.goal_difference != self.goals - self.goals_against:
     #         raise ValidationError(_('goal_difference has to be the subtraction of goals and goals_against'))
 
-    def has_rank_changed(self, other_matchday_standing):
+    def has_rank_changed(self, other_matchday_group_standing):
         """
         Checks position difference. Is normally used to compare matchday point differences.
-        :param other_matchday_standing: The standing of a another matchday
+        :param other_matchday_group_standing: The standing of a another matchday
         :return: True, if the position has changed; False otherwise.
         """
-        if isinstance(other_matchday_standing, Standing):
-            return self.rank != other_matchday_standing.rank
+        if isinstance(other_matchday_group_standing, GroupStanding):
+            return self.rank != other_matchday_group_standing.rank
         else:
             return NotImplemented
 
-    def has_rank_improved(self, other_matchday_standing):
+    def has_rank_improved(self, other_matchday_group_standing):
         """
         Checks position improvement. Is normally used to compare matchday point improvements.
-        :param other_matchday_standing: The standing of a another matchday
+        :param other_matchday_group_standing: The standing of a another matchday
         :return: True, if the position has improved; False otherwise.
         """
-        if isinstance(other_matchday_standing, Standing):
-            return self.rank > other_matchday_standing.rank
+        if isinstance(other_matchday_group_standing, GroupStanding):
+            return self.rank > other_matchday_group_standing.rank
         else:
             return NotImplemented
 

@@ -75,7 +75,7 @@
                                             {% if cup_table_position_changes %}
                                                 <tag>
                                                     {# TODO Figure out why position changes are inversed #}
-                                                    {% if cup_table_position_changes|get_at_index:forloop.counter0 == True %}
+                                                    {% if cup_table_position_changes|get_at_index:forloop.parentloop.counter0|get_at_index:forloop.counter0 == True %}
                                                         <i class="fa fa-arrow-up" aria-hidden="true"></i>
                                                     {% elif cup_table_position_changes|get_at_index:forloop.counter0 == False %}
                                                         <i class="fa fa-arrow-down" aria-hidden="true"></i>

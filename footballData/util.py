@@ -145,7 +145,7 @@ def get_cup_table_position_changes(cup_table, cup_id=CupID.EC):
     if isinstance(cup_table, CupTable):
         # TODO Use _links in model to reference league_id
         # TODO Dynamically load last or second to last matchday
-        cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 2)
+        cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 1)
         position_changes = []
         last_matchday_group_set = cup_table_last_matchday.group_set.all()
         for group in cup_table.group_set.all():

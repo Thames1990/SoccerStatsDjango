@@ -50,8 +50,55 @@
                 {% endfor %}
                 </tbody>
             </table>
-        {% else %}
-            <p>No league tables are available.</p>
+        {% elif cup_table %}
+            <h5>{{ cup_table.league_caption }} Tabelle</h5>
+            <grid>
+                {% for group in cup_table.group_set.all %}
+                    <div col="1/2">
+                        <card>
+                            <table>
+                                <caption>Gruppe {{ group.name }}</caption>
+                                <thead>
+                                <tr>
+                                    <th>Position</th>
+                                    <th>Verein</th>
+                                    <th>Spiele</th>
+                                    <th>Tore</th>
+                                    <th>Diff.</th>
+                                    <th>Pkte.</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for group_standing in group.groupstanding_set.all %}
+                                    <tr>
+                                        <td>
+                                            {% if cup_table_position_changes %}
+                                                <tag>
+                                                    {# TODO Figure out why position changes are inversed #}
+                                                    {% if cup_table_position_changes|get_at_index:forloop.counter0 == True %}
+                                                        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                                                    {% elif cup_table_position_changes|get_at_index:forloop.counter0 == False %}
+                                                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                                    {% else %}
+                                                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                                    {% endif %}
+                                                </tag>
+                                            {% endif %}
+                                            {{ group_standing.rank }}
+                                        </td>
+                                        <td>{{ group_standing.team }}</td>
+                                        <td>{{ group_standing.played_games }}</td>
+                                        <td>{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
+                                        <td>{{ group_standing.goal_difference }}</td>
+                                        <td>{{ group_standing.points }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </card>
+                    </div>
+                {% endfor %}
+            </grid>
         {% endif %}
     </section>
 {% endblock %}

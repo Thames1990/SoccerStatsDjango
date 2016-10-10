@@ -2,8 +2,15 @@ import datetime
 import inspect
 from enum import Enum
 
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
+
+# TODO Implement '_links'
+# TODO Figure out if NotImplemented raises a TypeError
+# TODO Figure out if __ne__ is required
+# TODO Are model __eq__ functions required? (https://github.com/django/django/blob/1.9.7/django/db/models/base.py#L477)
 
 # TODO Remove when Django updates to 1.10 (enum serializiation)
 class CompetitionTypeID(Enum):
@@ -66,11 +73,6 @@ class LeagueID(CompetitionTypeID):
     """Serie A 2016 / 17"""
     PPL = 439
     """Primeira Liga 2016 / 17"""
-
-
-# TODO Implement '_links'
-# TODO Figure out if NotImplemented raises a TypeError
-# TODO Figure out if __ne__ is required
 
 
 class Competition(models.Model):
@@ -212,22 +214,23 @@ class Player(models.Model):
             return NotImplemented
 
 
+# TODO If __eq__ are redundant: Create abstract Table model?
 class LeagueTable(models.Model):
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
 
     def __eq__(self, other):
         if isinstance(other, LeagueTable):
+            # Check league for equality
+            if not (self.league_caption == other.leagueCaption and self.matchday == other.matchday):
+                return False
             other_standing_set = other.standing_set.all()
+            # Check each team for equality
             for standing in self.standing_set.all():
                 other_standing = other_standing_set.get(team_name=standing.team_name)
-                # Check each team for equality
                 if standing != other_standing:
                     return False
-            return \
-                isinstance(other, LeagueTable) and \
-                self.league_caption == other.leagueCaption and \
-                self.matchday == other.matchday
+            return True
         else:
             return NotImplemented
 
@@ -278,6 +281,88 @@ class Standing(models.Model):
         """
         if isinstance(other_matchday_standing, Standing):
             return self.position > other_matchday_standing.position
+        else:
+            return NotImplemented
+
+
+class CupTable(models.Model):
+    league_caption = models.CharField(max_length=255)
+    matchday = models.IntegerField()
+
+    def __eq__(self, other):
+        if isinstance(other, CupTable):
+            # Check league for equality
+            if not (self.league_caption == other.leagueCaption and self.matchday == other.matchday):
+                return False
+            other_group_set = other.group_set.all()
+            # Check each group for equality
+            for group in self.group_set.all():
+                other_group = other_group_set.get(name=group.name)
+                if group != other_group:
+                    return False
+
+                # Check each team in the group for equality
+                other_group_standing_set = other_group.groupstanding_set.all()
+                for group_standing in group.groupstanding_set.all():
+                    other_group_standing = other_group_standing_set.get(team=group_standing.team)
+                    if group_standing != other_group_standing:
+                        return False
+            return True
+        else:
+            cli
+        return NotImplemented
+
+
+class Group(models.Model):
+    cup_table = models.ForeignKey(CupTable)
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        # TODO Add ordering to other models
+        ordering = ['name']
+
+    # TODO Add and improve __str__ for all model, because debug and such
+    def __str__(self):
+        return self.cup_table.league_caption + ' ' + self.name
+
+
+# TODO Merge Standing and GroupStanding
+class GroupStanding(models.Model):
+    group = models.ForeignKey(Group)
+    rank = models.PositiveSmallIntegerField()
+    team = models.CharField(max_length=255)
+    team_id = models.PositiveSmallIntegerField()
+    played_games = models.PositiveSmallIntegerField()
+    crest_uri = models.URLField()
+    points = models.PositiveSmallIntegerField()
+    goals = models.PositiveSmallIntegerField()
+    goals_against = models.PositiveSmallIntegerField()
+    goal_difference = models.PositiveSmallIntegerField()
+
+    # TODO Read model validation docs
+    # def clean(self):
+    #     if self.goal_difference != self.goals - self.goals_against:
+    #         raise ValidationError(_('goal_difference has to be the subtraction of goals and goals_against'))
+
+    def has_rank_changed(self, other_matchday_standing):
+        """
+        Checks position difference. Is normally used to compare matchday point differences.
+        :param other_matchday_standing: The standing of a another matchday
+        :return: True, if the position has changed; False otherwise.
+        """
+        if isinstance(other_matchday_standing, Standing):
+            return self.rank != other_matchday_standing.rank
+        else:
+            return NotImplemented
+
+    def has_rank_improved(self, other_matchday_standing):
+        """
+        Checks position improvement. Is normally used to compare matchday point improvements.
+        :param other_matchday_standing: The standing of a another matchday
+        :return: True, if the position has improved; False otherwise.
+        """
+        if isinstance(other_matchday_standing, Standing):
+            return self.rank > other_matchday_standing.rank
         else:
             return NotImplemented
 

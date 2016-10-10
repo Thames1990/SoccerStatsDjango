@@ -1,14 +1,6 @@
 import requests
 
-from footballData.models import LeagueTable, Standing, Home, Away, LeagueID, CupID, CompetitionTypeID
-
-
-def create_table(json):
-    league_table, created = LeagueTable.objects.get_or_create(
-        league_caption=json['leagueCaption'],
-        matchday=json['matchday'],
-    )
-    return league_table
+from footballData.models import *
 
 
 def create_league_table(json):
@@ -17,7 +9,10 @@ def create_league_table(json):
     :param json: JSON data
     :return: LeagueTable object
     """
-    league_table = create_table(json)
+    league_table, created = LeagueTable.objects.get_or_create(
+        league_caption=json['leagueCaption'],
+        matchday=json['matchday'],
+    )
 
     for team in json['standing']:
         standing, created = Standing.objects.get_or_create(
@@ -57,10 +52,40 @@ def create_league_table(json):
 
 
 def create_cup_table(json):
-    pass
+    """
+    Creates a cup table from JSON data.
+    :param json: JSON data
+    :return: CupTable object
+    """
+    cup_table, created = CupTable.objects.get_or_create(
+        league_caption=json['leagueCaption'],
+        matchday=json['matchday'],
+    )
+
+    for cup_group in json['standings']:
+        group, created = Group.objects.get_or_create(
+            cup_table=cup_table,
+            name=cup_group,
+        )
+
+        for group_standing in json['standings'][cup_group]:
+            GroupStanding.objects.get_or_create(
+                group=group,
+                rank=group_standing['rank'],
+                team=group_standing['team'],
+                team_id=group_standing['teamId'],
+                played_games=group_standing['playedGames'],
+                crest_uri=group_standing['crestURI'],
+                points=group_standing['points'],
+                goals=group_standing['goals'],
+                goals_against=group_standing['goalsAgainst'],
+                goal_difference=group_standing['goalDifference'],
+            )
+
+    return cup_table
 
 
-def get_league_table(competiton_type_id, matchday):
+def get_table(competiton_type_id, matchday):
     """
     Gets the league table for a specific competition on a specific matchday.
     :param competiton_type_id: ID of the requested competition type (LeagueID or CupID)
@@ -102,7 +127,7 @@ def get_league_table_position_changes(league_table, league_id=LeagueID.BL1):
     if isinstance(league_table, LeagueTable):
         # TODO Use _links in model to reference league_id
         # TODO Dynamically load last or second to last matchday
-        league_table_last_matchday = get_league_table(league_id, league_table.matchday - 2)
+        league_table_last_matchday = get_table(league_id, league_table.matchday - 2)
         position_changes = []
         last_matchday_standing_set = league_table_last_matchday.standing_set.all()
         for standing in league_table.standing_set.all():
@@ -111,6 +136,28 @@ def get_league_table_position_changes(league_table, league_id=LeagueID.BL1):
                 position_changes.append(standing.has_position_improved(last_matchday_standing))
             else:
                 position_changes.append(None)
+        return position_changes
+    else:
+        return NotImplemented
+
+
+def get_cup_table_position_changes(cup_table, cup_id=CupID.EC):
+    if isinstance(cup_table, CupTable):
+        # TODO Use _links in model to reference league_id
+        # TODO Dynamically load last or second to last matchday
+        cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 2)
+        position_changes = []
+        last_matchday_group_set = cup_table_last_matchday.group_set.all()
+        for group in cup_table.group_set.all():
+            group_position_changes = []
+            last_matchday_group = last_matchday_group_set.get(name=group.name)
+            for group_standing in group.groupstanding_set.all():
+                last_matchday_group_standing = last_matchday_group.groupstanding_set.get(team=group_standing.team)
+                if group_standing.has_rank_changed(last_matchday_group_standing):
+                    group_position_changes.append(group_standing.has_rank_improved(last_matchday_group_standing))
+                else:
+                    group_position_changes.append(None)
+            position_changes.append(group_position_changes)
         return position_changes
     else:
         return NotImplemented

@@ -64,6 +64,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'footballData.custom_context_processors.cup_id_processor',
+                'footballData.custom_context_processors.league_id_processor',
             ],
         },
     },

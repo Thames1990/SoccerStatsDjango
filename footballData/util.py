@@ -127,7 +127,7 @@ def get_league_table_position_changes(league_table, league_id=LeagueID.BL1):
     if isinstance(league_table, LeagueTable):
         # TODO Use _links in model to reference league_id
         # TODO Dynamically load last or second to last matchday
-        league_table_last_matchday = get_table(league_id, league_table.matchday - 2)
+        league_table_last_matchday = get_table(league_id, league_table.matchday - 1)
         position_changes = []
         last_matchday_standing_set = league_table_last_matchday.standing_set.all()
         for standing in league_table.standing_set.all():
@@ -141,9 +141,9 @@ def get_league_table_position_changes(league_table, league_id=LeagueID.BL1):
         return NotImplemented
 
 
-def get_cup_table_position_changes(cup_table, cup_id=CupID.CL):
+def get_cup_table_position_changes(cup_table, cup_id):
     if isinstance(cup_table, CupTable):
-        # TODO Use _links in model to reference league_id
+        # TODO Use _links in model to reference cup_id
         # TODO Dynamically load last or second to last matchday
         cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 1)
         position_changes = []

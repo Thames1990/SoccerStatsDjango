@@ -2,9 +2,7 @@ import datetime
 import inspect
 from enum import Enum
 
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 
 
 # TODO Implement '_links'
@@ -39,8 +37,11 @@ class CupID(CompetitionTypeID):
     """
     EC = 424
     """European Championships France 2016"""
-    DFB = 432
-    """DFB-Pokal 2016/17"""
+    # DFB = 432
+    """
+    DFB-Pokal 2016/17
+    Currently not available.
+    """
     CL = 440
     """Champions League 2016/17"""
 
@@ -52,27 +53,27 @@ class LeagueID(CompetitionTypeID):
     PL = 426
     """Premier League 2016/17"""
     ELC = 427
-    """Championship 2016 / 17"""
+    """Championship 2016/17"""
     EL1 = 428
-    """League One 2016 / 17"""
+    """League One 2016/17"""
     BL1 = 430
-    """1. Bundesliga 2016 / 17"""
+    """1. Bundesliga 2016/17"""
     BL2 = 431
-    """2. Bundesliga 2016 / 17"""
+    """2. Bundesliga 2016/17"""
     DED = 433
-    """Eredivisie 2016 / 17"""
+    """Eredivisie 2016/17"""
     FL1 = 434
-    """Ligue 1 2016 / 17"""
+    """Ligue 1 2016/17"""
     FL2 = 435
-    """Ligue 2 2016 / 17"""
+    """Ligue 2 2016/17"""
     PD = 436
-    """Primera Division 2016 / 17"""
+    """Primera Division 2016/17"""
     SD = 437
-    """Liga Adelante 2016 / 17"""
+    """Liga Adelante 2016/17"""
     SA = 438
-    """Serie A 2016 / 17"""
+    """Serie A 2016/17"""
     PPL = 439
-    """Primeira Liga 2016 / 17"""
+    """Primeira Liga 2016/17"""
 
 
 class Competition(models.Model):

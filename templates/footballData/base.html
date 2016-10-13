@@ -4,23 +4,26 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <title>{% block title %}Bad Bat Bets{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'footballData/bare.min.css' %}"
-    <link rel="stylesheet" href="{% static 'footballData/style.css' %}"
+    <link rel="stylesheet" href="{% static 'footballData/bare.min.css' %}">
+    <link rel="stylesheet" href="{% static 'footballData/style.css' %}">
     <link rel="icon" href="{% static 'footballData/icons/favicon.ico' %}">
     <script src="https://use.fontawesome.com/f21c3244d2.js"></script>
 </head>
 <body>
 <nav>
-    <!-- this label allows the checkbox to be activated by clicking anywhere in the nav -->
     <label>
         <input type="checkbox">
-        <header><a><i class="fa fa-futbol-o" aria-hidden="true"></i> SoccerStats</a></header>
+        <header>
+            <a><i class="fa fa-futbol-o" aria-hidden="true"></i> SoccerStats</a>
+        </header>
         <ul>
             <li>
                 <a>Pokal-Tabellen</a>
                 <menu>
                     {% for cup_id in cup_ids %}
-                        <menuitem><a href="{% url 'footballData:index' cup_id.value %}">{{ cup_id.name }}</a></menuitem>
+                        <menuitem>
+                            <a href="{% url 'footballData:table' cup_id.value %}">{{ cup_id.name }}</a>
+                        </menuitem>
                     {% endfor %}
                 </menu>
             </li>
@@ -28,7 +31,9 @@
                 <a>Liga-Tabellen</a>
                 <menu>
                     {% for league_id in league_ids %}
-                        <menuitem><a href="{% url 'footballData:index' league_id.value %}">{{ league_id.name }}</a></menuitem>
+                        <menuitem>
+                            <a href="{% url 'footballData:table' league_id.value %}">{{ league_id.name }}</a>
+                        </menuitem>
                     {% endfor %}
                 </menu>
             </li>

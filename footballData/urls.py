@@ -6,7 +6,7 @@ app_name = 'footballData'
 urlpatterns = [
     url(
         r'^(?P<competition_id>[0-9]+)/$',
-        views.index_view,
-        name='index'
+        views.table_view,
+        name='table'
     ),
 ]

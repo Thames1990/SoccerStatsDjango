@@ -336,7 +336,6 @@ class Group(models.Model):
     name = models.CharField(max_length=255)
 
     class Meta:
-        # TODO Add ordering to other models
         ordering = ['name']
 
     # TODO Add and improve __str__ for all model, because debug and such

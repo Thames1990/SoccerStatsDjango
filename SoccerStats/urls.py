@@ -6,7 +6,7 @@ from . import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('footballData.urls'))
+    url(r'^table/', include('footballData.urls'))
 ]
 
 if settings.DEBUG:

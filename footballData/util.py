@@ -85,19 +85,19 @@ def create_cup_table(json):
     return cup_table
 
 
-def get_table(competiton_type_id, matchday):
+def get_table(competiton_id, matchday):
     """
     Gets the league table for a specific competition on a specific matchday.
-    :param competiton_type_id: ID of the requested competition type (LeagueID or CupID)
+    :param competiton_id: ID of the requested competition type (LeagueID or CupID)
     :param matchday: The requested matchday
     :return: LeagueTable object
     """
-    if isinstance(competiton_type_id, CompetitionTypeID):
+    if isinstance(competiton_id, CompetitionID):
         if matchday:
             if isinstance(matchday, int):
                 json = requests.get(
                     'http://api.football-data.org/v1/competitions/' +
-                    str(competiton_type_id.value) + '/leagueTable?matchday=' +
+                    str(competiton_id.value) + '/leagueTable?matchday=' +
                     str(matchday),
                     headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
                 ).json()
@@ -105,19 +105,19 @@ def get_table(competiton_type_id, matchday):
                 return NotImplemented
         else:
             json = requests.get(
-                'http://api.football-data.org/v1/competitions/' + str(competiton_type_id.value) + '/leagueTable',
+                'http://api.football-data.org/v1/competitions/' + str(competiton_id.value) + '/leagueTable',
                 headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
             ).json()
 
-        if isinstance(competiton_type_id, LeagueID):
+        if isinstance(competiton_id, LeagueID):
             return create_league_table(json)
-        elif isinstance(competiton_type_id, CupID):
+        elif isinstance(competiton_id, CupID):
             return create_cup_table(json)
     else:
         return NotImplemented
 
 
-def get_league_table_position_changes(league_table, league_id=LeagueID.BL1):
+def get_league_table_position_changes(league_table, league_id):
     """
     Creates a list of position changes for a league table.
     :param league_table: League table of a competition
@@ -125,9 +125,7 @@ def get_league_table_position_changes(league_table, league_id=LeagueID.BL1):
     :return: List of position changes (True = improved, False = worsened, None = didn't change)
     """
     if isinstance(league_table, LeagueTable):
-        # TODO Use _links in model to reference league_id
-        # TODO Dynamically load last or second to last matchday
-        league_table_last_matchday = get_table(league_id, league_table.matchday - 1)
+        league_table_last_matchday = get_table(league_id, league_table.matchday - 2)
         position_changes = []
         last_matchday_standing_set = league_table_last_matchday.standing_set.all()
         for standing in league_table.standing_set.all():
@@ -143,9 +141,7 @@ def get_league_table_position_changes(league_table, league_id=LeagueID.BL1):
 
 def get_cup_table_position_changes(cup_table, cup_id):
     if isinstance(cup_table, CupTable):
-        # TODO Use _links in model to reference cup_id
-        # TODO Dynamically load last or second to last matchday
-        cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 1)
+        cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 2)
         position_changes = []
         last_matchday_group_set = cup_table_last_matchday.group_set.all()
         for group in cup_table.group_set.all():

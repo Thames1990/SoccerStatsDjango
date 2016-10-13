@@ -5,13 +5,9 @@ from enum import Enum
 from django.db import models
 
 
-# TODO Implement '_links'
-# TODO Figure out if NotImplemented raises a TypeError
-# TODO Figure out if __ne__ is required
-# TODO Are model __eq__ functions required? (https://github.com/django/django/blob/1.9.7/django/db/models/base.py#L477)
-
+# TODO Add references to Cometition
 # TODO Remove when Django updates to 1.10 (enum serializiation)
-class CompetitionTypeID(Enum):
+class CompetitionID(Enum):
     """
     Abstract enum for competition types (cup or league)
     """
@@ -31,7 +27,7 @@ class CompetitionTypeID(Enum):
         return choices
 
 
-class CupID(CompetitionTypeID):
+class CupID(CompetitionID):
     """
     IDs for cups
     """
@@ -46,7 +42,7 @@ class CupID(CompetitionTypeID):
     """Champions League 2016/17"""
 
 
-class LeagueID(CompetitionTypeID):
+class LeagueID(CompetitionID):
     """
     IDs for leagues
     """
@@ -88,18 +84,6 @@ class Competition(models.Model):
     number_of_games = models.PositiveSmallIntegerField()
     last_updated = models.DateTimeField()
 
-    def __eq__(self, other):
-        if isinstance(other, Competition):
-            # TODO weaken equality
-            return \
-                self.id == other.id and \
-                self.year == other.year and \
-                self.current_matchday == other.current_matchday and \
-                self.number_of_games == other.number_of_games and \
-                self.last_updated == other.last_updated
-        else:
-            return NotImplemented
-
 
 class Fixture(models.Model):
     date = models.DateTimeField()
@@ -121,8 +105,6 @@ class Fixture(models.Model):
     matchday = models.PositiveSmallIntegerField()
     home_team_name = models.CharField(max_length=255)
     away_team_name = models.CharField(max_length=255)
-
-    # TODO Figure out default behaviour of non implemented __eq__ (each field equiality?)
 
 
 class Result(models.Model):
@@ -164,15 +146,6 @@ class Team(models.Model):
     squad_market_value = models.PositiveIntegerField
     crest_url = models.URLField(null=True)
 
-    def __eq__(self, other):
-        if isinstance(other, Team):
-            return \
-                self.name == other.name and \
-                self.code == other.code and \
-                self.short_name == other.short_name
-        else:
-            return NotImplemented
-
 
 class Player(models.Model):
     name = models.CharField(max_length=255)
@@ -205,35 +178,10 @@ class Player(models.Model):
     contract_until = models.DateField()
     market_value = models.PositiveIntegerField()
 
-    def __eq__(self, other):
-        if isinstance(other, Player):
-            return \
-                self.name == other.name and \
-                self.date_of_birth == other.date_of_birth and \
-                self.nationality == other.nationality
-        else:
-            return NotImplemented
 
-
-# TODO If __eq__ are redundant: Create abstract Table model?
 class LeagueTable(models.Model):
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
-
-    def __eq__(self, other):
-        if isinstance(other, LeagueTable):
-            # Check league for equality
-            if not (self.league_caption == other.leagueCaption and self.matchday == other.matchday):
-                return False
-            other_standing_set = other.standing_set.all()
-            # Check each team for equality
-            for standing in self.standing_set.all():
-                other_standing = other_standing_set.get(team_name=standing.team_name)
-                if standing != other_standing:
-                    return False
-            return True
-        else:
-            return NotImplemented
 
 
 class Standing(models.Model):
@@ -249,19 +197,6 @@ class Standing(models.Model):
     wins = models.PositiveIntegerField()
     draws = models.PositiveIntegerField()
     losses = models.PositiveIntegerField()
-
-    # TODO Refine equality
-    def __eq__(self, other):
-        if isinstance(other, Standing):
-            return \
-                isinstance(other, Standing) and \
-                self.league_table == other.league_table and \
-                self.position == other.position and \
-                self.team_name == other.team_name and \
-                self.played_games == other.played_games and \
-                self.points == other.points
-        else:
-            return NotImplemented
 
     def has_position_changed(self, other_matchday_standing):
         """
@@ -281,7 +216,7 @@ class Standing(models.Model):
         :return: True, if the position has improved; False otherwise.
         """
         if isinstance(other_matchday_standing, Standing):
-            return self.position > other_matchday_standing.position
+            return self.position < other_matchday_standing.position
         else:
             return NotImplemented
 
@@ -308,28 +243,6 @@ class CupTable(models.Model):
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
 
-    def __eq__(self, other):
-        if isinstance(other, CupTable):
-            # Check league for equality
-            if not (self.league_caption == other.leagueCaption and self.matchday == other.matchday):
-                return False
-            other_group_set = other.group_set.all()
-            # Check each group for equality
-            for group in self.group_set.all():
-                other_group = other_group_set.get(name=group.name)
-                if group != other_group:
-                    return False
-
-                # Check each team in the group for equality
-                other_group_standing_set = other_group.groupstanding_set.all()
-                for group_standing in group.groupstanding_set.all():
-                    other_group_standing = other_group_standing_set.get(team=group_standing.team)
-                    if group_standing != other_group_standing:
-                        return False
-            return True
-        else:
-            return NotImplemented
-
 
 class Group(models.Model):
     cup_table = models.ForeignKey(CupTable)
@@ -338,12 +251,7 @@ class Group(models.Model):
     class Meta:
         ordering = ['name']
 
-    # TODO Add and improve __str__ for all model, because debug and such
-    def __str__(self):
-        return self.cup_table.league_caption + ' ' + self.name
 
-
-# TODO Merge Standing and GroupStanding
 class GroupStanding(models.Model):
     group = models.ForeignKey(Group)
     rank = models.PositiveSmallIntegerField()
@@ -355,11 +263,6 @@ class GroupStanding(models.Model):
     goals = models.PositiveSmallIntegerField()
     goals_against = models.PositiveSmallIntegerField()
     goal_difference = models.PositiveSmallIntegerField()
-
-    # TODO Read model validation docs
-    # def clean(self):
-    #     if self.goal_difference != self.goals - self.goals_against:
-    #         raise ValidationError(_('goal_difference has to be the subtraction of goals and goals_against'))
 
     def has_rank_changed(self, other_matchday_group_standing):
         """
@@ -379,6 +282,6 @@ class GroupStanding(models.Model):
         :return: True, if the position has improved; False otherwise.
         """
         if isinstance(other_matchday_group_standing, GroupStanding):
-            return self.rank > other_matchday_group_standing.rank
+            return self.rank < other_matchday_group_standing.rank
         else:
             return NotImplemented

@@ -89,10 +89,3 @@ ENV/
 
 # Rope project settings
 .ropeproject
-
-Würde .gitignore löschen
-Würde .idea/workspace.xml löschen
-Würde SoccerStats/__pycache__/ löschen
-Würde footballData/__pycache__/ löschen
-Würde footballData/migrations/__pycache__/ löschen
-Würde templates/ löschen

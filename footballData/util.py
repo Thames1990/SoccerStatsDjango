@@ -92,7 +92,7 @@ def get_table(competiton_type_id, matchday):
     :param matchday: The requested matchday
     :return: LeagueTable object
     """
-    if isinstance(competiton_type_id, CompetitionTypeID):
+    if isinstance(competiton_type_id, CompetitionID):
         if matchday:
             if isinstance(matchday, int):
                 json = requests.get(

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'team',
     'debug_toolbar',
     'djmoney',
+    'wikipedia',
 ]
 
 MIDDLEWARE_CLASSES = [

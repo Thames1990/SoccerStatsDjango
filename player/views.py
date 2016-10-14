@@ -1,11 +1,15 @@
 from django.shortcuts import render
-import logging
 
-from .util import get_player
+from .util import get_players, get_player
 
 
-def index_view(request, team_id, player_name):
+def players_view(request, team_id):
+    players = get_players(team_id)
+    return render(request, 'player/players.html', {'players': players})
+
+
+def player_view(request, team_id, player_name):
     player = get_player(team_id, player_name)
-    return render(request, 'player/index.html', {
+    return render(request, 'player/player.html', {
         'player': player,
     })

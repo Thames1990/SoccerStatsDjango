@@ -1,0 +1,46 @@
+{% extends 'SoccerStats/base.html' %}
+
+{% block content %}
+    <grid>
+        {% for player in players %}
+            <div col="1/2">
+                <card>
+                    <h5>{{ player.name }}</h5>
+                    {% if player.image %}
+                        <img src="{{ player.image }}">
+                    {% endif %}
+                    <table>
+                        <tr>
+                            <th>Position</th>
+                            <td>{{ player.position }}</td>
+                        </tr>
+                        <tr>
+                            <th>Rückennummer</th>
+                            <td>{{ player.jersey_number }}</td>
+                        </tr>
+                        <tr>
+                            <th>Geburtstag</th>
+                            <td>{{ player.date_of_birth.day|stringformat:"02d" }}.{{ player.date_of_birth.month|stringformat:"02d" }}.{{ player.date_of_birth.year }}</td>
+                        </tr>
+                        <tr>
+
+                            <th>Nationalität</th>
+                            <td>{{ player.nationality }}</td>
+                        </tr>
+                        <tr>
+                            {% if player.contract_until %}
+                                <tr>
+                                    <th>Vertrag bis</th>
+                                    <td>{{ player.contract_until.day|stringformat:"02d" }}.{{ player.contract_until.month|stringformat:"02d" }}.{{ player.contract_until.year }}</td>
+                                </tr>
+                            {% endif %}
+                        <tr>
+                            <th>Marktwert</th>
+                            <td>{{ player.market_value }}</td>
+                        </tr>
+                    </table>
+                </card>
+            </div>
+        {% endfor %}
+    </grid>
+{% endblock %}

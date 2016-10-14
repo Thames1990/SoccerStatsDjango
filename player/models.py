@@ -1,3 +1,4 @@
+from djmoney.models.fields import MoneyField
 from django.db import models
 
 
@@ -26,8 +27,8 @@ class Player(models.Model):
         (LEFT_WING, 'Left Wing'),
     )
     position = models.CharField(max_length=255, choices=POSITION)
-    jersey_number = models.PositiveSmallIntegerField
+    jersey_number = models.PositiveSmallIntegerField()
     date_of_birth = models.DateField()
     nationality = models.CharField(max_length=255)
-    contract_until = models.DateField()
-    market_value = models.PositiveIntegerField()
+    contract_until = models.DateField(null=True)
+    market_value = MoneyField(max_digits=9, decimal_places=0, default_currency='EUR')

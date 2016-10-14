@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'table',
     'team',
     'debug_toolbar',
+    'djmoney',
 ]
 
 MIDDLEWARE_CLASSES = [

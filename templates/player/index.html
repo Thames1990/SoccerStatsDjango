@@ -1,5 +1,34 @@
 {% extends 'SoccerStats/base.html' %}
 
 {% block content %}
-
+    <card>
+        <h5>{{ player.name }}</h5>
+        <hr>
+        <table>
+            <thead>
+            <tr>
+                <th>Position</th>
+                <th>Rückennummer</th>
+                <th>Geburtstag</th>
+                <th>Nationalität</th>
+                {% if player.contract_until %}
+                    <th>Vertrag bis</th>
+                {% endif %}
+                <th>Marktwert</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ player.position }}</td>
+                <td>{{ player.jersey_number }}</td>
+                <td>{{ player.date_of_birth.day|stringformat:"02d" }}.{{ player.date_of_birth.month|stringformat:"02d" }}.{{ player.date_of_birth.year }}</td>
+                <td>{{ player.nationality }}</td>
+                {% if player.contract_until %}
+                    <td>{{ player.contract_until.day|stringformat:"02d" }}.{{ player.contract_until.month|stringformat:"02d" }}.{{ player.contract_until.year }}</td>
+                {% endif %}
+                <td>{{ player.market_value }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </card>
 {% endblock %}

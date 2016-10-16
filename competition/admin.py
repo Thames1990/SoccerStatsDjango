@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import CupID, LeagueID, Competition
+from .models import Competition
 
 admin.site.register(Competition)

@@ -1,12 +1,11 @@
 import datetime
 from enum import Enum
-import inspect
 
 from django.db import models
 
 
 # TODO Remove when Django updates to 1.10 (enum serializiation)
-class CompetitionID(Enum):
+class CompetitionId(Enum):
     @classmethod
     def choices(cls):
         """
@@ -14,6 +13,7 @@ class CompetitionID(Enum):
         :return: Tuple of enum choices
         """
         # get all members of the class
+        import inspect
         members = inspect.getmembers(cls, lambda m: not (inspect.isroutine(m)))
         # filter down to just properties
         props = [m for m in members if not (m[0][:2] == '__')]
@@ -22,7 +22,7 @@ class CompetitionID(Enum):
         return choices
 
 
-class CupID(CompetitionID):
+class CupId(CompetitionId):
     """
     IDs for cups
     """
@@ -37,7 +37,7 @@ class CupID(CompetitionID):
     """Champions League 2016/17"""
 
 
-class LeagueID(CompetitionID):
+class LeagueId(CompetitionId):
     """
     IDs for leagues
     """
@@ -71,7 +71,7 @@ class Competition(models.Model):
     id = models.PositiveSmallIntegerField(primary_key=True)
     caption = models.CharField(max_length=255)
     # TODO Combine choices for CupID and LeagueID
-    league = models.CharField(max_length=255, choices=LeagueID.choices())
+    league = models.CharField(max_length=255, choices=LeagueId.choices())
     YEARS = [(r, r) for r in range(1980, (datetime.datetime.now().year + 1))]
     year = models.IntegerField(choices=YEARS)
     current_matchday = models.PositiveSmallIntegerField()

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from competition.models import CompetitionID
+from competition.models import CompetitionId
 from table.util import get_table
 
 
@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'Fetches all cup and league tables'
 
     def add_arguments(self, parser):
-        parser.add_argument('competiton_id', nargs='+', type=CompetitionID)
+        parser.add_argument('competiton_id', nargs='+', type=CompetitionId)
         parser.add_argument('matchday', nargs='+', type=int)
 
     def handle(self, *args, **options):

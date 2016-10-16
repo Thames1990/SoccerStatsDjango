@@ -6,48 +6,51 @@
     <grid id="container">
         {% for player in players %}
             <div col="1/3">
-                <card>
-                    {% if player.image %}
-                        <img src="{{ player.image }}" style="height: 300px; object-fit: cover; object-position: 50% 0">
-                    {% endif %}
-                    <table>
-                        <tr>
-                            <th>Name</th>
-                            <td>{{ player.name }}</td>
-                        </tr>
-                        <tr>
-                            <th>Position</th>
-                            <td>{{ player.position }}</td>
-                        </tr>
-                        <tr>
-                            <th>Rückennummer</th>
-                            <td>{{ player.jersey_number }}</td>
-                        </tr>
-                        <tr>
-                            <th>Geburtstag</th>
-                            <td>{{ player.date_of_birth }}</td>
-                        </tr>
-                        <tr>
-                            <th>Alter</th>
-                            <td>{{ player.age }}</td>
-                        </tr>
-                        <tr>
-                            <th>Nationalität</th>
-                            <td>{{ player.nationality }}</td>
-                        </tr>
-                        <tr>
-                            {% if player.contract_until %}
-                                <tr>
-                                    <th>Vertrag bis</th>
-                                    <td>{{ player.contract_until }}</td>
-                                </tr>
-                            {% endif %}
-                        <tr>
-                            <th>Marktwert</th>
-                            <td>{{ player.market_value|intword }} €</td>
-                        </tr>
-                    </table>
-                </card>
+                <a href="{% url 'player:player' team_id player.name|slugify %}">
+                    <card>
+                        {% if player.image %}
+                            <img src="{{ player.image }}"
+                                 style="height: 300px; object-fit: cover; object-position: 50% 0">
+                        {% endif %}
+                        <table>
+                            <tr>
+                                <th>Name</th>
+                                <td>{{ player.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Position</th>
+                                <td>{{ player.position }}</td>
+                            </tr>
+                            <tr>
+                                <th>Rückennummer</th>
+                                <td>{{ player.jersey_number }}</td>
+                            </tr>
+                            <tr>
+                                <th>Geburtstag</th>
+                                <td>{{ player.date_of_birth }}</td>
+                            </tr>
+                            <tr>
+                                <th>Alter</th>
+                                <td>{{ player.age }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nationalität</th>
+                                <td>{{ player.nationality }}</td>
+                            </tr>
+                            <tr>
+                                {% if player.contract_until %}
+                                    <tr>
+                                        <th>Vertrag bis</th>
+                                        <td>{{ player.contract_until }}</td>
+                                    </tr>
+                                {% endif %}
+                            <tr>
+                                <th>Marktwert</th>
+                                <td>{{ player.market_value|intword }} €</td>
+                            </tr>
+                        </table>
+                    </card>
+                </a>
             </div>
         {% endfor %}
     </grid>

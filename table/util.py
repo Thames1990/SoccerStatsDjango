@@ -1,6 +1,6 @@
 import requests
 
-from competition.models import CompetitionID, LeagueID, CupID
+from competition.models import CompetitionId, LeagueId, CupId
 from table.models import LeagueTable, Standing, Home, Away, CupTable, GroupStanding, Group
 
 
@@ -93,7 +93,7 @@ def get_table(competiton_id, matchday):
     :param matchday: The requested matchday
     :return: LeagueTable object
     """
-    if isinstance(competiton_id, CompetitionID):
+    if isinstance(competiton_id, CompetitionId):
         if matchday:
             if isinstance(matchday, int):
                 json = requests.get(
@@ -110,9 +110,9 @@ def get_table(competiton_id, matchday):
                 headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
             ).json()
 
-        if isinstance(competiton_id, LeagueID):
+        if isinstance(competiton_id, LeagueId):
             return create_league_table(json)
-        elif isinstance(competiton_id, CupID):
+        elif isinstance(competiton_id, CupId):
             return create_cup_table(json)
     else:
         return NotImplemented

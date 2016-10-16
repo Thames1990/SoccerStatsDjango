@@ -126,7 +126,7 @@ def get_league_table_position_changes(league_table, league_id):
     :return: List of position changes (True = improved, False = worsened, None = didn't change)
     """
     if isinstance(league_table, LeagueTable):
-        league_table_last_matchday = get_table(league_id, league_table.matchday - 2)
+        league_table_last_matchday = get_table(league_id, league_table.matchday - 1)
         position_changes = []
         last_matchday_standing_set = league_table_last_matchday.standing_set.all()
         for standing in league_table.standing_set.all():
@@ -142,7 +142,7 @@ def get_league_table_position_changes(league_table, league_id):
 
 def get_cup_table_position_changes(cup_table, cup_id):
     if isinstance(cup_table, CupTable):
-        cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 2)
+        cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 1)
         position_changes = []
         last_matchday_group_set = cup_table_last_matchday.group_set.all()
         for group in cup_table.group_set.all():

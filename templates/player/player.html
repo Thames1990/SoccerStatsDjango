@@ -4,9 +4,14 @@
 
 {% block content %}
     <card style="width: 40%">
-        <h5>{{ player.name }}</h5>
-        <img src="{{ player.image }}">
+        {% if player.image %}
+            <img src="{{ player.image }}">
+        {% endif %}
         <table>
+            <tr>
+                <th>Name</th>
+                <td>{{ player.name }}</td>
+            </tr>
             <tr>
                 <th>Position</th>
                 <td>{{ player.position }}</td>
@@ -20,7 +25,6 @@
                 <td>{{ player.date_of_birth.day|stringformat:"02d" }}.{{ player.date_of_birth.month|stringformat:"02d" }}.{{ player.date_of_birth.year }}</td>
             </tr>
             <tr>
-
                 <th>Nationalität</th>
                 <td>{{ player.nationality }}</td>
             </tr>

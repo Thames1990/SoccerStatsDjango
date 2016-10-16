@@ -1,4 +1,3 @@
-from djmoney.models.fields import MoneyField
 from django.db import models
 
 
@@ -32,4 +31,5 @@ class Player(models.Model):
     nationality = models.CharField(max_length=255)
     contract_until = models.DateField(null=True)
     market_value = models.PositiveIntegerField(null=True)
+    # TODO Change to ImageField and use smartcrop.js
     image = models.URLField(null=True)

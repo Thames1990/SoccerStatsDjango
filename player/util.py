@@ -1,5 +1,4 @@
 import requests
-import logging
 
 from player.models import Player
 
@@ -20,11 +19,10 @@ def get_player_image(player):
     json = requests.get(baseurl, params=attr).json()
     # TODO Fix weird KeyError 0
     # TODO Fix DisambiguationError
-    image_field = json['query']['pages'].get(next(json['query']['pages'].__iter__()))
+    image_field = json['query']['pages'][list(json['query']['pages'])[0]]
     if 'thumbnail' in image_field:
         return image_field['thumbnail']['source']
     else:
-        logging.error(player['name'] + ' image not found in: ' + str(image_field))
         return None
 
 

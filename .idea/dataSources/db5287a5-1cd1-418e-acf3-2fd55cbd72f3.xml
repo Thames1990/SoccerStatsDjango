@@ -616,11 +616,11 @@ model</columns>
     <column id="154" parent="19" name="contract_until">
       <data-type>DATE(0,-1)|12</data-type>
     </column>
-    <column id="155" parent="19" name="image">
-      <data-type>VARCHAR(200)(0,-1)|12</data-type>
-    </column>
-    <column id="156" parent="19" name="market_value">
+    <column id="155" parent="19" name="market_value">
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
+    </column>
+    <column id="156" parent="19" name="image">
+      <data-type>VARCHAR(200)(0,-1)|12</data-type>
     </column>
     <key id="157" parent="19">
       <columns>id</columns>

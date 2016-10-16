@@ -5,7 +5,7 @@
 {% block content %}
     <card style="width: 40%">
         {% if player.image %}
-            <img src="{{ player.image }}">
+            <img src="{{ player.image }}" style="height: 300px; object-fit: cover">
         {% endif %}
         <table>
             <tr>
@@ -22,7 +22,11 @@
             </tr>
             <tr>
                 <th>Geburtstag</th>
-                <td>{{ player.date_of_birth.day|stringformat:"02d" }}.{{ player.date_of_birth.month|stringformat:"02d" }}.{{ player.date_of_birth.year }}</td>
+                <td>{{ player.date_of_birth }}</td>
+            </tr>
+            <tr>
+                <th>Alter</th>
+                <td>{{ player.age }}</td>
             </tr>
             <tr>
                 <th>Nationalität</th>
@@ -32,7 +36,7 @@
                 {% if player.contract_until %}
                     <tr>
                         <th>Vertrag bis</th>
-                        <td>{{ player.contract_until.day|stringformat:"02d" }}.{{ player.contract_until.month|stringformat:"02d" }}.{{ player.contract_until.year }}</td>
+                        <td>{{ player.contract_until }}</td>
                     </tr>
                 {% endif %}
             <tr>

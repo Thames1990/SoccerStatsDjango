@@ -31,5 +31,8 @@ class Player(models.Model):
     nationality = models.CharField(max_length=255)
     contract_until = models.DateField(null=True)
     market_value = models.PositiveIntegerField(null=True)
-    # TODO Change to ImageField and use smartcrop.js
     image = models.URLField(null=True)
+
+    def age(self):
+        import datetime
+        return int((datetime.date.today() - self.date_of_birth).days / 365.25)

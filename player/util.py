@@ -1,9 +1,31 @@
 import requests
-import wikipedia
 import logging
 
-from moneyed import Money
 from player.models import Player
+
+
+def get_player_image(player):
+    baseurl = 'http://de.wikipedia.org/w/api.php'
+    attr = {
+        'action': 'query',
+        'format': 'json',
+        'generator': 'search',
+        'gsrsearch': player['name'],
+        'gsrlimit': 1,
+        'prop': 'pageimages',
+        'piprop': 'thumbnail',
+        'pilimit': 'max',
+        'pithumbsize': 400
+    }
+    json = requests.get(baseurl, params=attr).json()
+    # TODO Fix weird KeyError 0
+    # TODO Fix DisambiguationError
+    image_field = json['query']['pages'].get(next(json['query']['pages'].__iter__()))
+    if 'thumbnail' in image_field:
+        return image_field['thumbnail']['source']
+    else:
+        logging.error(player['name'] + ' image not found in: ' + str(image_field))
+        return None
 
 
 def get_players(team_id):
@@ -13,37 +35,18 @@ def get_players(team_id):
     ).json()
 
     players = []
-
-    # TODO Improve image search
-    wikipedia.set_lang('de')
     for player in json['players']:
-        image = None
-        try:
-            main_image = wikipedia.page(player['name']).images[0]
-            if main_image.lower().endswith('.jpg') or main_image.lower().endswith('.svg'):
-                image = main_image
-            else:
-                logging.error(main_image)
-        except wikipedia.exceptions.DisambiguationError as disambiguation:
-            for option in disambiguation.options:
-                logging.error(option)
-                # image = wikipedia.page(disambiguation.options[0]).images[0]
-        except wikipedia.exceptions.PageError as page:
-            logging.error(page)
-            continue
-
-        players.append(
-            Player.objects.get_or_create(
-                name=player['name'],
-                position=player['position'],
-                jersey_number=player['jerseyNumber'],
-                date_of_birth=player['dateOfBirth'],
-                nationality=player['nationality'],
-                contract_until=player['contractUntil'],
-                market_value=Money(player['marketValue'].replace(',', '').replace('€', ''), currency='EUR'),
-                image=image,
-            )[0]
+        player, created = Player.objects.get_or_create(
+            name=player['name'],
+            position=player['position'],
+            jersey_number=player['jerseyNumber'],
+            date_of_birth=player['dateOfBirth'],
+            nationality=player['nationality'],
+            contract_until=player['contractUntil'],
+            market_value=player['marketValue'].replace(',', '').replace('€', ''),
+            image=get_player_image(player),
         )
+        players.append(player)
 
     return players
 
@@ -61,17 +64,16 @@ def get_player(team_id, name):
                     # TODO Validity check
                     pass
 
-            image = wikipedia.page(name).images[0]
-
-            return Player.objects.get_or_create(
+            player, created = Player.objects.get_or_create(
                 name=player['name'],
                 position=player['position'],
                 jersey_number=player['jerseyNumber'],
                 date_of_birth=player['dateOfBirth'],
                 nationality=player['nationality'],
                 contract_until=player['contractUntil'],
-                market_value=Money(player['marketValue'].replace(',', '').replace('€', ''), currency='EUR'),
-                image=image,
-            )[0]
+                market_value=player['marketValue'].replace(',', '').replace('€', ''),
+                image=get_player_image(player),
+            )
 
+            return player
     return None

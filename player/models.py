@@ -31,5 +31,5 @@ class Player(models.Model):
     date_of_birth = models.DateField()
     nationality = models.CharField(max_length=255)
     contract_until = models.DateField(null=True)
-    market_value = MoneyField(max_digits=9, decimal_places=0, default_currency='EUR')
+    market_value = models.PositiveIntegerField(null=True)
     image = models.URLField(null=True)

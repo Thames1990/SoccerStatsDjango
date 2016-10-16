@@ -1,5 +1,7 @@
 {% extends 'SoccerStats/base.html' %}
 
+{% load humanize %}
+
 {% block content %}
     <card style="width: 40%">
         <h5>{{ player.name }}</h5>
@@ -31,7 +33,7 @@
                 {% endif %}
             <tr>
                 <th>Marktwert</th>
-                <td>{{ player.market_value }}</td>
+                <td>{{ player.market_value|intword }} €</td>
             </tr>
         </table>
     </card>

@@ -19,6 +19,8 @@
     <orderEntry type="library" name="f21c3244d2" level="application" />
     <orderEntry type="library" name="f21c3244d2" level="application" />
     <orderEntry type="library" name="f21c3244d2" level="application" />
+    <orderEntry type="library" name="jquery-3.1.1" level="application" />
+    <orderEntry type="library" name="freewall" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />

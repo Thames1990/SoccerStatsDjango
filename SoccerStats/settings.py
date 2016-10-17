@@ -72,6 +72,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'SoccerStats.custom_context_processors.cup_id_processor',
                 'SoccerStats.custom_context_processors.league_id_processor',
+                'SoccerStats.custom_context_processors.cup_name_processor',
+                'SoccerStats.custom_context_processors.cup_league_processor',
             ],
         },
     },

@@ -1,0 +1,26 @@
+{% extends 'SoccerStats/base.html' %}
+
+{% block content %}
+    <card>
+        <h5>{{ competition.caption }}</h5>
+        <hr>
+        <table>
+            <tr>
+                <th>Aktueller Spieltag</th>
+                <td>{{ competition.current_matchday }}</td>
+            </tr>
+            <tr>
+                <th>Spieltage</th>
+                <td>{{ competition.number_of_matchdays }}</td>
+            </tr>
+            <tr>
+                <th>Mannschaften</th>
+                <td>{{ competition.number_of_teams }}</td>
+            </tr>
+            <tr>
+                <th>Spiele</th>
+                <td>{{ competition.number_of_games }}</td>
+            </tr>
+        </table>
+    </card>
+{% endblock %}

@@ -70,10 +70,11 @@ class LeagueId(CompetitionId):
 class Competition(models.Model):
     id = models.PositiveSmallIntegerField(primary_key=True)
     caption = models.CharField(max_length=255)
-    # TODO Combine choices for CupID and LeagueID
-    league = models.CharField(max_length=255, choices=LeagueId.choices())
-    YEARS = [(r, r) for r in range(1980, (datetime.datetime.now().year + 1))]
-    year = models.IntegerField(choices=YEARS)
+    league = models.CharField(
+        max_length=255,
+        choices=((subclass.choices()[0], subclass.choices()[1]) for subclass in CompetitionId.__subclasses__())
+    )
+    year = models.IntegerField(choices=[(r, r) for r in range(1980, (datetime.datetime.now().year + 1))])
     current_matchday = models.PositiveSmallIntegerField()
     number_of_matchdays = models.PositiveSmallIntegerField()
     number_of_teams = models.PositiveSmallIntegerField()

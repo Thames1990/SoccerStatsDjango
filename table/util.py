@@ -1,7 +1,4 @@
-import requests
-
-from competition.models import CompetitionId, LeagueId, CupId
-from table.models import LeagueTable, Standing, Home, Away, CupTable, GroupStanding, Group
+from table.models import LeagueTable, CupTable
 
 
 def create_league_table(json):
@@ -10,6 +7,7 @@ def create_league_table(json):
     :param json: JSON data
     :return: LeagueTable object
     """
+    from table.models import LeagueTable, Standing, Home, Away
     league_table, created = LeagueTable.objects.get_or_create(
         league_caption=json['leagueCaption'],
         matchday=json['matchday'],
@@ -58,16 +56,17 @@ def create_cup_table(json):
     :param json: JSON data
     :return: CupTable object
     """
-    cup_table, created = CupTable.objects.get_or_create(
+    from table.models import CupTable, GroupStanding, Group
+    cup_table = CupTable.objects.get_or_create(
         league_caption=json['leagueCaption'],
         matchday=json['matchday'],
-    )
+    )[0]
 
     for cup_group in json['standings']:
-        group, created = Group.objects.get_or_create(
+        group = Group.objects.get_or_create(
             cup_table=cup_table,
             name=cup_group,
-        )
+        )[0]
 
         for group_standing in json['standings'][cup_group]:
             GroupStanding.objects.get_or_create(
@@ -93,7 +92,10 @@ def get_table(competiton_id, matchday):
     :param matchday: The requested matchday
     :return: LeagueTable object
     """
+    from competition.models import CompetitionId
     if isinstance(competiton_id, CompetitionId):
+        import requests
+        from competition.models import CompetitionId, CupId, LeagueId
         if matchday:
             if isinstance(matchday, int):
                 json = requests.get(
@@ -109,11 +111,10 @@ def get_table(competiton_id, matchday):
                 'http://api.football-data.org/v1/competitions/' + str(competiton_id.value) + '/leagueTable',
                 headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
             ).json()
-
-        if isinstance(competiton_id, LeagueId):
-            return create_league_table(json)
-        elif isinstance(competiton_id, CupId):
+        if isinstance(competiton_id, CupId):
             return create_cup_table(json)
+        elif isinstance(competiton_id, LeagueId):
+            return create_league_table(json)
     else:
         return NotImplemented
 

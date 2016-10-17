@@ -1,4 +1,7 @@
 {% load staticfiles %}
+
+{% load list_extras %}
+
 <html lang="de">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -21,7 +24,7 @@
                 <menu>
                     {% for cup_id in cup_ids %}
                         <menuitem>
-                            <a href="{% url 'table:index' cup_id.value %}">{{ cup_id.name }}</a>
+                            <a href="{% url 'table:index' cup_id %}">{{ cup_names|get_at_index:forloop.counter0 }}</a>
                         </menuitem>
                     {% endfor %}
                 </menu>
@@ -31,7 +34,7 @@
                 <menu>
                     {% for league_id in league_ids %}
                         <menuitem>
-                            <a href="{% url 'table:index' league_id.value %}">{{ league_id.name }}</a>
+                            <a href="{% url 'table:index' league_id %}">{{ league_names|get_at_index:forloop.counter0 }}</a>
                         </menuitem>
                     {% endfor %}
                 </menu>

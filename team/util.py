@@ -1,18 +1,40 @@
-from competition.util import get_league_ids, get_cup_ids
+import re
+import requests
+
+from .models import Team
 
 
-def get_teams(competition_id):
-    import requests
-    return requests.get(
-        'http://api.football-data.org/v1/competitions/' + competition_id + '/teams',
+def get_or_create_team(team_id):
+    team = requests.get(
+        'http://api.football-data.org/v1/teams/' + str(team_id),
         headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
     ).json()
 
+    Team.objects.get_or_create(
+        name=team['name'],
+        code=team['code'],
+        short_name=team['shortName'],
+        squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']),
+        crest_url=team['crestUrl']
+    )
 
-def get_team_ids():
-    import re
-    team_ids = []
-    for competition_id in {**get_cup_ids(), **get_league_ids()}.values():
-        team = get_teams(str(competition_id))['_links']['self']['href']
-        team_ids.append(int(re.sub('[^0-9]', '', team)[1:]))
-    return team_ids
+
+def get_or_create_competition_teams(competition_id):
+    teams = requests.get(
+        'http://api.football-data.org/v1/competitions/' + str(competition_id) + '/teams',
+        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
+    ).json()['teams']
+    for team in teams:
+        Team.objects.get_or_create(
+            name=team['name'],
+            code=team['code'],
+            short_name=team['shortName'],
+            squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']),
+            crest_url=team['crestUrl']
+        )
+
+
+def get_or_create_all_teams():
+    from competition.util import fetch_cup_ids, fetch_league_ids
+    for competition_id in {**fetch_cup_ids(), **fetch_league_ids()}.values():
+        get_or_create_competition_teams(competition_id)

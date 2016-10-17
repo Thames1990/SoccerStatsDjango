@@ -18,6 +18,6 @@ urlpatterns = [
     url(
         r'^(?P<competition_id>[0-9]+)/teams$',
         teams_view,
-        name='competition'
+        name='teams'
     ),
 ]

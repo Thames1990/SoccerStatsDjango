@@ -1,6 +1,5 @@
-{% load staticfiles %}
-
 {% load list_extras %}
+{% load staticfiles %}
 
 <html lang="de">
 <head>
@@ -20,16 +19,47 @@
         </header>
         <ul>
             <li>
-                <a>Begegnungen</a>
+                <a>Teams</a>
                 <menu>
                     {% for cup_id in cup_ids %}
                         <menuitem>
-                            <a href="{% url 'fixture:index' cup_id %}">{{ cup_names|get_at_index:forloop.counter0 }}</a>
+                            {% spaceless %}
+                                <a href="{% url 'competition:teams' cup_id %}">
+                                    {{ cup_names|get_at_index:forloop.counter0 }}
+                                </a>
+                            {% endspaceless %}
                         </menuitem>
                     {% endfor %}
                     {% for league_id in league_ids %}
                         <menuitem>
-                            <a href="{% url 'fixture:index' league_id %}">{{ league_names|get_at_index:forloop.counter0 }}</a>
+                            {% spaceless %}
+                                <a href="{% url 'competition:teams' league_id %}">
+                                    {{ league_names|get_at_index:forloop.counter0 }}
+                                </a>
+                            {% endspaceless %}
+                        </menuitem>
+                    {% endfor %}
+                </menu>
+            </li>
+            <li>
+                <a>Begegnungen</a>
+                <menu>
+                    {% for cup_id in cup_ids %}
+                        <menuitem>
+                            {% spaceless %}
+                                <a href="{% url 'fixture:index' cup_id %}">
+                                    {{ cup_names|get_at_index:forloop.counter0 }}
+                                </a>
+                            {% endspaceless %}
+                        </menuitem>
+                    {% endfor %}
+                    {% for league_id in league_ids %}
+                        <menuitem>
+                            {% spaceless %}
+                                <a href="{% url 'fixture:index' league_id %}">
+                                    {{ league_names|get_at_index:forloop.counter0 }}
+                                </a>
+                            {% endspaceless %}
                         </menuitem>
                     {% endfor %}
                 </menu>
@@ -39,7 +69,11 @@
                 <menu>
                     {% for cup_id in cup_ids %}
                         <menuitem>
-                            <a href="{% url 'table:index' cup_id %}">{{ cup_names|get_at_index:forloop.counter0 }}</a>
+                            {% spaceless %}
+                                <a href="{% url 'table:index' cup_id %}">
+                                    {{ cup_names|get_at_index:forloop.counter0 }}
+                                </a>
+                            {% endspaceless %}
                         </menuitem>
                     {% endfor %}
                 </menu>
@@ -49,7 +83,11 @@
                 <menu>
                     {% for league_id in league_ids %}
                         <menuitem>
-                            <a href="{% url 'table:index' league_id %}">{{ league_names|get_at_index:forloop.counter0 }}</a>
+                            {% spaceless %}
+                                <a href="{% url 'table:index' league_id %}">
+                                    {{ league_names|get_at_index:forloop.counter0 }}
+                                </a>
+                            {% endspaceless %}
                         </menuitem>
                     {% endfor %}
                 </menu>

@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^fixture/', include('fixture.urls')),
     url(r'^player/', include('player.urls')),
     url(r'^table/', include('table.urls')),
+    url(r'^team/', include('team.urls')),
 ]
 
 if settings.DEBUG:

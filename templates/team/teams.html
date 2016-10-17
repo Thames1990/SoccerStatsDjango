@@ -1,0 +1,27 @@
+{% extends 'SoccerStats/base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+    <grid>
+        {% for team in teams %}
+            <div col="1/2">
+                <card>
+                    {% if team.crest_url %}
+                        <img src="{{ team.crest_url }}" onerror="this.style.display = 'none'">
+                    {% endif %}
+                    <table>
+                        <tr>
+                            <th>Verein</th>
+                            <td>{{ team.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Marktwert</th>
+                            <td>{{ team.squad_market_value|intword }} €</td>
+                        </tr>
+                    </table>
+                </card>
+            </div>
+        {% endfor %}
+    </grid>
+{% endblock %}

@@ -19,7 +19,7 @@
     <table id="14" parent="1" name="fixture_fixture"/>
     <table id="15" parent="1" name="fixture_halftime"/>
     <table id="16" parent="1" name="fixture_odds"/>
-    <table id="17" parent="1" name="fixture_penaltyshooutout"/>
+    <table id="17" parent="1" name="fixture_penaltyshootout"/>
     <table id="18" parent="1" name="fixture_result"/>
     <table id="19" parent="1" name="player_player"/>
     <table id="20" parent="1" name="sqlite_sequence"/>
@@ -265,33 +265,33 @@ permission_id</columns>
       <mandatory>1</mandatory>
       <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
-    <column id="76" parent="8" name="league">
-      <mandatory>1</mandatory>
-      <data-type>VARCHAR(255)(0,-1)|12</data-type>
-    </column>
-    <column id="77" parent="8" name="year">
+    <column id="76" parent="8" name="year">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <column id="78" parent="8" name="current_matchday">
+    <column id="77" parent="8" name="current_matchday">
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="79" parent="8" name="number_of_matchdays">
+    <column id="78" parent="8" name="number_of_matchdays">
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="80" parent="8" name="number_of_teams">
+    <column id="79" parent="8" name="number_of_teams">
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="81" parent="8" name="number_of_games">
+    <column id="80" parent="8" name="number_of_games">
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="82" parent="8" name="last_updated">
+    <column id="81" parent="8" name="last_updated">
       <mandatory>1</mandatory>
       <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="82" parent="8" name="league">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
     <key id="83" parent="8">
       <columns>id</columns>
@@ -502,21 +502,18 @@ model</columns>
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <column id="130" parent="16" name="home_win">
-      <mandatory>1</mandatory>
-      <data-type>DECIMAL(0,-1)|6</data-type>
+    <column id="130" parent="16" name="draw">
+      <data-type>REAL(0,-1)|6</data-type>
     </column>
-    <column id="131" parent="16" name="draw">
-      <mandatory>1</mandatory>
-      <data-type>DECIMAL(0,-1)|6</data-type>
+    <column id="131" parent="16" name="away_win">
+      <data-type>REAL(0,-1)|6</data-type>
     </column>
-    <column id="132" parent="16" name="away_win">
-      <mandatory>1</mandatory>
-      <data-type>DECIMAL(0,-1)|6</data-type>
-    </column>
-    <column id="133" parent="16" name="fixture_id">
+    <column id="132" parent="16" name="fixture_id">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="133" parent="16" name="home_win">
+      <data-type>REAL(0,-1)|6</data-type>
     </column>
     <key id="134" parent="16">
       <columns>id</columns>
@@ -551,7 +548,7 @@ model</columns>
       <columns>id</columns>
       <primary>1</primary>
     </key>
-    <foreign-key id="141" parent="17" name="#FAKE_fixture_penaltyshooutout_1">
+    <foreign-key id="141" parent="17" name="#FAKE_fixture_penaltyshootout_1">
       <name-surrogate>1</name-surrogate>
       <columns>result_id</columns>
       <deferrable>1</deferrable>
@@ -564,17 +561,15 @@ model</columns>
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <column id="143" parent="18" name="goals_home_team">
-      <mandatory>1</mandatory>
+    <column id="143" parent="18" name="goals_away_team">
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="144" parent="18" name="goals_away_team">
-      <mandatory>1</mandatory>
-      <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
-    </column>
-    <column id="145" parent="18" name="fixture_id">
+    <column id="144" parent="18" name="fixture_id">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="145" parent="18" name="goals_home_team">
+      <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
     <key id="146" parent="18">
       <columns>id</columns>

@@ -25,8 +25,8 @@ class Fixture(models.Model):
 
 class Result(models.Model):
     fixture = models.ForeignKey(Fixture)
-    goals_home_team = models.PositiveSmallIntegerField()
-    goals_away_team = models.PositiveSmallIntegerField()
+    goals_home_team = models.PositiveSmallIntegerField(null=True)
+    goals_away_team = models.PositiveSmallIntegerField(null=True)
 
 
 class HalfTime(models.Model):
@@ -41,7 +41,7 @@ class ExtraTime(models.Model):
     goals_away_team = models.PositiveSmallIntegerField()
 
 
-class PenaltyShooutout(models.Model):
+class PenaltyShootout(models.Model):
     result = models.ForeignKey(Result)
     goals_home_team = models.PositiveSmallIntegerField()
     goals_away_team = models.PositiveSmallIntegerField()
@@ -49,6 +49,6 @@ class PenaltyShooutout(models.Model):
 
 class Odds(models.Model):
     fixture = models.ForeignKey(Fixture)
-    home_win = models.DecimalField(max_digits=2, decimal_places=2)
-    draw = models.DecimalField(max_digits=2, decimal_places=2)
-    away_win = models.DecimalField(max_digits=2, decimal_places=2)
+    home_win = models.FloatField(null=True)
+    draw = models.FloatField(null=True)
+    away_win = models.FloatField(null=True)

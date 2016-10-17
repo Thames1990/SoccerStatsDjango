@@ -1,29 +1,22 @@
 from django.db import models
 
+from team.models import Team
+
 
 class Player(models.Model):
+    team = models.ForeignKey(Team)
     name = models.CharField(max_length=255)
-    KEEPER = 1
-    RIGHT_BACK = 2
-    CENTRE_BACK = 4
-    LEFT_BACK = 3
-    DEFENSIVE_MIDFIELD = 6
-    CENTRAL_MIDFIELD = 8
-    ATTACKING_MIDFIELD = 10
-    RIGHT_WING = 7
-    CENTRE_FORWARD = 9
-    LEFT_WING = 11
     POSITION = (
-        (KEEPER, 'Keeper'),
-        (RIGHT_BACK, 'Right-Back'),
-        (CENTRE_BACK, 'Centre Back'),
-        (LEFT_BACK, 'Left-Back'),
-        (DEFENSIVE_MIDFIELD, 'Defensive Midfield'),
-        (CENTRAL_MIDFIELD, 'Central Midfield'),
-        (ATTACKING_MIDFIELD, 'Attacking Midfield'),
-        (RIGHT_WING, 'Right Wing'),
-        (CENTRE_FORWARD, 'Centre Forward'),
-        (LEFT_WING, 'Left Wing'),
+        ('Keeper', 'Torwart'),
+        ('Right-Back', 'Rechter Außenverteidiger'),
+        ('Centre Back', 'Innenverteidiger'),
+        ('Left-Back', 'Linker Außenverteidiger'),
+        ('Defensive Midfield', 'Defensives Mittelfeld'),
+        ('Central Midfield', 'Zentrales Mittelfeld'),
+        ('Attacking Midfield', 'Offensives Mittelfeld'),
+        ('Right Wing', 'Rechter Flügel'),
+        ('Centre Forward', 'Stürmer'),
+        ('Left Wing', 'Linker Flügel'),
     )
     position = models.CharField(max_length=255, choices=POSITION)
     jersey_number = models.PositiveSmallIntegerField()

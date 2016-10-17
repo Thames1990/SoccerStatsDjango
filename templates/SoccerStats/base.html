@@ -65,7 +65,7 @@
                 </menu>
             </li>
             <li>
-                <a>Pokal-Tabellen</a>
+                <a>Tabellen</a>
                 <menu>
                     {% for cup_id in cup_ids %}
                         <menuitem>
@@ -76,11 +76,6 @@
                             {% endspaceless %}
                         </menuitem>
                     {% endfor %}
-                </menu>
-            </li>
-            <li>
-                <a>Liga-Tabellen</a>
-                <menu>
                     {% for league_id in league_ids %}
                         <menuitem>
                             {% spaceless %}

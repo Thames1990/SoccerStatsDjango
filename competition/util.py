@@ -1,3 +1,5 @@
+import re
+
 from competition.models import Competition
 
 
@@ -49,7 +51,7 @@ def fetch_cup_names():
     cup_ids = []
     for competition in fetch_competitions(None):
         if int(competition['numberOfGames']) < 100:
-            cup_ids.append(competition['league'])
+            cup_ids.append(re.sub('[^a-zA-Z\s]+', '', competition['caption']))
     return cup_ids
 
 
@@ -61,7 +63,7 @@ def fetch_league_names():
     league_ids = []
     for competition in fetch_competitions(None):
         if int(competition['numberOfGames']) >= 100:
-            league_ids.append(competition['league'])
+            league_ids.append(re.sub('[^a-zA-Z\s]+', '', competition['caption']))
     return league_ids
 
 

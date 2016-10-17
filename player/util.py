@@ -1,7 +1,4 @@
-import re
 import requests
-
-from player.models import Player
 
 
 def get_player_image(player):
@@ -22,11 +19,13 @@ def get_player_image(player):
         'pithumbsize': 400
     }).json()['query']['pages'].values())[0]
     if 'thumbnail' in image_field:
+        # Wikimedia search
         return image_field['thumbnail']['source']
+    # TODO Add alternative search engines (not Google)
     return None
 
 
-def get_team(team_id):
+def get_team_players(team_id):
     """
     Gets the JSON representation for a team
     :param team_id: ID of a team
@@ -35,19 +34,25 @@ def get_team(team_id):
     return requests.get(
         'http://api.football-data.org/v1/teams/' + str(team_id) + '/players',
         headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
-    ).json()
+    ).json()['players']
 
 
-def create_or_get_player(player):
+def create_or_get_player(player, team_id):
     """
     Creates a player from JSON provided by football-data.org if he didn't exist in the database; gets the player from
     the database otherwise
     :param player: JSON representation for a player
+    :param team_id: Id of the players team
     :return: Player object
     """
+    from player.models import Player
+    from team.util import get_or_create_team
+    import re
+
     return Player.objects.get_or_create(
+        team=get_or_create_team(team_id),
         name=player['name'],
-        position=player['position'],
+        position=dict(Player.POSITION)[player['position']],
         jersey_number=player['jerseyNumber'],
         date_of_birth=player['dateOfBirth'],
         nationality=player['nationality'],
@@ -64,8 +69,8 @@ def get_players(team_id):
     :return: List of Player objects
     """
     players = []
-    for player in get_team(team_id)['players']:
-        players.append(create_or_get_player(player))
+    for player in get_team_players(team_id):
+        players.append(create_or_get_player(player, team_id))
     return players
 
 
@@ -76,6 +81,6 @@ def get_player(team_id, name):
     :param name: Name of the player
     :return: Player object if the player exists in the team; None otherwise
     """
-    for player in get_team(team_id)['players']:
-        if player['name'].replace(' ', '-').lower() == name:
-            return create_or_get_player(player)
+    for player in get_team_players(team_id):
+        if player['name'].replace(' ', '-').lower() == name.replace('%20', '-').replace(' ', '-').lower():
+            return create_or_get_player(player, team_id)

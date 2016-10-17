@@ -3,46 +3,56 @@
 {% load humanize %}
 
 {% block content %}
-    <card style="width: 40%">
-        {% if player.image %}
-            <img src="{{ player.image }}" style="height: 300px; object-fit: cover; object-position: 50% 0">
-        {% endif %}
-        <table>
-            <tr>
-                <th>Name</th>
-                <td>{{ player.name }}</td>
-            </tr>
-            <tr>
-                <th>Position</th>
-                <td>{{ player.position }}</td>
-            </tr>
-            <tr>
-                <th>Rückennummer</th>
-                <td>{{ player.jersey_number }}</td>
-            </tr>
-            <tr>
-                <th>Geburtstag</th>
-                <td>{{ player.date_of_birth }}</td>
-            </tr>
-            <tr>
-                <th>Alter</th>
-                <td>{{ player.age }}</td>
-            </tr>
-            <tr>
-                <th>Nationalität</th>
-                <td>{{ player.nationality }}</td>
-            </tr>
-            <tr>
-                {% if player.contract_until %}
-                    <tr>
-                        <th>Vertrag bis</th>
-                        <td>{{ player.contract_until }}</td>
-                    </tr>
+    <card>
+        <grid>
+            <div col="11/12">
+                <h1>{{ player.name }}</h1>
+            </div>
+            <div col="1/12">
+                <a href="{% url 'team:team' player.team.id %}">
+                    <img src="{{ player.team.crest_url }}">
+                </a>
+            </div>
+        </grid>
+        <hr>
+        <grid>
+            <div col="1/4">
+                {% if player.image %}
+                    <img src="{{ player.image }}">
                 {% endif %}
-            <tr>
-                <th>Marktwert</th>
-                <td>{{ player.market_value|intword }} €</td>
-            </tr>
-        </table>
+            </div>
+            <div col="3/4">
+                <table>
+                    <tr>
+                        <th>Geb./Alter</th>
+                        <td>{{ player.date_of_birth }} ({{ player.age }})</td>
+                    </tr>
+                    <tr>
+                        <th>Nationalität</th>
+                        <td>{{ player.nationality }}</td>
+                    </tr>
+                    <tr>
+                        <th>Aktueller Verein</th>
+                        <td>{{ player.team.name }}</td>
+                    </tr>
+                    <tr>
+                        {% if player.contract_until %}
+                            <tr>
+                                <th>Vertrag bis</th>
+                                <td>{{ player.contract_until }}</td>
+                            </tr>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <th>Position</th>
+                        <td>{{ player.position }}</td>
+                    </tr>
+                    <tr>
+                        <th>Marktwert</th>
+                        <td>{{ player.market_value|intword }} €</td>
+                    </tr>
+                </table>
+            </div>
+        </grid>
     </card>
 {% endblock %}

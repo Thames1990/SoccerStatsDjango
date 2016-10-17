@@ -29,6 +29,7 @@ def get_or_create_competition_teams(competition_id):
     for team in teams:
         team_list.append(
             Team.objects.get_or_create(
+                id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
                 name=team['name'],
                 code=team['code'],
                 short_name=team['shortName'],

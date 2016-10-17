@@ -80,3 +80,6 @@ class Competition(models.Model):
     number_of_teams = models.PositiveSmallIntegerField()
     number_of_games = models.PositiveSmallIntegerField()
     last_updated = models.DateTimeField()
+
+    class Meta:
+        ordering = ['caption']

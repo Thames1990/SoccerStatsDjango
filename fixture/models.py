@@ -31,8 +31,8 @@ class Fixture(models.Model):
 
 class Result(models.Model):
     fixture = models.ForeignKey(Fixture)
-    goals_home_team = models.PositiveSmallIntegerField()
-    goals_away_team = models.PositiveSmallIntegerField()
+    goals_home_team = models.PositiveSmallIntegerField(null=True)
+    goals_away_team = models.PositiveSmallIntegerField(null=True)
 
 
 class HalfTime(models.Model):

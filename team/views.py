@@ -1,9 +1,13 @@
-from django.shortcuts import get_object_or_404, render
+from django.views.generic import DetailView, ListView
 
-from team.models import Team
+from .models import Team
 
 
-def team_view(request, team_id):
-    return render(request, 'team/team.html', {
-        'team': get_object_or_404(Team, id=team_id)
-    })
+class TeamDetailView(DetailView):
+    model = Team
+    context_object_name = 'team'
+
+
+class TeamListView(ListView):
+    model = Team
+    context_object_name = 'teams'

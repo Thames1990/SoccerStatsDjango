@@ -1,9 +1,13 @@
-from django.shortcuts import render
+from django.views.generic import DetailView, ListView
 
-from .util import get_or_create_fixtures
+from .models import Fixture
 
 
-def fixtures_view(request, fixture_id):
-    return render(request, 'fixture/index.html', {
-        'fixtures': get_or_create_fixtures(fixture_id),
-    })
+class FixtureDetailView(DetailView):
+    model = Fixture
+    context_object_name = 'fixture'
+
+
+class FixtureListView(ListView):
+    model = Fixture
+    context_object_name = 'fixtures'

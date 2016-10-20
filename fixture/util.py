@@ -3,17 +3,26 @@ import requests
 
 from fixture.models import Fixture, Result, HalfTime, ExtraTime, PenaltyShootout, Odds
 
+from competition.util import fetch_competitions
+from competition.models import Competition
 
-def get_or_create_fixtures(fixture_id):
+from team.models import Team
+
+
+def fetch_fixtures(fixture_id):
+    return requests.get(
+        'http://api.football-data.org/v1/competitions/' + str(fixture_id) + '/fixtures',
+        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
+    ).json()['fixtures']
+
+
+def get_or_create_fixture(fixture_id):
     fixtures = []
-    for fixture in requests.get(
-                            'http://api.football-data.org/v1/competitions/' + str(fixture_id) + '/fixtures',
-            headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
-    ).json()['fixtures']:
+    for fixture in fetch_fixtures(fixture_id):
         fxt = Fixture.objects.get_or_create(
-            competition=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:],
-            home_team=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:],
-            away_team=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:],
+            competition=Competition.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]),
+            home_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
+            away_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
             date=fixture['date'],
             status=fixture['status'],
             matchday=int(fixture['matchday']),
@@ -59,3 +68,8 @@ def get_or_create_fixtures(fixture_id):
         fixtures.append(fxt)
 
     return fixtures
+
+
+def get_or_create_fixtures():
+    for competition in fetch_competitions():
+        get_or_create_fixture(competition['id'])

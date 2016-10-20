@@ -1,12 +1,12 @@
 from django.conf.urls import url
 
-from .views import CompetitionsDetailView, CompetitionListView
+from .views import CompetitionDetailView, CompetitionListView
 
 app_name = 'competition'
 urlpatterns = [
     url(
         r'^(?P<pk>\d+)/$',
-        CompetitionsDetailView.as_view(),
+        CompetitionDetailView.as_view(),
         name='detail'
     ),
     url(

@@ -1,12 +1,17 @@
 from django.conf.urls import url
 
-from . import views
+from .views import FixtureDetailView, FixtureListView
 
 app_name = 'fixture'
 urlpatterns = [
     url(
-        r'^(?P<fixture_id>[0-9]+)/$',
-        views.fixtures_view,
-        name='index'
+        r'^(?P<pk>[0-9]+)/$',
+        FixtureDetailView.as_view(),
+        name='detail'
+    ),
+    url(
+        r'^$',
+        FixtureListView.as_view(),
+        name='list'
     ),
 ]

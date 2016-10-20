@@ -15,7 +15,7 @@ class Player(models.Model):
         ('Left Midfield', 'Linkes Mittelfeld'),
         ('Central Midfield', 'Zentrales Mittelfeld'),
         ('Midfield', 'Mittelfeld'),
-        ('Right Midfield', 'Rechts Mittelfeld'),
+        ('Right Midfield', 'Rechtes Mittelfeld'),
         ('Attacking Midfield', 'Offensives Mittelfeld'),
         ('Right Wing', 'Rechter Flügel'),
         ('Secondary Striker', 'Hängende Spitze'),

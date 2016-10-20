@@ -7,10 +7,11 @@ class LeagueTable(models.Model):
 
 
 class Standing(models.Model):
+    from team.models import Team
+
     league_table = models.ForeignKey(LeagueTable)
     position = models.PositiveIntegerField()
-    team_name = models.CharField(max_length=255)
-    crest_uri = models.URLField(null=True)
+    team = models.ForeignKey(Team)
     played_games = models.PositiveIntegerField()
     points = models.PositiveIntegerField()
     goals = models.PositiveIntegerField()

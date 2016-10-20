@@ -1,17 +1,10 @@
-from competition.util import fetch_cup_ids, fetch_league_ids, fetch_cup_names, fetch_league_names
+from competition.models import Competition, CompetitionId
 
 
-def cup_id_processor(request):
-    return {'cup_ids': fetch_cup_ids()}
+def competition_caption_processor(request):
+    return {'captions': Competition.objects.all().values_list('caption', flat=True)}
 
 
-def cup_name_processor(request):
-    return {'cup_names': fetch_cup_names()}
-
-
-def league_id_processor(request):
-    return {'league_ids': fetch_league_ids()}
-
-
-def cup_league_processor(request):
-    return {'league_names': fetch_league_names()}
+def competition_league_processor(request):
+    return {'leagues': [CompetitionId.reverse_lookup(competition).value for competition in
+                        Competition.objects.all().values_list('league', flat=True)]}

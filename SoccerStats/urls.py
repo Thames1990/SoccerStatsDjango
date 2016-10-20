@@ -6,11 +6,11 @@ from . import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^competition/', include('competition.urls')),
-    url(r'^fixture/', include('fixture.urls')),
-    url(r'^player/', include('player.urls')),
-    url(r'^table/', include('table.urls')),
-    url(r'^team/', include('team.urls')),
+    url(r'^competitions/', include('competition.urls')),
+    url(r'^fixtures/', include('fixture.urls')),
+    url(r'^players/', include('player.urls')),
+    url(r'^tables/', include('table.urls')),
+    url(r'^teams/', include('team.urls')),
 ]
 
 if settings.DEBUG:

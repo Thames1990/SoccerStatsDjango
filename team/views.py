@@ -1,11 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
-from .util import get_or_create_team, get_or_create_competition_teams
+from team.models import Team
 
 
 def team_view(request, team_id):
-    return render(request, 'team/team.html', {'team': get_or_create_team(team_id)})
-
-
-def teams_view(request, competition_id):
-    return render(request, 'team/teams.html', {'teams': get_or_create_competition_teams(competition_id)})
+    return render(request, 'team/team.html', {
+        'team': get_object_or_404(Team, id=team_id)
+    })

@@ -1,4 +1,5 @@
 import datetime
+import logging
 from enum import Enum
 
 from django.db import models
@@ -21,6 +22,14 @@ class CompetitionId(Enum):
         choices = tuple([(str(p[1].value), p[0]) for p in props])
         return choices
 
+    @classmethod
+    def reverse_lookup(cls, value):
+        for subclass in cls.__subclasses__():
+            for _, member in subclass.__members__.items():
+                if member.name == value:
+                    logging.error('match: ' + member.name + ' matched ' + value)
+                    return member
+
 
 class CupId(CompetitionId):
     """
@@ -28,7 +37,7 @@ class CupId(CompetitionId):
     """
     EC = 424
     """European Championships France 2016"""
-    # DFB = 432
+    DFB = 432
     """
     DFB-Pokal 2016/17
     Currently not available.

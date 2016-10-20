@@ -2,6 +2,12 @@ from django.db import models
 
 
 class Fixture(models.Model):
+    from competition.models import Competition
+    from team.models import Team
+
+    competition = models.ForeignKey(Competition)
+    home_team = models.ForeignKey(Team, related_name='home_team')
+    away_team = models.ForeignKey(Team, related_name='away_team')
     date = models.DateTimeField()
     SCHEDULED = 1
     TIMED = 2
@@ -25,8 +31,8 @@ class Fixture(models.Model):
 
 class Result(models.Model):
     fixture = models.ForeignKey(Fixture)
-    goals_home_team = models.PositiveSmallIntegerField(null=True)
-    goals_away_team = models.PositiveSmallIntegerField(null=True)
+    goals_home_team = models.PositiveSmallIntegerField()
+    goals_away_team = models.PositiveSmallIntegerField()
 
 
 class HalfTime(models.Model):
@@ -49,6 +55,6 @@ class PenaltyShootout(models.Model):
 
 class Odds(models.Model):
     fixture = models.ForeignKey(Fixture)
-    home_win = models.FloatField(null=True)
-    draw = models.FloatField(null=True)
-    away_win = models.FloatField(null=True)
+    home_win = models.FloatField()
+    draw = models.FloatField()
+    away_win = models.FloatField()

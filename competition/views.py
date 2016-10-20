@@ -1,15 +1,13 @@
-from django.shortcuts import render
+from django.views.generic import DetailView, ListView
 
-from .util import get_or_create_competitions
-
-
-def competitions_view(request):
-    return render(request, 'competition/competitions.html', {
-        'competitions': get_or_create_competitions(None),
-    })
+from .models import Competition
 
 
-def competition_view(request, competition_id):
-    return render(request, 'competition/competition.html', {
-        'competition': get_or_create_competitions(competition_id),
-    })
+class CompetitionsDetailView(DetailView):
+    model = Competition
+    context_object_name = 'competition'
+
+
+class CompetitionListView(ListView):
+    model = Competition
+    context_object_name = 'competitions'

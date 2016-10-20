@@ -1,14 +1,13 @@
-from django.shortcuts import render
+from django.views.generic import DetailView, ListView
+
+from .models import Player
 
 
-def players_view(request, team_id):
-    from player.util import get_players
-    return render(request, 'player/players.html', {
-        'players': get_players(team_id),
-        'team_id': team_id
-    })
+class PlayerDetailView(DetailView):
+    model = Player
+    context_object_name = 'player'
 
 
-def player_view(request, team_id, player_name):
-    from player.util import get_player
-    return render(request, 'player/player.html', {'player': get_player(team_id, player_name)})
+class PlayerListView(ListView):
+    model = Player
+    context_object_name = 'players'

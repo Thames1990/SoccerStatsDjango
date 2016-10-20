@@ -1,17 +1,17 @@
 from django.conf.urls import url
 
-from . import views
+from .views import PlayerDetailView, PlayerListView
 
 app_name = 'player'
 urlpatterns = [
     url(
-        r'^(?P<team_id>[0-9]+)/$',
-        views.players_view,
-        name='players'
+        r'^(?P<pk>\d+)/$',
+        PlayerDetailView.as_view(),
+        name='detail'
     ),
     url(
-        r'^(?P<team_id>[0-9]+)/(?P<player_name>[\w-]+)/$',
-        views.player_view,
-        name='player'
+        r'^$',
+        PlayerListView.as_view(),
+        name='list'
     ),
 ]

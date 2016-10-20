@@ -19,6 +19,33 @@
                 <th>Kadergröße</th>
                 <td>{{ team.player_set.all|length }}</td>
             </tr>
+            <tr>
+                <th>Marktwert</th>
+                <td>{{ team.squad_market_value|intword }} €</td>
+            </tr>
+        </table>
+        <hr>
+        <table>
+            <thead>
+            <tr>
+                <th>Nummer</th>
+                <th>Spieler</th>
+                <th>Geb./Alter</th>
+                <th>Nat.</th>
+                <th>Marktwert</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for player in team.player_set.all %}
+                <tr>
+                    <td>{{ player.jersey_number }}</td>
+                    <td>{{ player.name }}</td>
+                    <td>{{ player.date_of_birth }} ({{ player.age }})</td>
+                    <td>{{ player.nationality }}</td>
+                    <td>{{ player.market_value|intword }} €</td>
+                </tr>
+            {% endfor %}
+            </tbody>
         </table>
     </card>
 {% endblock %}

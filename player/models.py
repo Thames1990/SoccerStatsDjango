@@ -12,14 +12,18 @@ class Player(models.Model):
         ('Centre Back', 'Innenverteidiger'),
         ('Left-Back', 'Linker Außenverteidiger'),
         ('Defensive Midfield', 'Defensives Mittelfeld'),
+        ('Left Midfield', 'Linkes Mittelfeld'),
         ('Central Midfield', 'Zentrales Mittelfeld'),
+        ('Midfield', 'Mittelfeld'),
+        ('Right Midfield', 'Rechts Mittelfeld'),
         ('Attacking Midfield', 'Offensives Mittelfeld'),
         ('Right Wing', 'Rechter Flügel'),
+        ('Secondary Striker', 'Hängende Spitze'),
         ('Centre Forward', 'Stürmer'),
         ('Left Wing', 'Linker Flügel'),
     )
     position = models.CharField(max_length=255, choices=POSITION)
-    jersey_number = models.PositiveSmallIntegerField()
+    jersey_number = models.PositiveSmallIntegerField(null=True)
     date_of_birth = models.DateField()
     nationality = models.CharField(max_length=255)
     contract_until = models.DateField(null=True)

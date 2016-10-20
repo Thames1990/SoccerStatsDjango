@@ -1,5 +1,7 @@
 from django.db import models
 
+from team.models import Team
+
 
 class LeagueTable(models.Model):
     league_caption = models.CharField(max_length=255)
@@ -78,7 +80,6 @@ class Group(models.Model):
 class GroupStanding(models.Model):
     group = models.ForeignKey(Group)
     rank = models.PositiveSmallIntegerField()
-    team = models.CharField(max_length=255)
     team_id = models.PositiveSmallIntegerField()
     played_games = models.PositiveSmallIntegerField()
     crest_uri = models.URLField(null=True)

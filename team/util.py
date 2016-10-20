@@ -8,14 +8,14 @@ def get_or_create_competition_teams(competition_id):
     for team in teams:
         from team.models import Team
         import re
-        Team.objects.get_or_create(
+        return Team.objects.get_or_create(
             id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
             name=team['name'],
             code=team['code'] if team['code'] else None,
             short_name=team['shortName'],
             squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
             crest_url=team['crestUrl']
-        )
+        )[0]
 
 
 def get_or_create_all_teams():

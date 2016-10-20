@@ -1,3 +1,4 @@
+from competition.models import CupId, LeagueId
 from table.models import LeagueTable, CupTable
 
 
@@ -14,11 +15,12 @@ def create_league_table(json):
     )
 
     for team in json['standing']:
+        from team.models import Team
+        import re
         standing, created = Standing.objects.get_or_create(
             league_table=league_table,
             position=team['position'],
-            team_name=team['teamName'],
-            crest_uri=team['crestURI'],
+            team=Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
             played_games=team['playedGames'],
             points=team['points'],
             goals=team['goals'],
@@ -72,7 +74,6 @@ def create_cup_table(json):
             GroupStanding.objects.get_or_create(
                 group=group,
                 rank=group_standing['rank'],
-                team=group_standing['team'],
                 team_id=group_standing['teamId'],
                 played_games=group_standing['playedGames'],
                 crest_uri=group_standing['crestURI'],
@@ -85,7 +86,7 @@ def create_cup_table(json):
     return cup_table
 
 
-def get_table(competiton_id, matchday):
+def get_table(competiton_id, matchday=None):
     """
     Gets the league table for a specific competition on a specific matchday.
     :param competiton_id: ID of the requested competition type (LeagueID or CupID)
@@ -95,22 +96,13 @@ def get_table(competiton_id, matchday):
     from competition.models import CompetitionId
     if isinstance(competiton_id, CompetitionId):
         import requests
-        from competition.models import CompetitionId, CupId, LeagueId
+        base_url = 'http://api.football-data.org/v1/competitions/' + str(competiton_id.value) + '/leagueTable'
         if matchday:
-            if isinstance(matchday, int):
-                json = requests.get(
-                    'http://api.football-data.org/v1/competitions/' +
-                    str(competiton_id.value) + '/leagueTable?matchday=' +
-                    str(matchday),
-                    headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
-                ).json()
-            else:
-                return NotImplemented
-        else:
-            json = requests.get(
-                'http://api.football-data.org/v1/competitions/' + str(competiton_id.value) + '/leagueTable',
-                headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
-            ).json()
+            base_url += '?matchday=' + str(matchday)
+        json = requests.get(
+            base_url,
+            headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
+        ).json()
         if isinstance(competiton_id, CupId):
             return create_cup_table(json)
         elif isinstance(competiton_id, LeagueId):
@@ -119,7 +111,17 @@ def get_table(competiton_id, matchday):
         return NotImplemented
 
 
+def get_all_tables():
+    from competition.util import fetch_competitions
+    for competition in fetch_competitions():
+        try:
+            get_table(CupId(competition['id']))
+        except ValueError:
+            get_table(LeagueId(competition['id']))
+
+
 def get_league_table_position_changes(league_table, league_id):
+    # TODO Rewrite
     """
     Creates a list of position changes for a league table.
     :param league_table: League table of a competition
@@ -142,6 +144,7 @@ def get_league_table_position_changes(league_table, league_id):
 
 
 def get_cup_table_position_changes(cup_table, cup_id):
+    # TODO Rewrite
     if isinstance(cup_table, CupTable):
         cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 1)
         position_changes = []

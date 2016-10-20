@@ -9,7 +9,7 @@
                 <h1>{{ player.name }}</h1>
             </div>
             <div col="1/12">
-                <a href="{% url 'team:team' player.team.id %}">
+                <a href="{% url 'team:detail' player.team.pk %}">
                     <img src="{{ player.team.crest_url }}">
                 </a>
             </div>

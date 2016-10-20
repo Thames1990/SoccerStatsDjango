@@ -6,7 +6,7 @@
     <grid>
         {% for player in players %}
             <div col="1/3">
-                <a href="{% url 'player:player' player.team.id player.name|lower|germanslugify %}">
+                <a href="{% url 'player:detail' player.pk %}">
                     <card>
                         {% if player.image %}
                             <img src="{{ player.image }}"

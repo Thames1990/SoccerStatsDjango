@@ -1,26 +1,25 @@
-from django.shortcuts import render
+from django.views.generic import DetailView, ListView
 
-from competition.models import CupId, LeagueId
-
-from .models import LeagueTable, CupTable
-from .util import get_table, get_league_table_position_changes, get_cup_table_position_changes
+from .models import CupTable, LeagueTable
 
 
-def index_view(request, competition_id):
-    try:
-        competition_id = LeagueId(int(competition_id))
-    except ValueError:
-        competition_id = CupId(int(competition_id))
-    table = get_table(competition_id, None)
-    if isinstance(table, LeagueTable):
-        return render(request, 'table/index.html', {
-            'league_table': table,
-            'league_table_position_changes': get_league_table_position_changes(table, competition_id),
-        })
-    elif isinstance(table, CupTable):
-        return render(request, 'table/index.html', {
-            'cup_table': table,
-            'cup_table_position_changes': get_cup_table_position_changes(table, competition_id),
-        })
-    else:
-        return NotImplemented
+# TODO Add position/rank changes as extra_context
+
+class CupTableDetailView(DetailView):
+    model = CupTable
+    context_object_name = 'cup_table'
+
+
+class CupTableListView(ListView):
+    model = CupTable
+    context_object_name = 'cup_tables'
+
+
+class LeagueTableDetailView(DetailView):
+    model = LeagueTable
+    context_object_name = 'league_table'
+
+
+class LeagueTableListView(ListView):
+    model = LeagueTable
+    context_object_name = 'league_tables'

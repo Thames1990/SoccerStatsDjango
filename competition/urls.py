@@ -7,11 +7,11 @@ urlpatterns = [
     url(
         r'^(?P<pk>\d+)/$',
         CompetitionsDetailView.as_view(),
-        name='competition'
+        name='detail'
     ),
     url(
         r'^$',
         CompetitionListView.as_view(),
-        name='competitions'
+        name='list'
     ),
 ]

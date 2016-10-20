@@ -24,7 +24,7 @@
                     {% for league in leagues %}
                         <menuitem>
                             {% spaceless %}
-                                <a href="{% url 'competition:competition' league %}">
+                                <a href="{% url 'competition:detail' league %}">
                                     {{ captions|get_at_index:forloop.counter0 }}
                                 </a>
                             {% endspaceless %}

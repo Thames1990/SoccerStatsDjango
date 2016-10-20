@@ -1,11 +1,9 @@
 import datetime
-import logging
 from enum import Enum
 
 from django.db import models
 
 
-# TODO Remove when Django updates to 1.10 (enum serializiation)
 class CompetitionId(Enum):
     @classmethod
     def choices(cls):
@@ -13,43 +11,37 @@ class CompetitionId(Enum):
         Creates the tuple structure for Django model choices
         :return: Tuple of enum choices
         """
-        # get all members of the class
         import inspect
         members = inspect.getmembers(cls, lambda m: not (inspect.isroutine(m)))
-        # filter down to just properties
         props = [m for m in members if not (m[0][:2] == '__')]
-        # format into django choice tuple
         choices = tuple([(str(p[1].value), p[0]) for p in props])
         return choices
 
     @classmethod
     def reverse_lookup(cls, value):
+        """
+        Allows enum reverse lookup (value -> key)
+        :param value: Value, whose key is searched
+        :return: Key matching value
+        """
         for subclass in cls.__subclasses__():
             for _, member in subclass.__members__.items():
                 if member.name == value:
-                    logging.error('match: ' + member.name + ' matched ' + value)
                     return member
 
 
 class CupId(CompetitionId):
-    """
-    IDs for cups
-    """
+    """IDs for cups"""
     EC = 424
     """European Championships France 2016"""
     DFB = 432
-    """
-    DFB-Pokal 2016/17
-    Currently not available.
-    """
+    """DFB-Pokal 2016/17"""
     CL = 440
     """Champions League 2016/17"""
 
 
 class LeagueId(CompetitionId):
-    """
-    IDs for leagues
-    """
+    """IDs for leagues"""
     PL = 426
     """Premier League 2016/17"""
     ELC = 427

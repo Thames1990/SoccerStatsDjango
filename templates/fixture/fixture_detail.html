@@ -1,0 +1,89 @@
+{% extends 'SoccerStats/base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+    <card>
+        <h5>{{ fixture.home_team_name }} - {{ fixture.away_team_name }}</h5>
+        <hr>
+        <table>
+            <tr>
+                <th>Datum</th>
+                <td>{{ fixture.date.date }}</td>
+            </tr>
+            <tr>
+                <th>Uhrzeit</th>
+                <td>{{ fixture.date.time }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ fixture.status }}</td>
+            </tr>
+            {% if fixture.result_set.all.0.goals_home_team or fixture.result_set.all.0.goals_away_team %}
+                <tr>
+                    <th>Resultat</th>
+                    {% spaceless %}
+                        <td>
+                            {{ fixture.result_set.all.0.goals_home_team|default_if_none:"0" }}
+                            :
+                            {{ fixture.result_set.all.0.goals_away_team|default_if_none:"0" }}
+                        </td>
+                    {% endspaceless %}
+                </tr>
+                {% if fixture.result_set.all.0.halftime_set.all %}
+                    <tr>
+                        <th>Halbzeit</th>
+                        {% spaceless %}
+                            <td>
+                                {{ fixture.result_set.all.0.halftime_set.all.0.goals_home_team }}
+                                :
+                                {{ fixture.result_set.all.0.halftime_set.all.0.goals_away_team }}
+                            </td>
+                        {% endspaceless %}
+                    </tr>
+                {% endif %}
+                {% if fixture.result_set.all.0.extratime_set.all %}
+                    <tr>
+                        <th>Nachspielzeit</th>
+                        {% spaceless %}
+                            <td>
+                                {{ fixture.result_set.all.0.extratime_set.all.0.goals_home_team }}
+                                :
+                                {{ fixture.result_set.all.0.extratime_set.all.0.goals_away_team }}
+                            </td>
+                        {% endspaceless %}
+                    </tr>
+                {% endif %}
+                {% if fixture.result_set.all.0.penaltyshootout_set.all %}
+                    <tr>
+                        <th>Elfmeterschießen</th>
+                        {% spaceless %}
+                            <td>
+                                {{ fixture.result_set.all.0.penaltyshootout_set.all.0.goals_home_team }}
+                                :
+                                {{ fixture.result_set.all.0.penaltyshootout_set.all.0.goals_away_team }}
+                            </td>
+                        {% endspaceless %}
+                    </tr>
+                {% endif %}
+            {% endif %}
+            {% if fixture.odds_set.all %}
+                <tr>
+                    <th colspan="2">Wettchancen</th>
+                </tr>
+                <tr>
+                    <th>Heimsieg</th>
+                    <td>{{ fixture.odds_set.all.0.home_win }}</td>
+                </tr>
+                <tr>
+                    <th>Unentschieden</th>
+                    <td>{{ fixture.odds_set.all.0.draw }}</td>
+                </tr>
+                <tr>
+                    <th>Auswärtssieg</th>
+                    <td>{{ fixture.odds_set.all.0.away_win }}</td>
+                </tr>
+            {% endif %}
+        </table>
+    </card>
+{% endblock %}

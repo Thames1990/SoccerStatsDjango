@@ -1,4 +1,6 @@
-from competition.models import CupId, LeagueId
+import re
+
+from competition.models import CupId, LeagueId, Competition
 from table.models import LeagueTable, CupTable
 
 
@@ -10,13 +12,13 @@ def create_league_table(json):
     """
     from table.models import LeagueTable, Standing, Home, Away
     league_table, created = LeagueTable.objects.get_or_create(
+        competition=Competition.objects.get(id=re.sub('[^0-9]', '', json['_links']['competition']['href'])[1:]),
         league_caption=json['leagueCaption'],
         matchday=json['matchday'],
     )
 
     for team in json['standing']:
         from team.models import Team
-        import re
         standing, created = Standing.objects.get_or_create(
             league_table=league_table,
             position=team['position'],
@@ -60,6 +62,7 @@ def create_cup_table(json):
     """
     from table.models import CupTable, GroupStanding, Group
     cup_table = CupTable.objects.get_or_create(
+        competition=Competition.objects.get(caption=json['leagueCaption']),
         league_caption=json['leagueCaption'],
         matchday=json['matchday'],
     )[0]
@@ -71,10 +74,11 @@ def create_cup_table(json):
         )[0]
 
         for group_standing in json['standings'][cup_group]:
+            from team.models import Team
             GroupStanding.objects.get_or_create(
                 group=group,
+                team=Team.objects.get(id=int(group_standing['teamId'])),
                 rank=group_standing['rank'],
-                team_id=group_standing['teamId'],
                 played_games=group_standing['playedGames'],
                 crest_uri=group_standing['crestURI'],
                 points=group_standing['points'],

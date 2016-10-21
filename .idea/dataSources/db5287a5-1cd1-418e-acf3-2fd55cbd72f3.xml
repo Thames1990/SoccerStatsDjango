@@ -634,34 +634,33 @@ model</columns>
       <mandatory>1</mandatory>
       <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
-    <column id="156" parent="19" name="position">
-      <mandatory>1</mandatory>
-      <data-type>VARCHAR(255)(0,-1)|12</data-type>
-    </column>
-    <column id="157" parent="19" name="jersey_number">
-      <mandatory>1</mandatory>
+    <column id="156" parent="19" name="jersey_number">
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="158" parent="19" name="date_of_birth">
+    <column id="157" parent="19" name="date_of_birth">
       <mandatory>1</mandatory>
       <data-type>DATE(0,-1)|12</data-type>
     </column>
-    <column id="159" parent="19" name="nationality">
+    <column id="158" parent="19" name="nationality">
       <mandatory>1</mandatory>
       <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
-    <column id="160" parent="19" name="contract_until">
+    <column id="159" parent="19" name="contract_until">
       <data-type>DATE(0,-1)|12</data-type>
     </column>
-    <column id="161" parent="19" name="market_value">
+    <column id="160" parent="19" name="market_value">
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="162" parent="19" name="image">
+    <column id="161" parent="19" name="image">
       <data-type>VARCHAR(200)(0,-1)|12</data-type>
     </column>
-    <column id="163" parent="19" name="team_id">
+    <column id="162" parent="19" name="team_id">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="163" parent="19" name="position">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
     <key id="164" parent="19">
       <columns>id</columns>
@@ -772,46 +771,42 @@ model</columns>
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="188" parent="24" name="team">
-      <mandatory>1</mandatory>
-      <data-type>VARCHAR(255)(0,-1)|12</data-type>
-    </column>
-    <column id="189" parent="24" name="team_id">
+    <column id="188" parent="24" name="team_id">
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="190" parent="24" name="played_games">
+    <column id="189" parent="24" name="played_games">
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="191" parent="24" name="crest_uri">
+    <column id="190" parent="24" name="crest_uri">
       <data-type>VARCHAR(200)(0,-1)|12</data-type>
     </column>
-    <column id="192" parent="24" name="points">
+    <column id="191" parent="24" name="points">
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="193" parent="24" name="goals">
+    <column id="192" parent="24" name="goals">
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="194" parent="24" name="goals_against">
+    <column id="193" parent="24" name="goals_against">
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="195" parent="24" name="goal_difference">
+    <column id="194" parent="24" name="goal_difference">
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="196" parent="24" name="group_id">
+    <column id="195" parent="24" name="group_id">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <key id="197" parent="24">
+    <key id="196" parent="24">
       <columns>id</columns>
       <primary>1</primary>
     </key>
-    <foreign-key id="198" parent="24" name="#FAKE_table_groupstanding_1">
+    <foreign-key id="197" parent="24" name="#FAKE_table_groupstanding_1">
       <name-surrogate>1</name-surrogate>
       <columns>group_id</columns>
       <deferrable>1</deferrable>
@@ -820,39 +815,39 @@ model</columns>
       <cascade-update-rule>no_action</cascade-update-rule>
       <cascade-delete-rule>no_action</cascade-delete-rule>
     </foreign-key>
-    <column id="199" parent="25" name="id">
+    <column id="198" parent="25" name="id">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <column id="200" parent="25" name="goals">
+    <column id="199" parent="25" name="goals">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="201" parent="25" name="goals_against">
+    <column id="200" parent="25" name="goals_against">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="202" parent="25" name="wins">
+    <column id="201" parent="25" name="wins">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="203" parent="25" name="draws">
+    <column id="202" parent="25" name="draws">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="204" parent="25" name="losses">
+    <column id="203" parent="25" name="losses">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="205" parent="25" name="standing_id">
+    <column id="204" parent="25" name="standing_id">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <key id="206" parent="25">
+    <key id="205" parent="25">
       <columns>id</columns>
       <primary>1</primary>
     </key>
-    <foreign-key id="207" parent="25" name="#FAKE_table_home_1">
+    <foreign-key id="206" parent="25" name="#FAKE_table_home_1">
       <name-surrogate>1</name-surrogate>
       <columns>standing_id</columns>
       <deferrable>1</deferrable>
@@ -861,75 +856,75 @@ model</columns>
       <cascade-update-rule>no_action</cascade-update-rule>
       <cascade-delete-rule>no_action</cascade-delete-rule>
     </foreign-key>
-    <column id="208" parent="26" name="id">
+    <column id="207" parent="26" name="id">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <column id="209" parent="26" name="league_caption">
+    <column id="208" parent="26" name="league_caption">
       <mandatory>1</mandatory>
       <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
-    <column id="210" parent="26" name="matchday">
+    <column id="209" parent="26" name="matchday">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <key id="211" parent="26">
+    <key id="210" parent="26">
       <columns>id</columns>
       <primary>1</primary>
     </key>
-    <column id="212" parent="27" name="id">
+    <column id="211" parent="27" name="id">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <column id="213" parent="27" name="position">
+    <column id="212" parent="27" name="position">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="214" parent="27" name="played_games">
+    <column id="213" parent="27" name="played_games">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="215" parent="27" name="points">
+    <column id="214" parent="27" name="points">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="216" parent="27" name="goals">
+    <column id="215" parent="27" name="goals">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="217" parent="27" name="goals_against">
+    <column id="216" parent="27" name="goals_against">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="218" parent="27" name="goal_difference">
+    <column id="217" parent="27" name="goal_difference">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <column id="219" parent="27" name="wins">
+    <column id="218" parent="27" name="wins">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="220" parent="27" name="draws">
+    <column id="219" parent="27" name="draws">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="221" parent="27" name="losses">
+    <column id="220" parent="27" name="losses">
       <mandatory>1</mandatory>
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="222" parent="27" name="league_table_id">
+    <column id="221" parent="27" name="league_table_id">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <column id="223" parent="27" name="team_id">
+    <column id="222" parent="27" name="team_id">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
     </column>
-    <key id="224" parent="27">
+    <key id="223" parent="27">
       <columns>id</columns>
       <primary>1</primary>
     </key>
-    <foreign-key id="225" parent="27" name="#FAKE_table_standing_2">
+    <foreign-key id="224" parent="27" name="#FAKE_table_standing_2">
       <name-surrogate>1</name-surrogate>
       <columns>league_table_id</columns>
       <deferrable>1</deferrable>
@@ -938,7 +933,7 @@ model</columns>
       <cascade-update-rule>no_action</cascade-update-rule>
       <cascade-delete-rule>no_action</cascade-delete-rule>
     </foreign-key>
-    <foreign-key id="226" parent="27" name="#FAKE_table_standing_1">
+    <foreign-key id="225" parent="27" name="#FAKE_table_standing_1">
       <name-surrogate>1</name-surrogate>
       <columns>team_id</columns>
       <deferrable>1</deferrable>
@@ -947,27 +942,27 @@ model</columns>
       <cascade-update-rule>no_action</cascade-update-rule>
       <cascade-delete-rule>no_action</cascade-delete-rule>
     </foreign-key>
-    <column id="227" parent="28" name="id">
+    <column id="226" parent="28" name="id">
       <mandatory>1</mandatory>
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="228" parent="28" name="name">
+    <column id="227" parent="28" name="name">
       <mandatory>1</mandatory>
       <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
-    <column id="229" parent="28" name="code">
+    <column id="228" parent="28" name="code">
       <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
-    <column id="230" parent="28" name="short_name">
+    <column id="229" parent="28" name="short_name">
       <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
-    <column id="231" parent="28" name="squad_market_value">
+    <column id="230" parent="28" name="squad_market_value">
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="232" parent="28" name="crest_url">
+    <column id="231" parent="28" name="crest_url">
       <data-type>VARCHAR(200)(0,-1)|12</data-type>
     </column>
-    <key id="233" parent="28">
+    <key id="232" parent="28">
       <columns>id</columns>
       <primary>1</primary>
     </key>

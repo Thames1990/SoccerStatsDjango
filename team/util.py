@@ -18,7 +18,10 @@ def get_or_create_competition_teams(competition_id):
         )[0]
 
 
+# TODO Dafuq happens?
 def get_or_create_all_teams():
-    from competition.util import fetch_competitions
-    for competition in fetch_competitions():
-        get_or_create_competition_teams(competition['id'])
+    from competition.models import Competition
+    competitions = []
+    for competition in Competition.objects.all():
+        competitions.append(get_or_create_competition_teams(competition.id))
+    return competitions

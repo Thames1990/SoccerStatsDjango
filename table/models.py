@@ -1,19 +1,19 @@
 from django.db import models
 
+from competition.models import Competition
 from team.models import Team
 
 
 class LeagueTable(models.Model):
+    competition = models.ForeignKey(Competition)
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
 
 
 class Standing(models.Model):
-    from team.models import Team
-
     league_table = models.ForeignKey(LeagueTable)
-    position = models.PositiveIntegerField()
     team = models.ForeignKey(Team)
+    position = models.PositiveIntegerField()
     played_games = models.PositiveIntegerField()
     points = models.PositiveIntegerField()
     goals = models.PositiveIntegerField()
@@ -65,6 +65,7 @@ class Away(models.Model):
 
 
 class CupTable(models.Model):
+    competition = models.ForeignKey(Competition)
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
 
@@ -79,8 +80,8 @@ class Group(models.Model):
 
 class GroupStanding(models.Model):
     group = models.ForeignKey(Group)
+    team = models.ForeignKey(Team)
     rank = models.PositiveSmallIntegerField()
-    team_id = models.PositiveSmallIntegerField()
     played_games = models.PositiveSmallIntegerField()
     crest_uri = models.URLField(null=True)
     points = models.PositiveSmallIntegerField()

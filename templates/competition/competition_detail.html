@@ -2,7 +2,7 @@
 
 {% block content %}
     <card>
-        <h5>{{ competition.caption }}</h5>
+        <h3>{{ competition.caption }}</h3>
         <hr>
         <table>
             <tr>
@@ -21,6 +21,19 @@
                 <th>Spiele</th>
                 <td>{{ competition.number_of_games }}</td>
             </tr>
+        </table>
+        <hr>
+        <h4>Vereine</h4>
+        <table>
+            <tbody>
+            {% for team in competition.team_set.all %}
+                <tr>
+                    <td>
+                        <a href="{% url 'team:detail' team.id %}" style="width: 100%">{{ team.name }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
         </table>
     </card>
 {% endblock %}

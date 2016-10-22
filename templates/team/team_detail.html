@@ -19,10 +19,12 @@
                 <th>Kadergröße</th>
                 <td>{{ team.player_set.all|length }}</td>
             </tr>
-            <tr>
-                <th>Marktwert</th>
-                <td>{{ team.squad_market_value|intword }} €</td>
-            </tr>
+            {% if team.squad_market_value %}
+                <tr>
+                    <th>Marktwert</th>
+                    <td>{{ team.squad_market_value|intword }} €</td>
+                </tr>
+            {% endif %}
         </table>
         <hr>
         <table>

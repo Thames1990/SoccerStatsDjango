@@ -18,7 +18,7 @@ def get_competition_teams(competition_id):
             code=team['code'] if team['code'] else None,
             short_name=team['shortName'],
             squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
-            crest_url=team['crestUrl']
+            crest_url=team['crestUrl']  # TODO Add image check and fallback download from wikipedia
         )[0]
         team.competition.add(Competition.objects.get(id=competition_id))
         teams.append(team)

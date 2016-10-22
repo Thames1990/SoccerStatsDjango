@@ -31,8 +31,7 @@ class Standing(models.Model):
         """
         if isinstance(other_matchday_standing, Standing):
             return self.position != other_matchday_standing.position
-        else:
-            return NotImplemented
+        raise ValueError(other_matchday_standing + ' is no valid Standing')
 
     def has_position_improved(self, other_matchday_standing):
         """
@@ -42,8 +41,7 @@ class Standing(models.Model):
         """
         if isinstance(other_matchday_standing, Standing):
             return self.position < other_matchday_standing.position
-        else:
-            return NotImplemented
+        raise ValueError(other_matchday_standing + ' is no valid Standing')
 
 
 class Home(models.Model):
@@ -97,8 +95,7 @@ class GroupStanding(models.Model):
         """
         if isinstance(other_matchday_group_standing, GroupStanding):
             return self.rank != other_matchday_group_standing.rank
-        else:
-            return NotImplemented
+        raise ValueError(other_matchday_group_standing + ' is no valid GroupStanding')
 
     def has_rank_improved(self, other_matchday_group_standing):
         """
@@ -108,5 +105,4 @@ class GroupStanding(models.Model):
         """
         if isinstance(other_matchday_group_standing, GroupStanding):
             return self.rank < other_matchday_group_standing.rank
-        else:
-            return NotImplemented
+        raise ValueError(other_matchday_group_standing + ' is no valid GroupStanding')

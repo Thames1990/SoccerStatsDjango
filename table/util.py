@@ -1,16 +1,10 @@
-import re
-
-from competition.models import CupId, LeagueId, Competition
-from table.models import LeagueTable, CupTable
+from competition.models import Competition, CupId, LeagueId
+from team.models import Team
 
 
-def create_league_table(json):
-    """
-    Creates a league table from JSON data.
-    :param json: JSON data
-    :return: LeagueTable object
-    """
+def get_league_table(json):
     from table.models import LeagueTable, Standing, Home, Away
+    import re
     league_table, created = LeagueTable.objects.get_or_create(
         competition=Competition.objects.get(id=re.sub('[^0-9]', '', json['_links']['competition']['href'])[1:]),
         league_caption=json['leagueCaption'],
@@ -18,7 +12,6 @@ def create_league_table(json):
     )
 
     for team in json['standing']:
-        from team.models import Team
         standing, created = Standing.objects.get_or_create(
             league_table=league_table,
             position=team['position'],
@@ -54,12 +47,7 @@ def create_league_table(json):
     return league_table
 
 
-def create_cup_table(json):
-    """
-    Creates a cup table from JSON data.
-    :param json: JSON data
-    :return: CupTable object
-    """
+def get_cup_table(json):
     from table.models import CupTable, GroupStanding, Group
     cup_table = CupTable.objects.get_or_create(
         competition=Competition.objects.get(caption=json['leagueCaption']),
@@ -74,7 +62,6 @@ def create_cup_table(json):
         )[0]
 
         for group_standing in json['standings'][cup_group]:
-            from team.models import Team
             GroupStanding.objects.get_or_create(
                 group=group,
                 team=Team.objects.get(id=int(group_standing['teamId'])),
@@ -91,12 +78,6 @@ def create_cup_table(json):
 
 
 def get_table(competiton_id, matchday=None):
-    """
-    Gets the league table for a specific competition on a specific matchday.
-    :param competiton_id: ID of the requested competition type (LeagueID or CupID)
-    :param matchday: The requested matchday
-    :return: LeagueTable object
-    """
     from competition.models import CompetitionId
     if isinstance(competiton_id, CompetitionId):
         import requests
@@ -108,11 +89,10 @@ def get_table(competiton_id, matchday=None):
             headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
         ).json()
         if isinstance(competiton_id, CupId):
-            return create_cup_table(json)
+            return get_cup_table(json)
         elif isinstance(competiton_id, LeagueId):
-            return create_league_table(json)
-    else:
-        return NotImplemented
+            return get_league_table(json)
+    raise ValueError(competiton_id + ' is no valid CompetitionId')
 
 
 def get_all_tables():
@@ -126,12 +106,7 @@ def get_all_tables():
 
 def get_league_table_position_changes(league_table, league_id):
     # TODO Rewrite
-    """
-    Creates a list of position changes for a league table.
-    :param league_table: League table of a competition
-    :param league_id: ID of the leagues competition
-    :return: List of position changes (True = improved, False = worsened, None = didn't change)
-    """
+    from table.models import LeagueTable
     if isinstance(league_table, LeagueTable):
         league_table_last_matchday = get_table(league_id, league_table.matchday - 1)
         position_changes = []
@@ -143,12 +118,12 @@ def get_league_table_position_changes(league_table, league_id):
             else:
                 position_changes.append(None)
         return position_changes
-    else:
-        return NotImplemented
+    raise ValueError(league_id + ' is no valid LeagueId')
 
 
 def get_cup_table_position_changes(cup_table, cup_id):
     # TODO Rewrite
+    from table.models import CupTable
     if isinstance(cup_table, CupTable):
         cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 1)
         position_changes = []
@@ -164,5 +139,4 @@ def get_cup_table_position_changes(cup_table, cup_id):
                     group_position_changes.append(None)
             position_changes.append(group_position_changes)
         return position_changes
-    else:
-        return NotImplemented
+    raise ValueError(cup_id + ' is no valid CupId')

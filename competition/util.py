@@ -1,9 +1,4 @@
 def fetch_competitions(competition_id=None):
-    """
-    Fetches a competition if competition_id is not None; fetches all competitions otherwise
-    :param competition_id: Integer id of competition or None
-    :return: JSON representation of a competition or all competitions
-    """
     import requests
     base_url = 'http://api.football-data.org/v1/competitions/'
     if competition_id:
@@ -14,13 +9,9 @@ def fetch_competitions(competition_id=None):
     ).json()
 
 
-def get_or_create_competition(competition):
-    """
-    Gets Competition object from the database if it already exists or creates it from JSON.
-    :param competition: JSON representation
-    :return: Competition object generated or fetched from database
-    """
+def get_competition(competition_id):
     from competition.models import Competition
+    competition = fetch_competitions(competition_id)
     return Competition.objects.get_or_create(
         id=competition['id'],
         caption=competition['caption'],
@@ -34,17 +25,8 @@ def get_or_create_competition(competition):
     )[0]
 
 
-def get_or_create_competitions(competition_id=None):
-    """
-    Gets Competition objects from the database if they already exists or create them from JSON.
-    :param competition_id: Id of a Competition. If None, all Competition objects are handled.
-    :return: A Competition object defined by its id, if competition_id was specified; all Competition objects from
-    the database otherwise.
-    """
-    if competition_id:
-        return get_or_create_competition(fetch_competitions(competition_id))
-    else:
-        competitions = []
-        for competition in fetch_competitions():
-            competitions.append(get_or_create_competition(competition))
-        return competitions
+def get_all_competitions():
+    competitions = []
+    for competition in fetch_competitions():
+        competitions.append(get_competition(competition['id']))
+    return competitions

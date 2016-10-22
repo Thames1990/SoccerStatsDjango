@@ -22,6 +22,7 @@ def get_player_image(player):
         return list(json['query']['pages'].values())[0]['thumbnail']['source']
     except KeyError:
         # TODO Implement different image provider
+        # TODO Change to logging
         print('Picture for ' + player['name'] + ' not found.')
 
 

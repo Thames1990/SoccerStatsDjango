@@ -78,22 +78,19 @@ def get_league_table(json):
 
 
 def get_table(competiton_id, matchday=None):
-    from competition.models import CompetitionId
+    import requests
 
-    if isinstance(competiton_id, CompetitionId):
-        import requests
-        base_url = 'http://api.football-data.org/v1/competitions/' + str(competiton_id.value) + '/leagueTable'
-        if matchday:
-            base_url += '?matchday=' + str(matchday)
-        json = requests.get(
-            base_url,
-            headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
-        ).json()
-        if isinstance(competiton_id, CupId):
-            get_cup_table(json)
-        elif isinstance(competiton_id, LeagueId):
-            get_league_table(json)
-    raise ValueError(str(competiton_id) + ' is no valid CompetitionId')
+    base_url = 'http://api.football-data.org/v1/competitions/' + str(competiton_id.value) + '/leagueTable'
+    if matchday:
+        base_url += '?matchday=' + str(matchday)
+    json = requests.get(
+        base_url,
+        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
+    ).json()
+    if isinstance(competiton_id, CupId):
+        get_cup_table(json)
+    elif isinstance(competiton_id, LeagueId):
+        get_league_table(json)
 
 
 def get_all_tables():
@@ -101,9 +98,11 @@ def get_all_tables():
 
     for competition in fetch_competitions():
         try:
-            get_table(CupId(competition['id']))
+            competiton_id = CupId(int(competition['id']))
         except ValueError:
-            get_table(LeagueId(competition['id']))
+            competiton_id = LeagueId(int(competition['id']))
+
+        get_table(competiton_id)
 
 
 def get_league_table_position_changes(league_table, league_id):

@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from .views import CupTableDetailView, CupTableListView, LeagueTableDetailView, LeagueTableListView
 
-app_name = 'player'
+app_name = 'table'
 urlpatterns = [
     url(
         r'^cup/(?P<pk>\d+)/$',

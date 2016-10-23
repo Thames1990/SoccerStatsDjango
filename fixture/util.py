@@ -21,8 +21,6 @@ def get_fixtures(competition_id):
             date=fixture['date'],
             status=fixture['status'],
             matchday=int(fixture['matchday']),
-            home_team_name=fixture['homeTeamName'],
-            away_team_name=fixture['awayTeamName'],
         )[0]
 
         from fixture.models import Result

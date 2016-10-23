@@ -4,60 +4,198 @@
 
 {% block content %}
     <card>
-        <h2>Wettbewerbe</h2>
+        <grid>
+            <div col="1/3">
+                <h1>Wettbewerbe</h1>
+            </div>
+            <div col="2/3" txt="r">
+                <tag>{{ competition.count }} Wettbewerbe</tag>
+                <tag>{{ competition.team.count }} Mannschaften</tag>
+            </div>
+        </grid>
         <table>
-            <thead>
-            <tr>
-                <th>Anzahl</th>
-                <th>Anzahl Teams</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>{{ competition.count }}</td>
-                <td>{{ competition.team.count }}</td>
-            </tr>
-            </tbody>
-        </table>
-    </card>
-
-    {#    <card>#}
-    {#    <h2>Begegnungen</h2>#}
-    {#    <p>{{ fixture.result_avg.goals_home_team }}:{{ fixture.result_avg.goals_away_team }}</p>#}
-    {#    </card>#}
-
-    <card>
-    <h2>Tabellen</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>Durchschnitt erzielte Tore</th>
-                <th>Durchschnitt kassierte Tore</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>{{ cup_table.group_standing.goals_avg }}</td>
-                <td>{{ cup_table.group_standing.goals_against_avg }}</td>
-            </tr>
-            </tbody>
+            {% for competition in competition.list %}
+                <tr>
+                    {% spaceless %}
+                        <td>
+                            <a href="{% url 'competition:detail' competition.id %}">
+                                {{ competition.caption }}
+                            </a>
+                        </td>
+                    {% endspaceless %}
+                </tr>
+            {% endfor %}
         </table>
     </card>
 
     <card>
-        <h2>Mannschaften</h2>
+        <grid>
+            <div col="1/3">
+                <h1>Begegnungen</h1>
+            </div>
+            <div col="2/3" txt="r">
+                <tag>{{ fixture.count }} Begegnungen</tag>
+                <tag>⌀{{ fixture.result_avg.goals_home_team }} Tore</tag>
+                <tag>⌀{{ fixture.result_avg.goals_away_team }} Gegentore</tag>
+            </div>
+        </grid>
+        <hr>
+        <h3>Letzte 5 Begegnungen</h3>
+        {% for last_five in fixture.last_five %}
+            <grid>
+                <div col="5/12" txt="c">
+                    <img src="{{ last_five.home_team.crest_url }}"
+                         style="height: 60px; object-fit: cover; object-position: 50% 0">
+                    <p>{{ last_five.home_team.name }}</p>
+                </div>
+                <div col="2/12" txt="c">
+                    <tag>
+                        {% if last_five.result_set.all.0.halftime_set.all %}
+                            {% spaceless %}
+                                <p style="font-size: xx-large">
+                                    {{ last_five.result_set.all.0.goals_home_team|default_if_none:"0" }}
+                                    :
+                                    {{ last_five.result_set.all.0.goals_away_team|default_if_none:"0" }}
+                                </p>
+                            {% endspaceless %}
+                            {% spaceless %}
+                                <p style="font-size: small">
+                                    Halbzeitstand
+                                    <br>
+                                    {{ last_five.result_set.all.0.halftime_set.all.0.goals_home_team|default_if_none:"0" }}
+                                    :
+                                    {{ last_five.result_set.all.0.halftime_set.all.0.goals_away_team|default_if_none:"0" }}
+                                </p>
+                            {% endspaceless %}
+                        {% else %}
+                            {% spaceless %}
+                                <p style="font-size: xx-large">
+                                    {{ last_five.result_set.all.0.goals_home_team|default_if_none:"0" }}
+                                    :
+                                    {{ last_five.result_set.all.0.goals_away_team|default_if_none:"0" }}
+                                </p>
+                            {% endspaceless %}
+                        {% endif %}
+                    </tag>
+                </div>
+                <div col="5/12" txt="c">
+                    <img src="{{ last_five.away_team.crest_url }}"
+                         style="height: 60px; object-fit: cover; object-position: 50% 0">
+                    <p>{{ last_five.away_team.name }}</p>
+                </div>
+            </grid>
+            <hr>
+        {% endfor %}
+    </card>
+
+    <card>
+        <grid>
+            <div col="1/3">
+                <h1>Spieler</h1>
+            </div>
+            <div col="2/3" txt="r">
+                <tag>{{ player.count }} Spieler</tag>
+                <tag>⌀{{ player.market_value.avg|intword }} € Marktwert</tag>
+            </div>
+        </grid>
+        <hr>
+        <h3>Teuerste Spieler</h3>
         <table>
             <thead>
             <tr>
-                <th>Anzahl</th>
-                <th>Durchschnittlicher Marktwert</th>
+                <th>Spieler</th>
+                <th>Verein</th>
+                <th>Position</th>
+                <th>Marktwert</th>
             </tr>
             </thead>
             <tbody>
+            {% for best_five in player.best_five %}
+                <tr onclick="document.location.href = '{% url 'player:detail' best_five.id %}'" style="cursor: hand">
+                    <td>{{ best_five.name }}</td>
+                    <td>{{ best_five.team.name }}</td>
+                    <td>{{ best_five.position }}</td>
+                    <td>{{ best_five.market_value|intword }} €</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </card>
+
+    <card>
+        <grid>
+            <div col="1/3">
+                <h1>Pokal-Tabellen</h1>
+            </div>
+            <div col="2/3" txt="r">
+                <tag>{{ cup_table.count }} Pokal-Tabellen</tag>
+                <tag>⌀{{ cup_table.group_standing.goals_avg }} Tore</tag>
+            </div>
+        </grid>
+        <table>
+            {% for cup_table in cup_table.list %}
+                <tr>
+                    {% spaceless %}
+                        <td>
+                            <a href="{% url 'table:cup_detail' cup_table.id %}">
+                                {{ cup_table.league_caption }}
+                            </a>
+                        </td>
+                    {% endspaceless %}
+                </tr>
+            {% endfor %}
+        </table>
+    </card>
+
+    <card>
+        <grid>
+            <div col="1/3">
+                <h1>Liga-Tabellen</h1>
+            </div>
+            <div col="2/3" txt="r">
+                <tag>{{ league_table.count }} Liga-Tabellen</tag>
+                <tag>⌀{{ league_table.standing.goals_avg }} Tore</tag>
+            </div>
+        </grid>
+        <table>
+            {% for league_table in league_table.list %}
+                <tr>
+                    {% spaceless %}
+                        <td>
+                            <a href="{% url 'table:league_detail' league_table.id %}">
+                                {{ league_table.league_caption }}
+                            </a>
+                        </td>
+                    {% endspaceless %}
+                </tr>
+            {% endfor %}
+        </table>
+    </card>
+
+    <card>
+        <grid>
+            <div col="1/3">
+                <h1>Mannschaften</h1>
+            </div>
+            <div col="2/3" txt="r">
+                <tag>{{ team.count }} Mannschaften</tag>
+                <tag>⌀{{ team.squad_market_value.avg|intword }} € Mannschaftswert</tag>
+            </div>
+        </grid>
+        <table>
+            <thead>
             <tr>
-                <td>{{ team.count }}</td>
-                <td>{{ team.squad_market_value.avg|intword }} €</td>
+                <th>Verein</th>
+                <th>Mannschaftswert</th>
             </tr>
+            </thead>
+            <tbody>
+            {% for best_five in team.best_five %}
+                <tr onclick="document.location.href = '{% url 'player:detail' best_five.id %}'" style="cursor: hand">
+                    <td>{{ best_five.name }}</td>
+                    <td>{{ best_five.squad_market_value|intword }} €</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </card>

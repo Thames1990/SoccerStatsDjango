@@ -25,8 +25,6 @@ class Fixture(models.Model):
     )
     status = models.CharField(max_length=255, choices=STATUS)
     matchday = models.PositiveSmallIntegerField()
-    home_team_name = models.CharField(max_length=255)
-    away_team_name = models.CharField(max_length=255)
 
 
 class Result(models.Model):

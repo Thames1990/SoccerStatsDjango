@@ -12,30 +12,63 @@ def index(request):
     from django.db.models import DecimalField
     return render(request, 'SoccerStats/index.html', {
         'competition': {
+            'list': Competition.objects.values('id', 'caption'),
             'count': Competition.objects.count(),
             'team': Competition.objects.aggregate(count=Sum('number_of_teams'))
         },
-        # 'fixture': {
-        #     'result_avg': Fixture.objects.aggregate(
-        #         goals_home_team=Avg('result__goals_home_team'),
-        #         goals_away_team=Avg('result__goals_away_team'),
-        #     )
-        # },
+        'fixture': {
+            'count': Fixture.objects.count(),
+            'last_five': Fixture.objects.filter(status='FINISHED').order_by('-date')[:5],
+            'result_avg': Fixture.objects.aggregate(
+                goals_home_team=Avg(
+                    'result__goals_home_team',
+                    output_field=DecimalField(decimal_places=2),
+                ),
+                goals_away_team=Avg(
+                    'result__goals_away_team',
+                    output_field=DecimalField(decimal_places=2),
+                ),
+            )
+        },
+        'player': {
+            'count': Player.objects.count(),
+            'market_value': Player.objects.aggregate(
+                avg=Avg(
+                    'market_value',
+                    output_field=DecimalField(decimal_places=2),
+                ),
+            ),
+            'best_five': Player.objects.order_by('-market_value')[:5],
+        },
         'cup_table': {
+            'list': CupTable.objects.values('id', 'league_caption'),
+            'count': CupTable.objects.count(),
             'group_standing': CupTable.objects.aggregate(
                 goals_avg=Avg(
                     'group__groupstanding__goals',
-                    output_field=DecimalField(decimal_places=2)
+                    output_field=DecimalField(decimal_places=2),
                 ),
-                goals_against_avg=Avg(
-                    'group__groupstanding__goals_against',
-                    output_field=DecimalField(decimal_places=2)
+            )
+        },
+        'league_table': {
+            'list': LeagueTable.objects.values('id', 'league_caption'),
+            'count': LeagueTable.objects.count(),
+            'standing': LeagueTable.objects.aggregate(
+                goals_avg=Avg(
+                    'standing__goals',
+                    output_field=DecimalField(decimal_places=2),
                 ),
             )
         },
         'team': {
             'count': Team.objects.count(),
-            'squad_market_value': Team.objects.aggregate(avg=Avg('squad_market_value')),
+            'squad_market_value': Team.objects.aggregate(
+                avg=Avg(
+                    'squad_market_value',
+                    output_field=DecimalField(decimal_places=2),
+                )
+            ),
+            'best_five': Team.objects.order_by('-squad_market_value')[:5]
         }
     })
 

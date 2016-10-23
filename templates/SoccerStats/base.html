@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <title>{% block title %}Bad Bat Bets{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'SoccerStats/css/bare.min.css' %}">
+    <link rel="stylesheet" href="{% static 'SoccerStats/css/style.css' %}">
     <link rel="icon" href="{% static 'SoccerStats/icons/favicon.ico' %}">
     <script src="https://use.fontawesome.com/f21c3244d2.js"></script>
 </head>
@@ -18,20 +19,45 @@
             <a href="{% url 'index' %}"><i class="fa fa-futbol-o" aria-hidden="true"></i> SoccerStats</a>
         </header>
         <ul>
-            <li>
-                <a>Wettbewerbe</a>
-                <menu>
-                    {% for league in leagues %}
-                        <menuitem>
-                            {% spaceless %}
-                                <a href="{% url 'competition:detail' league %}">
-                                    {{ captions|get_at_index:forloop.counter0 }}
-                                </a>
-                            {% endspaceless %}
-                        </menuitem>
-                    {% endfor %}
-                </menu>
-            </li>
+            {% spaceless %}
+                <li>
+                    <a href="{% url 'competition:list' %}">Wettbewerbe</a>
+                </li>
+            {% endspaceless %}
+            {% spaceless %}
+                <li>
+                    <a href="{% url 'fixture:list' %}">Begegnungen</a>
+                </li>
+            {% endspaceless %}
+            {% spaceless %}
+                <li>
+                    <a href="{% url 'player:list' %}">Spieler</a>
+                </li>
+            {% endspaceless %}
+            {% spaceless %}
+                <li>
+                <a>Tabellen</a>
+            {% endspaceless %}
+            <menu>
+                {% spaceless %}
+                    <menuitem>
+                        <a href="{% url 'table:cup_list' %}">Pokal</a>
+                    </menuitem>
+                {% endspaceless %}
+                {% spaceless %}
+                    <menuitem>
+                        <a href="{% url 'table:league_list' %}">Liga</a>
+                    </menuitem>
+                {% endspaceless %}
+            </menu>
+            {% spaceless %}
+                </li>
+            {% endspaceless %}
+            {% spaceless %}
+                <li>
+                    <a href="{% url 'team:list' %}">Mannschaften</a>
+                </li>
+            {% endspaceless %}
         </ul>
     </label>
 </nav>

@@ -15,11 +15,11 @@
     <label>
         <input type="checkbox">
         <header>
-            <a><i class="fa fa-futbol-o" aria-hidden="true"></i> SoccerStats</a>
+            <a href="{% url 'index' %}"><i class="fa fa-futbol-o" aria-hidden="true"></i> SoccerStats</a>
         </header>
         <ul>
             <li>
-                <a>Wettberwebe</a>
+                <a>Wettbewerbe</a>
                 <menu>
                     {% for league in leagues %}
                         <menuitem>

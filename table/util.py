@@ -2,9 +2,42 @@ from competition.models import Competition, CupId, LeagueId
 from team.models import Team
 
 
+def get_cup_table(json):
+    from table.models import CupTable, GroupStanding, Group
+
+    if 'error' not in json:
+        cup_table = CupTable.objects.get_or_create(
+            competition=Competition.objects.get(caption=json['leagueCaption']),
+            league_caption=json['leagueCaption'],
+            matchday=json['matchday'],
+        )[0]
+
+        for cup_group in json['standings']:
+            group = Group.objects.get_or_create(
+                cup_table=cup_table,
+                name=cup_group,
+            )[0]
+
+            for group_standing in json['standings'][cup_group]:
+                GroupStanding.objects.get_or_create(
+                    group=group,
+                    team=Team.objects.get(id=int(group_standing['teamId'])),
+                    rank=group_standing['rank'],
+                    played_games=group_standing['playedGames'],
+                    crest_uri=group_standing['crestURI'],
+                    points=group_standing['points'],
+                    goals=group_standing['goals'],
+                    goals_against=group_standing['goalsAgainst'],
+                    goal_difference=group_standing['goalDifference'],
+                )
+
+        return cup_table
+
+
 def get_league_table(json):
     from table.models import LeagueTable, Standing, Home, Away
     import re
+
     league_table, created = LeagueTable.objects.get_or_create(
         competition=Competition.objects.get(id=re.sub('[^0-9]', '', json['_links']['competition']['href'])[1:]),
         league_caption=json['leagueCaption'],
@@ -47,38 +80,9 @@ def get_league_table(json):
     return league_table
 
 
-def get_cup_table(json):
-    from table.models import CupTable, GroupStanding, Group
-    cup_table = CupTable.objects.get_or_create(
-        competition=Competition.objects.get(caption=json['leagueCaption']),
-        league_caption=json['leagueCaption'],
-        matchday=json['matchday'],
-    )[0]
-
-    for cup_group in json['standings']:
-        group = Group.objects.get_or_create(
-            cup_table=cup_table,
-            name=cup_group,
-        )[0]
-
-        for group_standing in json['standings'][cup_group]:
-            GroupStanding.objects.get_or_create(
-                group=group,
-                team=Team.objects.get(id=int(group_standing['teamId'])),
-                rank=group_standing['rank'],
-                played_games=group_standing['playedGames'],
-                crest_uri=group_standing['crestURI'],
-                points=group_standing['points'],
-                goals=group_standing['goals'],
-                goals_against=group_standing['goalsAgainst'],
-                goal_difference=group_standing['goalDifference'],
-            )
-
-    return cup_table
-
-
 def get_table(competiton_id, matchday=None):
     from competition.models import CompetitionId
+
     if isinstance(competiton_id, CompetitionId):
         import requests
         base_url = 'http://api.football-data.org/v1/competitions/' + str(competiton_id.value) + '/leagueTable'
@@ -97,6 +101,7 @@ def get_table(competiton_id, matchday=None):
 
 def get_all_tables():
     from competition.util import fetch_competitions
+
     for competition in fetch_competitions():
         try:
             get_table(CupId(competition['id']))
@@ -107,6 +112,7 @@ def get_all_tables():
 def get_league_table_position_changes(league_table, league_id):
     # TODO Rewrite
     from table.models import LeagueTable
+
     if isinstance(league_table, LeagueTable):
         league_table_last_matchday = get_table(league_id, league_table.matchday - 1)
         position_changes = []
@@ -124,6 +130,7 @@ def get_league_table_position_changes(league_table, league_id):
 def get_cup_table_position_changes(cup_table, cup_id):
     # TODO Rewrite
     from table.models import CupTable
+
     if isinstance(cup_table, CupTable):
         cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 1)
         position_changes = []

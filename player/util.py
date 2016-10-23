@@ -39,6 +39,7 @@ def get_players(team_id):
         from player.models import Player
         from team.models import Team
         import re
+
         players.append(
             Player.objects.get_or_create(
                 team=Team.objects.get(id=team_id),
@@ -57,6 +58,7 @@ def get_players(team_id):
 
 def get_all_players():
     from team.models import Team
+
     players = []
     for team in Team.objects.all():
         players.append(get_players(team.id))

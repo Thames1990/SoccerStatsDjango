@@ -1,0 +1,64 @@
+{% extends 'SoccerStats/base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+    <card>
+        <h2>Wettbewerbe</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Anzahl</th>
+                <th>Anzahl Teams</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ competition.count }}</td>
+                <td>{{ competition.team.count }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </card>
+
+    {#    <card>#}
+    {#    <h2>Begegnungen</h2>#}
+    {#    <p>{{ fixture.result_avg.goals_home_team }}:{{ fixture.result_avg.goals_away_team }}</p>#}
+    {#    </card>#}
+
+    <card>
+    <h2>Tabellen</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Durchschnitt erzielte Tore</th>
+                <th>Durchschnitt kassierte Tore</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ cup_table.group_standing.goals_avg }}</td>
+                <td>{{ cup_table.group_standing.goals_against_avg }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </card>
+
+    <card>
+        <h2>Mannschaften</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Anzahl</th>
+                <th>Durchschnittlicher Marktwert</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ team.count }}</td>
+                <td>{{ team.squad_market_value.avg|intword }} €</td>
+            </tr>
+            </tbody>
+        </table>
+    </card>
+{% endblock %}

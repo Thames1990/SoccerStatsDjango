@@ -1,5 +1,6 @@
 def fetch_competitions(competition_id=None):
     import requests
+
     base_url = 'http://api.football-data.org/v1/competitions/'
     if competition_id:
         base_url += str(competition_id)
@@ -11,6 +12,7 @@ def fetch_competitions(competition_id=None):
 
 def get_competition(competition_id):
     from competition.models import Competition
+
     competition = fetch_competitions(competition_id)
     return Competition.objects.get_or_create(
         id=competition['id'],

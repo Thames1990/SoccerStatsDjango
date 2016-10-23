@@ -1,5 +1,6 @@
 def fetch_teams(competition_id):
     import requests
+
     return requests.get(
         'http://api.football-data.org/v1/competitions/' + str(competition_id) + '/teams',
         headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
@@ -11,6 +12,7 @@ def get_competition_teams(competition_id):
     for team in fetch_teams(competition_id):
         from competition.models import Competition
         from team.models import Team
+
         import re
         team = Team.objects.get_or_create(
             id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
@@ -27,6 +29,7 @@ def get_competition_teams(competition_id):
 
 def get_all_teams():
     from competition.models import Competition
+
     teams = []
     for competition in Competition.objects.all():
         teams.append(get_competition_teams(competition.id))

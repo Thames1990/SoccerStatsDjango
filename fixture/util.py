@@ -12,6 +12,7 @@ def get_fixtures(competition_id):
         from fixture.models import Fixture
         from competition.models import Competition
         from team.models import Team
+        import re
 
         fxt = Fixture.objects.get_or_create(
             competition=Competition.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]),

@@ -635,33 +635,33 @@ model</columns>
       <mandatory>1</mandatory>
       <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
-    <column id="157" parent="19" name="position">
-      <mandatory>1</mandatory>
-      <data-type>VARCHAR(255)(0,-1)|12</data-type>
-    </column>
-    <column id="158" parent="19" name="jersey_number">
+    <column id="157" parent="19" name="jersey_number">
       <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="159" parent="19" name="date_of_birth">
+    <column id="158" parent="19" name="date_of_birth">
       <mandatory>1</mandatory>
       <data-type>DATE(0,-1)|12</data-type>
     </column>
-    <column id="160" parent="19" name="nationality">
+    <column id="159" parent="19" name="nationality">
       <mandatory>1</mandatory>
       <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
-    <column id="161" parent="19" name="contract_until">
+    <column id="160" parent="19" name="contract_until">
       <data-type>DATE(0,-1)|12</data-type>
     </column>
-    <column id="162" parent="19" name="market_value">
+    <column id="161" parent="19" name="market_value">
       <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
     </column>
-    <column id="163" parent="19" name="image">
+    <column id="162" parent="19" name="image">
       <data-type>VARCHAR(200)(0,-1)|12</data-type>
     </column>
-    <column id="164" parent="19" name="team_id">
+    <column id="163" parent="19" name="team_id">
       <mandatory>1</mandatory>
       <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="164" parent="19" name="position">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(255)(0,-1)|12</data-type>
     </column>
     <key id="165" parent="19">
       <columns>id</columns>

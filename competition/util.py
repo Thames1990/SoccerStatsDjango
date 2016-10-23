@@ -14,7 +14,7 @@ def get_competition(competition_id):
     from competition.models import Competition
 
     competition = fetch_competitions(competition_id)
-    return Competition.objects.get_or_create(
+    Competition.objects.get_or_create(
         id=competition['id'],
         caption=competition['caption'],
         league=competition['league'],
@@ -24,11 +24,9 @@ def get_competition(competition_id):
         number_of_teams=competition['numberOfTeams'],
         number_of_games=competition['numberOfGames'],
         last_updated=competition['lastUpdated'],
-    )[0]
+    )
 
 
 def get_all_competitions():
-    competitions = []
     for competition in fetch_competitions():
-        competitions.append(get_competition(competition['id']))
-    return competitions
+        get_competition(competition['id'])

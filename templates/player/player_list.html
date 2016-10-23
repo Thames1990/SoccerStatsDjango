@@ -1,12 +1,10 @@
 {% extends 'SoccerStats/base.html' %}
 
-{% load string_extras %}
-
 {% block content %}
     <grid>
         {% for player in players %}
             <div col="1/3">
-                <a href="{% url 'player:detail' player.pk %}">
+                <a href="{% url 'player:detail' player.id %}">
                     <card>
                         {% if player.image %}
                             <img src="{{ player.image }}"

@@ -5,6 +5,7 @@ from team.models import Team
 def get_cup_table(json):
     from table.models import CupTable, GroupStanding, Group
 
+    # DFB-Pokal doesn't have a table yet
     if 'error' not in json:
         cup_table = CupTable.objects.get_or_create(
             competition=Competition.objects.get(caption=json['leagueCaption']),
@@ -30,8 +31,6 @@ def get_cup_table(json):
                     goals_against=group_standing['goalsAgainst'],
                     goal_difference=group_standing['goalDifference'],
                 )
-
-        return cup_table
 
 
 def get_league_table(json):
@@ -77,8 +76,6 @@ def get_league_table(json):
             losses=team['away']['losses'],
         )
 
-    return league_table
-
 
 def get_table(competiton_id, matchday=None):
     from competition.models import CompetitionId
@@ -93,10 +90,10 @@ def get_table(competiton_id, matchday=None):
             headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
         ).json()
         if isinstance(competiton_id, CupId):
-            return get_cup_table(json)
+            get_cup_table(json)
         elif isinstance(competiton_id, LeagueId):
-            return get_league_table(json)
-    raise ValueError(competiton_id + ' is no valid CompetitionId')
+            get_league_table(json)
+    raise ValueError(str(competiton_id) + ' is no valid CompetitionId')
 
 
 def get_all_tables():
@@ -124,7 +121,7 @@ def get_league_table_position_changes(league_table, league_id):
             else:
                 position_changes.append(None)
         return position_changes
-    raise ValueError(league_id + ' is no valid LeagueId')
+    raise ValueError(str(league_id) + ' is no valid LeagueId')
 
 
 def get_cup_table_position_changes(cup_table, cup_id):
@@ -146,4 +143,4 @@ def get_cup_table_position_changes(cup_table, cup_id):
                     group_position_changes.append(None)
             position_changes.append(group_position_changes)
         return position_changes
-    raise ValueError(cup_id + ' is no valid CupId')
+    raise ValueError(str(cup_id) + ' is no valid CupId')

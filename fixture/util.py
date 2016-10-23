@@ -8,7 +8,6 @@ def fetch_fixtures(competition_id):
 
 
 def get_fixtures(competition_id):
-    fixtures = []
     for fixture in fetch_fixtures(competition_id):
         from fixture.models import Fixture
         from competition.models import Competition
@@ -70,15 +69,9 @@ def get_fixtures(competition_id):
                 away_win=fixture['odds']['awayWin'],
             )
 
-        fixtures.append(fxt)
-
-    return fixtures
-
 
 def get_all_fixtures():
     from competition.util import fetch_competitions
 
-    fixtures = []
     for competition in fetch_competitions():
-        fixtures.append(get_fixtures(competition['id']))
-    return fixtures
+        get_fixtures(competition['id'])

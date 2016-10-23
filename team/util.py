@@ -8,7 +8,6 @@ def fetch_teams(competition_id):
 
 
 def get_competition_teams(competition_id):
-    teams = []
     for team in fetch_teams(competition_id):
         from competition.models import Competition
         from team.models import Team
@@ -23,14 +22,10 @@ def get_competition_teams(competition_id):
             crest_url=team['crestUrl']  # TODO Add image check and fallback download from wikipedia
         )[0]
         team.competition.add(Competition.objects.get(id=competition_id))
-        teams.append(team)
-    return teams
 
 
 def get_all_teams():
     from competition.models import Competition
 
-    teams = []
     for competition in Competition.objects.all():
-        teams.append(get_competition_teams(competition.id))
-    return teams
+        get_competition_teams(competition.id)

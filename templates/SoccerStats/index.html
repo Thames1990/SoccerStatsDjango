@@ -191,7 +191,7 @@
             </thead>
             <tbody>
             {% for best_five in team.best_five %}
-                <tr onclick="document.location.href = '{% url 'player:detail' best_five.id %}'" style="cursor: hand">
+                <tr onclick="document.location.href = '{% url 'team:detail' best_five.id %}'" style="cursor: hand">
                     <td>{{ best_five.name }}</td>
                     <td>{{ best_five.squad_market_value|intword }} €</td>
                 </tr>

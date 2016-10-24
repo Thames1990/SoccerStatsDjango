@@ -4,7 +4,6 @@ from enum import Enum
 from django.db import models
 
 
-# TODO Use "Added support for serialization of enum.Enum objects"
 class CompetitionId(Enum):
     @classmethod
     def choices(cls):

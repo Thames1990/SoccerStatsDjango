@@ -33,3 +33,17 @@ def create_all_competitions():
         competitions.append(create_competition(competition))
 
     Competition.objects.bulk_create(competitions)
+
+
+def update_all_competitions():
+    for competition in fetch_competitions():
+        Competition.objects.filter(id=competition['id']).update(
+            caption=competition['caption'],
+            league=competition['league'],
+            year=competition['year'],
+            current_matchday=competition['currentMatchday'],
+            number_of_matchdays=competition['numberOfMatchdays'],
+            number_of_teams=competition['numberOfTeams'],
+            number_of_games=competition['numberOfGames'],
+            last_updated=competition['lastUpdated'],
+        )

@@ -14,17 +14,21 @@
             </div>
         </grid>
         <table>
+            <thead>
+            <tr>
+                <th>Wettbewerb</th>
+                <th>Aktueller Spieltag</th>
+            </tr>
+            </thead>
+            <tbody>
             {% for competition in competition.list %}
-                <tr>
-                    {% spaceless %}
-                        <td>
-                            <a href="{% url 'competition:detail' competition.id %}">
-                                {{ competition.caption }}
-                            </a>
-                        </td>
-                    {% endspaceless %}
+                <tr onclick="document.location.href = '{% url 'competition:detail' competition.id %}'"
+                    style="cursor: hand">
+                    <td>{{ competition.caption }}</td>
+                    <td>{{ competition.current_matchday }}</td>
                 </tr>
             {% endfor %}
+            </tbody>
         </table>
     </card>
 

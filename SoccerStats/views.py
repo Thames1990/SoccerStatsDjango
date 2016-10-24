@@ -12,7 +12,7 @@ def index(request):
     from django.db.models import DecimalField
     return render(request, 'SoccerStats/index.html', {
         'competition': {
-            'list': Competition.objects.values('id', 'caption'),
+            'list': Competition.objects.values('id', 'caption', 'current_matchday'),
             'count': Competition.objects.count(),
             'team': Competition.objects.aggregate(count=Sum('number_of_teams'))
         },

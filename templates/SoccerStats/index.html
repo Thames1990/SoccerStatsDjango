@@ -137,17 +137,20 @@
             </div>
         </grid>
         <table>
+            <thead>
+            <tr>
+                <th>Pokal</th>
+                <th>Aktueller Spieltag</th>
+            </tr>
+            </thead>
+            <tbody>
             {% for cup_table in cup_table.list %}
-                <tr>
-                    {% spaceless %}
-                        <td>
-                            <a href="{% url 'table:cup_detail' cup_table.id %}">
-                                {{ cup_table.league_caption }}
-                            </a>
-                        </td>
-                    {% endspaceless %}
+                <tr onclick="document.location.href = '{% url 'table:cup_detail' cup_table.id %}'" style="cursor: hand">
+                    <td>{{ cup_table.league_caption }}</td>
+                    <td>{{ cup_table.matchday }}</td>
                 </tr>
             {% endfor %}
+            </tbody>
         </table>
     </card>
 
@@ -162,17 +165,21 @@
             </div>
         </grid>
         <table>
+            <thead>
+            <tr>
+                <th>Liga</th>
+                <th>Aktueller Spieltag</th>
+            </tr>
+            </thead>
+            <tbody>
             {% for league_table in league_table.list %}
-                <tr>
-                    {% spaceless %}
-                        <td>
-                            <a href="{% url 'table:league_detail' league_table.id %}">
-                                {{ league_table.league_caption }}
-                            </a>
-                        </td>
-                    {% endspaceless %}
+                <tr onclick="document.location.href = '{% url 'table:league_detail' league_table.id %}'"
+                    style="cursor: hand">
+                    <td>{{ league_table.league_caption }}</td>
+                    <td>{{ league_table.matchday }}</td>
                 </tr>
             {% endfor %}
+            </tbody>
         </table>
     </card>
 

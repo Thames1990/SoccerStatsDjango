@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'table',
     'team',
     'debug_toolbar',
+    'django_extensions',
     'django_spaghetti',
 ]
 
@@ -129,6 +130,14 @@ STATIC_URL = '/static/'
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": lambda request: True,
 }
+
+SHELL_PLUS_PRE_IMPORTS = (
+    'competition.util',
+    'fixture.util',
+    'player.util',
+    'table.util',
+    'team.util',
+)
 
 SPAGHETTI_SAUCE = {
     'apps': [

@@ -12,7 +12,7 @@ def index(request):
     from django.db.models import DecimalField
     return render(request, 'SoccerStats/index.html', {
         'competition': {
-            'list': Competition.objects.values('id', 'caption', 'current_matchday'),
+            'list': Competition.objects.only('id', 'caption', 'current_matchday'),
             'count': Competition.objects.count(),
             'team': Competition.objects.aggregate(count=Sum('number_of_teams'))
         },
@@ -41,7 +41,7 @@ def index(request):
             'best_five': Player.objects.order_by('-market_value')[:5],
         },
         'cup_table': {
-            'list': CupTable.objects.values('id', 'league_caption'),
+            'list': CupTable.objects.only('id', 'league_caption', 'matchday'),
             'count': CupTable.objects.count(),
             'group_standing': CupTable.objects.aggregate(
                 goals_avg=Avg(
@@ -51,7 +51,7 @@ def index(request):
             )
         },
         'league_table': {
-            'list': LeagueTable.objects.values('id', 'league_caption'),
+            'list': LeagueTable.objects.only('id', 'league_caption', 'matchday'),
             'count': LeagueTable.objects.count(),
             'standing': LeagueTable.objects.aggregate(
                 goals_avg=Avg(

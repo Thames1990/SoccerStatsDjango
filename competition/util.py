@@ -14,7 +14,7 @@ def get_competition(competition_id):
     from competition.models import Competition
 
     competition = fetch_competitions(competition_id)
-    # TODO Check update_or_create
+    # TODO Split into bulk creation/update
     Competition.objects.get_or_create(
         id=competition['id'],
         caption=competition['caption'],

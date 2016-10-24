@@ -5,14 +5,14 @@ from team.models import Team
 
 
 class LeagueTable(models.Model):
-    competition = models.ForeignKey(Competition)
+    competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
 
 
 class Standing(models.Model):
-    league_table = models.ForeignKey(LeagueTable)
-    team = models.ForeignKey(Team)
+    league_table = models.ForeignKey(LeagueTable, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
     position = models.PositiveIntegerField()
     played_games = models.PositiveIntegerField()
     points = models.PositiveIntegerField()
@@ -45,7 +45,7 @@ class Standing(models.Model):
 
 
 class Home(models.Model):
-    standing = models.ForeignKey(Standing)
+    standing = models.ForeignKey(Standing, on_delete=models.CASCADE)
     goals = models.PositiveIntegerField()
     goals_against = models.PositiveIntegerField()
     wins = models.PositiveIntegerField()
@@ -54,7 +54,7 @@ class Home(models.Model):
 
 
 class Away(models.Model):
-    standing = models.ForeignKey(Standing)
+    standing = models.ForeignKey(Standing, on_delete=models.CASCADE)
     goals = models.PositiveIntegerField()
     goals_against = models.PositiveIntegerField()
     wins = models.PositiveIntegerField()
@@ -63,13 +63,13 @@ class Away(models.Model):
 
 
 class CupTable(models.Model):
-    competition = models.ForeignKey(Competition)
+    competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
 
 
 class Group(models.Model):
-    cup_table = models.ForeignKey(CupTable)
+    cup_table = models.ForeignKey(CupTable, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 
     class Meta:
@@ -77,8 +77,8 @@ class Group(models.Model):
 
 
 class GroupStanding(models.Model):
-    group = models.ForeignKey(Group)
-    team = models.ForeignKey(Team)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
     rank = models.PositiveSmallIntegerField()
     played_games = models.PositiveSmallIntegerField()
     crest_uri = models.URLField(null=True)

@@ -4,7 +4,7 @@ from team.models import Team
 
 
 class Player(models.Model):
-    team = models.ForeignKey(Team)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     POSITION = (
         ('Keeper', 'Torwart'),

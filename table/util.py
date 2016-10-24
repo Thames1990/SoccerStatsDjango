@@ -105,41 +105,57 @@ def get_all_tables():
         get_table(competiton_id)
 
 
-def get_league_table_position_changes(league_table, league_id):
-    # TODO Rewrite
+def get_league_table_position_changes(league_table):
     from table.models import LeagueTable
 
     if isinstance(league_table, LeagueTable):
-        league_table_last_matchday = get_table(league_id, league_table.matchday - 1)
-        position_changes = []
-        last_matchday_standing_set = league_table_last_matchday.standing_set.all()
-        for standing in league_table.standing_set.all():
-            last_matchday_standing = last_matchday_standing_set.get(team_name=standing.team_name)
-            if standing.has_position_changed(last_matchday_standing):
-                position_changes.append(standing.has_position_improved(last_matchday_standing))
-            else:
-                position_changes.append(None)
-        return position_changes
-    raise ValueError(str(league_id) + ' is no valid LeagueId')
+        try:
+            league_table_last_matchday = LeagueTable.objects.get(
+                competition=league_table.competition,
+                league_caption=league_table.league_caption,
+                matchday=league_table.matchday - 1,
+            )
+
+            position_changes = []
+            last_matchday_standing_set = league_table_last_matchday.standing_set.all()
+            for standing in league_table.standing_set.all():
+                last_matchday_standing = last_matchday_standing_set.get(team_name=standing.team_name)
+                if standing.has_position_changed(last_matchday_standing):
+                    position_changes.append(standing.has_position_improved(last_matchday_standing))
+                else:
+                    position_changes.append(None)
+            return position_changes
+        except LeagueTable.DoesNotExist:
+            # TODO log
+            pass
+    raise ValueError(str(league_table) + ' is no valid LeagueTable')
 
 
-def get_cup_table_position_changes(cup_table, cup_id):
-    # TODO Rewrite
+def get_cup_table_position_changes(cup_table):
     from table.models import CupTable
 
     if isinstance(cup_table, CupTable):
-        cup_table_last_matchday = get_table(cup_id, cup_table.matchday - 1)
-        position_changes = []
-        last_matchday_group_set = cup_table_last_matchday.group_set.all()
-        for group in cup_table.group_set.all():
-            group_position_changes = []
-            last_matchday_group = last_matchday_group_set.get(name=group.name)
-            for group_standing in group.groupstanding_set.all():
-                last_matchday_group_standing = last_matchday_group.groupstanding_set.get(team=group_standing.team)
-                if group_standing.has_rank_changed(last_matchday_group_standing):
-                    group_position_changes.append(group_standing.has_rank_improved(last_matchday_group_standing))
-                else:
-                    group_position_changes.append(None)
-            position_changes.append(group_position_changes)
-        return position_changes
-    raise ValueError(str(cup_id) + ' is no valid CupId')
+        try:
+            cup_table_last_matchday = CupTable.objects.get(
+                competition=cup_table.competition,
+                league_caption=cup_table.league_caption,
+                matchday=cup_table.matchday - 1,
+            )
+
+            position_changes = []
+            last_matchday_group_set = cup_table_last_matchday.group_set.all()
+            for group in cup_table.group_set.all():
+                group_position_changes = []
+                last_matchday_group = last_matchday_group_set.get(name=group.name)
+                for group_standing in group.groupstanding_set.all():
+                    last_matchday_group_standing = last_matchday_group.groupstanding_set.get(team=group_standing.team)
+                    if group_standing.has_rank_changed(last_matchday_group_standing):
+                        group_position_changes.append(group_standing.has_rank_improved(last_matchday_group_standing))
+                    else:
+                        group_position_changes.append(None)
+                position_changes.append(group_position_changes)
+            return position_changes
+        except CupTable.DoesNotExist:
+            # TODO log
+            pass
+    raise ValueError(str(cup_table) + ' is no valid CupTable')

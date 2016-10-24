@@ -4,7 +4,9 @@
 
 {% block content %}
     {% for cup_table in cup_tables %}
-        <h2>{{ cup_table.league_caption }} Tabelle</h2>
+        <a href="{% url 'table:cup_detail' cup_table.id %}">
+            <h2>{{ cup_table.league_caption }} Tabelle</h2>
+        </a>
         <grid>
             {% for group in cup_table.group_set.all %}
                 <div col="1/2">

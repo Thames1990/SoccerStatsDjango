@@ -4,7 +4,9 @@
 
 {% block content %}
     {% for league_table in league_tables %}
-        <h2>{{ league_table.league_caption }} Tabelle</h2>
+        <a href="{% url 'table:league_detail' league_table.id %}">
+            <h2>{{ league_table.league_caption }} Tabelle</h2>
+        </a>
         <table>
             <thead>
             <tr>

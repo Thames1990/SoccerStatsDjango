@@ -166,7 +166,7 @@ codename</columns>
     </column>
     <column id="58" parent="5" name="username">
       <mandatory>1</mandatory>
-      <data-type>VARCHAR(30)(0,-1)|12</data-type>
+      <data-type>VARCHAR(150)(0,-1)|12</data-type>
     </column>
     <index id="59" parent="5" name="sqlite_autoindex_auth_user_1">
       <name-surrogate>1</name-surrogate>

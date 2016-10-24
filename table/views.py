@@ -2,12 +2,18 @@ from django.views.generic import DetailView, ListView
 
 from .models import CupTable, LeagueTable
 
+from .util import get_cup_table_position_changes, get_league_table_position_changes
 
-# TODO Add position/rank changes as extra_context
 
 class CupTableDetailView(DetailView):
     model = CupTable
     context_object_name = 'cup_table'
+
+    # TODO
+    def get_context_data(self, **kwargs):
+        context = super(CupTableDetailView, self).get_context_data(**kwargs)
+        context['cup_table_position_changes'] = get_cup_table_position_changes(self.object)
+        return context
 
 
 class CupTableListView(ListView):
@@ -18,6 +24,12 @@ class CupTableListView(ListView):
 class LeagueTableDetailView(DetailView):
     model = LeagueTable
     context_object_name = 'league_table'
+
+    # TODO
+    def get_context_data(self, **kwargs):
+        context = super(LeagueTableDetailView, self).get_context_data(**kwargs)
+        context['league_table_position_changes'] = get_league_table_position_changes(self.object)
+        return context
 
 
 class LeagueTableListView(ListView):

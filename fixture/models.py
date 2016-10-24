@@ -8,7 +8,7 @@ class Fixture(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_team')
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_team')
-    date = models.DateTimeField()
+    date = models.DateTimeField(db_index=True)
     SCHEDULED = 1
     TIMED = 2
     POSTPONED = 3
@@ -23,7 +23,7 @@ class Fixture(models.Model):
         (CANCELED, 'CANCELED'),
         (FINISHED, 'FINISHED'),
     )
-    status = models.CharField(max_length=255, choices=STATUS)
+    status = models.CharField(db_index=True, max_length=255, choices=STATUS)
     matchday = models.PositiveSmallIntegerField()
 
 

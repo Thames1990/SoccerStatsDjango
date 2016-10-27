@@ -45,7 +45,9 @@ def index(request):
         'cup_table': {
             # TODO Only get last matchday
             # CupTable.objects.values('competition').annotate(current_matchday=Max('matchday'))
-            'list': CupTable.objects.filter(matchday__in=CupTable.objects.aggregate(Max('matchday'))),
+            'list': CupTable.objects.filter(
+                matchday=CupTable.objects.filter(matchday=CupTable.objects.annotate(Max('matchday')))
+            ),
             'count': CupTable.objects.count(),
             'group_standing': CupTable.objects.aggregate(
                 goals_avg=Avg(

@@ -28,7 +28,7 @@ class Player(models.Model):
     date_of_birth = models.DateField(null=True)
     nationality = models.CharField(max_length=255)
     contract_until = models.DateField(null=True)
-    market_value = models.PositiveIntegerField(null=True)
+    market_value = models.PositiveIntegerField(db_index=True, null=True)
     image = models.URLField(null=True)
 
     class Meta:

@@ -1,3 +1,6 @@
+from competition.models import Competition
+
+
 def fetch_competitions(competition_id=None):
     import requests
 
@@ -10,12 +13,8 @@ def fetch_competitions(competition_id=None):
     ).json()
 
 
-def get_competition(competition_id):
-    from competition.models import Competition
-
-    competition = fetch_competitions(competition_id)
-    # TODO Split into bulk creation/update
-    Competition.objects.get_or_create(
+def create_competition(competition):
+    return Competition(
         id=competition['id'],
         caption=competition['caption'],
         league=competition['league'],
@@ -28,6 +27,23 @@ def get_competition(competition_id):
     )
 
 
-def get_all_competitions():
+def create_all_competitions():
+    competitions = []
     for competition in fetch_competitions():
-        get_competition(competition['id'])
+        competitions.append(create_competition(competition))
+
+    Competition.objects.bulk_create(competitions)
+
+
+def update_all_competitions():
+    for competition in fetch_competitions():
+        Competition.objects.filter(id=competition['id']).update(
+            caption=competition['caption'],
+            league=competition['league'],
+            year=competition['year'],
+            current_matchday=competition['currentMatchday'],
+            number_of_matchdays=competition['numberOfMatchdays'],
+            number_of_teams=competition['numberOfTeams'],
+            number_of_games=competition['numberOfGames'],
+            last_updated=competition['lastUpdated'],
+        )

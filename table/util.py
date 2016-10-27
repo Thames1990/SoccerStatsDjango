@@ -44,7 +44,7 @@ def get_league_table(json):
     )
 
     for team in json['standing']:
-        standing, created = Standing.objects.get_or_create(
+        standing = Standing.objects.get_or_create(
             league_table=league_table,
             position=team['position'],
             team=Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
@@ -56,7 +56,7 @@ def get_league_table(json):
             wins=team['wins'],
             draws=team['draws'],
             losses=team['losses'],
-        )
+        )[0]
 
         Home.objects.get_or_create(
             standing=standing,
@@ -97,65 +97,65 @@ def get_all_tables():
     from competition.util import fetch_competitions
 
     for competition in fetch_competitions():
-        try:
-            competiton_id = CupId(int(competition['id']))
-        except ValueError:
-            competiton_id = LeagueId(int(competition['id']))
+        competition = Competition.objects.get(id=competition['id'])
+        for matchday in range(1, competition.current_matchday):
+            try:
+                competiton_id = CupId(competition.id)
+            except ValueError:
+                competiton_id = LeagueId(competition.id)
 
-        get_table(competiton_id)
-
-
-def get_league_table_position_changes(league_table):
-    from table.models import LeagueTable
-
-    if isinstance(league_table, LeagueTable):
-        try:
-            league_table_last_matchday = LeagueTable.objects.get(
-                competition=league_table.competition,
-                league_caption=league_table.league_caption,
-                matchday=league_table.matchday - 1,
-            )
-
-            position_changes = []
-            last_matchday_standing_set = league_table_last_matchday.standing_set.all()
-            for standing in league_table.standing_set.all():
-                last_matchday_standing = last_matchday_standing_set.get(team_name=standing.team_name)
-                if standing.has_position_changed(last_matchday_standing):
-                    position_changes.append(standing.has_position_improved(last_matchday_standing))
-                else:
-                    position_changes.append(None)
-            return position_changes
-        except LeagueTable.DoesNotExist:
-            # TODO log
-            pass
-    raise ValueError(str(league_table) + ' is no valid LeagueTable')
+            get_table(competiton_id, matchday)
 
 
 def get_cup_table_position_changes(cup_table):
     from table.models import CupTable
 
-    if isinstance(cup_table, CupTable):
-        try:
-            cup_table_last_matchday = CupTable.objects.get(
-                competition=cup_table.competition,
-                league_caption=cup_table.league_caption,
-                matchday=cup_table.matchday - 1,
-            )
+    cup_table = CupTable.objects.get(id=cup_table.id)
+    try:
+        cup_table_last_matchday = CupTable.objects.get(
+            competition=cup_table.competition,
+            league_caption=cup_table.league_caption,
+            matchday=cup_table.matchday - 1,
+        )
 
-            position_changes = []
-            last_matchday_group_set = cup_table_last_matchday.group_set.all()
-            for group in cup_table.group_set.all():
-                group_position_changes = []
-                last_matchday_group = last_matchday_group_set.get(name=group.name)
-                for group_standing in group.groupstanding_set.all():
-                    last_matchday_group_standing = last_matchday_group.groupstanding_set.get(team=group_standing.team)
-                    if group_standing.has_rank_changed(last_matchday_group_standing):
-                        group_position_changes.append(group_standing.has_rank_improved(last_matchday_group_standing))
-                    else:
-                        group_position_changes.append(None)
-                position_changes.append(group_position_changes)
-            return position_changes
-        except CupTable.DoesNotExist:
-            # TODO log
-            pass
-    raise ValueError(str(cup_table) + ' is no valid CupTable')
+        position_changes = []
+        last_matchday_group_set = cup_table_last_matchday.group_set.all()
+        for group in cup_table.group_set.all():
+            group_position_changes = []
+            last_matchday_group = last_matchday_group_set.get(name=group.name)
+            for group_standing in group.groupstanding_set.all():
+                last_matchday_group_standing = last_matchday_group.groupstanding_set.get(team=group_standing.team)
+                if group_standing.has_rank_changed(last_matchday_group_standing):
+                    group_position_changes.append(group_standing.has_rank_improved(last_matchday_group_standing))
+                else:
+                    group_position_changes.append(None)
+            position_changes.append(group_position_changes)
+        return position_changes
+    except CupTable.DoesNotExist:
+        # TODO log
+        pass
+
+
+def get_league_table_position_changes(league_table):
+    from table.models import LeagueTable
+
+    league_table = LeagueTable.objects.get(id=league_table.id)
+    try:
+        league_table_last_matchday = LeagueTable.objects.get(
+            competition=league_table.competition,
+            league_caption=league_table.league_caption,
+            matchday=league_table.matchday - 1,
+        )
+
+        position_changes = []
+        last_matchday_standing_set = league_table_last_matchday.standing_set.all()
+        for standing in league_table.standing_set.all():
+            last_matchday_standing = last_matchday_standing_set.get(team__name=standing.team.name)
+            if standing.has_position_changed(last_matchday_standing):
+                position_changes.append(standing.has_position_improved(last_matchday_standing))
+            else:
+                position_changes.append(None)
+        return position_changes
+    except LeagueTable.DoesNotExist:
+        # TODO log
+        pass

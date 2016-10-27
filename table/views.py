@@ -9,7 +9,6 @@ class CupTableDetailView(DetailView):
     model = CupTable
     context_object_name = 'cup_table'
 
-    # TODO
     def get_context_data(self, **kwargs):
         context = super(CupTableDetailView, self).get_context_data(**kwargs)
         context['cup_table_position_changes'] = get_cup_table_position_changes(self.object)
@@ -25,7 +24,6 @@ class LeagueTableDetailView(DetailView):
     model = LeagueTable
     context_object_name = 'league_table'
 
-    # TODO
     def get_context_data(self, **kwargs):
         context = super(LeagueTableDetailView, self).get_context_data(**kwargs)
         context['league_table_position_changes'] = get_league_table_position_changes(self.object)

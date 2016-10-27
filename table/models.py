@@ -9,6 +9,9 @@ class LeagueTable(models.Model):
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
 
+    def __str__(self):
+        return self.competition.caption + '|' + self.league_caption + '|' + str(self.matchday)
+
 
 class Standing(models.Model):
     league_table = models.ForeignKey(LeagueTable, on_delete=models.CASCADE)

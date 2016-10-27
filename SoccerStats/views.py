@@ -8,8 +8,8 @@ def index(request):
     from table.models import CupTable
     from table.models import LeagueTable
     from team.models import Team
-    from django.db.models import Avg, Sum
-    from django.db.models import DecimalField
+    from django.db.models import Avg, Sum, DecimalField, Max, F, Q
+
     return render(request, 'SoccerStats/index.html', {
         'competition': {
             'list': Competition.objects.only('id', 'caption', 'current_matchday'),
@@ -41,7 +41,9 @@ def index(request):
             'best_five': Player.objects.order_by('-market_value')[:5],
         },
         'cup_table': {
-            'list': CupTable.objects.only('id', 'league_caption', 'matchday'),
+            # TODO Only get last matchday
+            # CupTable.objects.values('competition').annotate(current_matchday=Max('matchday'))
+            'list': CupTable.objects.filter(matchday__in=CupTable.objects.aggregate(Max('matchday'))),
             'count': CupTable.objects.count(),
             'group_standing': CupTable.objects.aggregate(
                 goals_avg=Avg(
@@ -51,7 +53,11 @@ def index(request):
             )
         },
         'league_table': {
-            'list': LeagueTable.objects.only('id', 'league_caption', 'matchday'),
+            # TODO Only get last matchday
+            # LeagueTable.objects.values('competition').annotate(current_matchday=Max('matchday'))
+            'list': LeagueTable.objects.filter(
+                matchday=LeagueTable.objects.filter(matchday=LeagueTable.objects.annotate(Max('matchday')))
+            ),
             'count': LeagueTable.objects.count(),
             'standing': LeagueTable.objects.aggregate(
                 goals_avg=Avg(

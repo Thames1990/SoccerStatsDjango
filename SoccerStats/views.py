@@ -2,7 +2,6 @@ from django.db import transaction
 from django.shortcuts import render
 
 
-@transaction.atomic
 def index(request):
     from competition.models import Competition
     from fixture.models import Fixture

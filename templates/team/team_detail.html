@@ -44,7 +44,11 @@
                     <td>{{ player.name }}</td>
                     <td>{{ player.date_of_birth }} ({{ player.age }})</td>
                     <td>{{ player.nationality }}</td>
-                    <td>{{ player.market_value|intword }} €</td>
+                    {% if player.market_value %}
+                        <td>{{ player.market_value|intword }} €</td>
+                    {% else %}
+                        <td>N/A</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>

@@ -7,6 +7,7 @@ def fetch_competitions(competition_id=None):
     base_url = 'http://api.football-data.org/v1/competitions/'
     if competition_id:
         base_url += str(competition_id)
+
     return requests.get(
         base_url,
         headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}

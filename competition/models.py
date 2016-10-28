@@ -30,6 +30,7 @@ class CompetitionId(Enum):
                     return member
 
 
+# TODO Add season 2015
 class CupId(CompetitionId):
     """IDs for cups"""
     EC = 424
@@ -40,6 +41,7 @@ class CupId(CompetitionId):
     """Champions League 2016/17"""
 
 
+# TODO Add season 2015
 class LeagueId(CompetitionId):
     """IDs for leagues"""
     PL = 426

@@ -15,9 +15,8 @@
                         <tr>
                             <th>Position</th>
                             <th width="30%">Verein</th>
-                            <th>Spiele</th>
+                            <th>Sp</th>
                             <th>Tore</th>
-                            <th>Diff.</th>
                             <th>Pkte.</th>
                         </tr>
                         </thead>
@@ -27,10 +26,9 @@
                                 <td>
                                     {% if cup_table_position_changes %}
                                         <tag>
-                                            {# TODO Use "Added the is and is not comparison operators to the if tag" #}
                                             {% if cup_table_position_changes|get_at_index:forloop.parentloop.counter0|get_at_index:forloop.counter0 == True %}
                                                 <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                                            {% elif cup_table_position_changes|get_at_index:forloop.counter0 == False %}
+                                            {% elif cup_table_position_changes|get_at_index:forloop.parentloop.counter0|get_at_index:forloop.counter0 == False %}
                                                 <i class="fa fa-arrow-down" aria-hidden="true"></i>
                                             {% else %}
                                                 <i class="fa fa-arrow-right" aria-hidden="true"></i>
@@ -42,7 +40,6 @@
                                 <td width="30%">{{ group_standing.team.name }}</td>
                                 <td>{{ group_standing.played_games }}</td>
                                 <td>{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
-                                <td>{{ group_standing.goal_difference }}</td>
                                 <td>{{ group_standing.points }}</td>
                             </tr>
                         {% endfor %}

@@ -4,7 +4,18 @@
 
 {% block content %}
     <card>
-        <h5>{{ fixture.home_team_name }} - {{ fixture.away_team_name }}</h5>
+        <grid>
+            <div col="1/2">
+                <h2>{{ fixture.home_team.name }}</h2>
+                <img src="{{ fixture.home_team.crest_url }}"
+                     style="height: 60px; object-fit: cover; object-position: 50% 0">
+            </div>
+            <div col="1/2">
+                <h2>{{ fixture.away_team.name }}</h2>
+                <img src="{{ fixture.away_team.crest_url }}"
+                     style="height: 60px; object-fit: cover; object-position: 50% 0">
+            </div>
+        </grid>
         <hr>
         <table>
             <tr>

@@ -46,7 +46,7 @@
         <hr>
         <h3>Letzte 5 Begegnungen</h3>
         {% for last_five in fixture.last_five %}
-            <grid>
+            <grid onclick="document.location.href = '{% url 'fixture:detail' last_five.id %}'" style="cursor: hand">
                 <div col="5/12" txt="c">
                     <img src="{{ last_five.home_team.crest_url }}"
                          style="height: 60px; object-fit: cover; object-position: 50% 0">
@@ -88,7 +88,9 @@
                     <p>{{ last_five.away_team.name }}</p>
                 </div>
             </grid>
-            <hr>
+            {% if not forloop.last %}
+                <hr>
+            {% endif %}
         {% endfor %}
     </card>
 

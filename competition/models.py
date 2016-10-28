@@ -84,3 +84,6 @@ class Competition(models.Model):
 
     class Meta:
         ordering = ['caption']
+
+    def is_last_matchday(self):
+        return self.current_matchday == self.number_of_matchdays

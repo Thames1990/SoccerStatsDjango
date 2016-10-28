@@ -39,7 +39,7 @@
             </thead>
             <tbody>
             {% for player in team.player_set.all %}
-                <tr>
+                <tr onclick="document.location.href = '{% url 'player:detail' player.id %}'" style="cursor: hand">
                     <td>{{ player.jersey_number }}</td>
                     <td>{{ player.name }}</td>
                     <td>{{ player.date_of_birth }} ({{ player.age }})</td>

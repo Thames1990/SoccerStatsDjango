@@ -10,7 +10,7 @@ def index(request):
     from table.models import CupTable
     from table.models import LeagueTable
     from team.models import Team
-    from django.db.models import Avg, Sum, DecimalField, Max, F, Q
+    from django.db.models import Avg, Sum, DecimalField, Max, Min, F, Q
 
     return render(request, 'SoccerStats/index.html', {
         'competition': {
@@ -54,7 +54,7 @@ def index(request):
                     'group__groupstanding__goals',
                     output_field=DecimalField(decimal_places=2),
                 ),
-            )
+            ),
         },
         'league_table': {
             # TODO Only get last matchday
@@ -68,7 +68,7 @@ def index(request):
                     'standing__goals',
                     output_field=DecimalField(decimal_places=2),
                 ),
-            )
+            ),
         },
         'team': {
             'count': Team.objects.count(),
@@ -78,7 +78,7 @@ def index(request):
                     output_field=DecimalField(decimal_places=2),
                 )
             ),
-            'best_five': Team.objects.order_by('-squad_market_value')[:5]
+            'best_five': Team.objects.order_by('-squad_market_value')[:5],
         }
     })
 

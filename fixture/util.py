@@ -35,7 +35,7 @@ def get_competition_fixtures(competition_id):
 
         result = Result(
             fixture=fxt,
-            # TODO Fix Zero goals evaluates to null
+            # TODO Fix Zero goals evaluates to null (issue #1)
             goals_home_team=int(fixture['result']['goalsHomeTeam']) if fixture['result']['goalsHomeTeam'] else None,
             goals_away_team=int(fixture['result']['goalsAwayTeam']) if fixture['result']['goalsAwayTeam'] else None,
         )

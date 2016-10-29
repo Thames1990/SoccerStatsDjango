@@ -2,6 +2,12 @@ from competition.models import Competition
 
 
 def fetch_competitions(competition_id=None):
+    """
+    Fetches JSON representation of competitions from football-data.org.
+    Fetches a single competition if competition_id is specified, all competitions otherwise.
+    :param competition_id: Id of a competition
+    :return: JSON representation of a competition or all competitions
+    """
     import requests
 
     base_url = 'http://api.football-data.org/v1/competitions/'
@@ -9,12 +15,17 @@ def fetch_competitions(competition_id=None):
         base_url += str(competition_id)
 
     return requests.get(
-        base_url,
+        url=base_url,
         headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
     ).json()
 
 
 def create_competition(competition):
+    """
+    Creates a Competition object.
+    :param competition: JSON representation of the competition
+    :return: Competition object
+    """
     return Competition(
         id=competition['id'],
         caption=competition['caption'],
@@ -29,14 +40,16 @@ def create_competition(competition):
 
 
 def create_all_competitions():
+    """Creates all competitions in the database."""
     competitions = []
     for competition in fetch_competitions():
         competitions.append(create_competition(competition))
 
-    Competition.objects.bulk_create(competitions)
+    Competition.objects.bulk_create(objs=competitions)
 
 
 def update_all_competitions():
+    """Updates all competitions in the database"""
     for competition in fetch_competitions():
         Competition.objects.filter(id=competition['id']).update(
             caption=competition['caption'],

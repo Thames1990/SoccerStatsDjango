@@ -1,23 +1,25 @@
 import requests
 
 
-def get_player_image(player):
+def get_player_image(player_name):
     """
     Gets the Wikipedia page image for a player
-    :param player: Player, whose image to look for
+    :param player_name: Player, whose image to look for
     :return: URL to the Wikimedia player image if it exists; None otherwise
     """
-    json = requests.get('http://en.wikipedia.org/w/api.php', {
-        'action': 'query',
-        'format': 'json',
-        'generator': 'search',
-        'gsrsearch': player['name'],
-        'gsrlimit': 1,
-        'prop': 'pageimages',
-        'piprop': 'thumbnail',
-        'pilimit': 'max',
-        'pithumbsize': 400
-    }).json()
+    json = requests.get(
+        url='http://en.wikipedia.org/w/api.php',
+        params={
+            'action': 'query',
+            'format': 'json',
+            'generator': 'search',
+            'gsrsearch': player_name,
+            'gsrlimit': 1,
+            'prop': 'pageimages',
+            'piprop': 'thumbnail',
+            'pilimit': 'max',
+            'pithumbsize': 400
+        }).json()
     try:
         return list(json['query']['pages'].values())[0]['thumbnail']['source']
     except KeyError:
@@ -28,7 +30,7 @@ def get_player_image(player):
 def fetch_players(team_id):
     try:
         return requests.get(
-            'http://api.football-data.org/v1/teams/' + str(team_id) + '/players',
+            url='http://api.football-data.org/v1/teams/' + str(team_id) + '/players',
             headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
         ).json()['players']
     except KeyError:
@@ -54,10 +56,10 @@ def get_players(team_id):
             position=dict(Player.POSITION)[player['position']],
             jersey_number=player['jerseyNumber'],
             date_of_birth=player['dateOfBirth'] if player['dateOfBirth'] else None,
-            nationality=player['nationality'],
+            nationality=dict(Player.NATION)[player['nationality']],
             contract_until=player['contractUntil'],
             market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
-            image=get_player_image(player),
+            image=get_player_image(player['name']),
         )
 
 

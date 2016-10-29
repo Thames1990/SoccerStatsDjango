@@ -5,28 +5,29 @@
 {% block content %}
     <card>
         <grid>
-            <div col="11/12">
+            <div col="5/6">
                 <h1>{{ team.name }}</h1>
+                <table>
+                    <tr>
+                        <th>Kadergröße</th>
+                        <td>{{ team.player_set.all|length }}</td>
+                    </tr>
+                    {% if team.squad_market_value %}
+                        <tr>
+                            <th>Marktwert</th>
+                            <td>{{ team.squad_market_value|intword }} €</td>
+                        </tr>
+                    {% endif %}
+                </table>
             </div>
-            <div col="1/12">
+            <div col="1/6">
                 {% if team.crest_url %}
                     <img src="{{ team.crest_url }}">
                 {% endif %}
             </div>
         </grid>
-        <table>
-            <tr>
-                <th>Kadergröße</th>
-                <td>{{ team.player_set.all|length }}</td>
-            </tr>
-            {% if team.squad_market_value %}
-                <tr>
-                    <th>Marktwert</th>
-                    <td>{{ team.squad_market_value|intword }} €</td>
-                </tr>
-            {% endif %}
-        </table>
         <hr>
+        <h3>Spieler</h3>
         <table>
             <thead>
             <tr>

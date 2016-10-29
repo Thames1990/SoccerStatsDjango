@@ -9,7 +9,29 @@ def index(request):
     from table.models import CupTable
     from table.models import LeagueTable
     from team.models import Team
-    from django.db.models import Avg, Sum, DecimalField, Max, Min, F, Q
+    from django.db.models import Avg, Sum, DecimalField
+
+    cup_tables_current_matchday = CupTable.objects.raw('''
+            SELECT cup_table1.id, cup_table1.league_caption, cup_table1.matchday
+            FROM table_cuptable cup_table1, (
+              SELECT league_caption, MAX(matchday) AS current_matchday
+              FROM table_cuptable
+              GROUP BY league_caption
+            ) AS cup_table2
+            WHERE cup_table1.league_caption = cup_table2.league_caption
+            AND cup_table1.matchday = cup_table2.current_matchday
+            ''')
+
+    league_tables_current_matchday = LeagueTable.objects.raw('''
+            SELECT league_table1.id, league_table1.league_caption, league_table1.matchday
+            FROM table_leaguetable league_table1, (
+              SELECT league_caption, MAX(matchday) AS current_matchday
+              FROM table_leaguetable
+              GROUP BY league_caption
+            ) AS league_table2
+            WHERE league_table1.league_caption = league_table2.league_caption
+            AND league_table1.matchday = league_table2.current_matchday
+            ''')
 
     return render(request, 'SoccerStats/index.html', {
         'competition': {
@@ -42,44 +64,21 @@ def index(request):
             'best_five': Player.objects.order_by('-market_value')[:5],
         },
         'cup_table': {
-            # TODO Only get last matchday
-            # CupTable.objects.values('competition').annotate(current_matchday=Max('matchday'))
-            'list': CupTable.objects.raw('''
-            SELECT cup_table1.id, cup_table1.league_caption, cup_table1.matchday
-            FROM table_cuptable cup_table1, (
-              SELECT league_caption, MAX(matchday) AS current_matchday
-              FROM table_cuptable
-              GROUP BY league_caption
-            ) AS cup_table2
-            WHERE cup_table1.league_caption = cup_table2.league_caption AND cup_table1.matchday = cup_table2.current_matchday
-            '''),
-            'count': CupTable.objects.count(),
-            'group_standing': CupTable.objects.aggregate(
-                goals_avg=Avg(
-                    'group__groupstanding__goals',
-                    output_field=DecimalField(decimal_places=2),
-                ),
-            ),
+            'list': cup_tables_current_matchday,
+            'count': len(list(cup_tables_current_matchday)),
+            # TODO
+            'group_standing_goals_avg': sum(groupstanding.goals for groupstanding in
+                                            (group.groupstanding_set.all() for group in
+                                             (cup_table.group_set.all() for cup_table in
+                                              cup_tables_current_matchday))) / len(list(cup_tables_current_matchday)),
         },
         'league_table': {
-            # TODO Only get last matchday
-            # LeagueTable.objects.values('competition').annotate(current_matchday=Max('matchday'))
-            'list': LeagueTable.objects.raw('''
-            SELECT league_table1.id, league_table1.league_caption, league_table1.matchday
-            FROM table_leaguetable league_table1, (
-              SELECT league_caption, MAX(matchday) AS current_matchday
-              FROM table_leaguetable
-              GROUP BY league_caption
-            ) AS league_table2
-            WHERE league_table1.league_caption = league_table2.league_caption AND league_table1.matchday = league_table2.current_matchday
-            '''),
-            'count': LeagueTable.objects.count(),
-            'standing': LeagueTable.objects.aggregate(
-                goals_avg=Avg(
-                    'standing__goals',
-                    output_field=DecimalField(decimal_places=2),
-                ),
-            ),
+            'list': league_tables_current_matchday,
+            'count': len(list(league_tables_current_matchday)),
+            # TODO
+            # 'standing_goals_avg': sum(standing.goals for standing in
+            #                           (league_table.standing_set.all() for league_table in
+            #                            league_tables_current_matchday)) / len(list(league_tables_current_matchday)),
         },
         'team': {
             'count': Team.objects.count(),

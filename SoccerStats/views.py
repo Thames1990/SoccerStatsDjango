@@ -44,9 +44,15 @@ def index(request):
         'cup_table': {
             # TODO Only get last matchday
             # CupTable.objects.values('competition').annotate(current_matchday=Max('matchday'))
-            'list': CupTable.objects.filter(
-                matchday=CupTable.objects.filter(matchday=CupTable.objects.annotate(Max('matchday')))
-            ),
+            'list': CupTable.objects.raw('''
+            SELECT cup_table1.id, cup_table1.league_caption, cup_table1.matchday
+            FROM table_cuptable cup_table1, (
+              SELECT league_caption, MAX(matchday) AS current_matchday
+              FROM table_cuptable
+              GROUP BY league_caption
+            ) AS cup_table2
+            WHERE cup_table1.league_caption = cup_table2.league_caption AND cup_table1.matchday = cup_table2.current_matchday
+            '''),
             'count': CupTable.objects.count(),
             'group_standing': CupTable.objects.aggregate(
                 goals_avg=Avg(
@@ -58,9 +64,15 @@ def index(request):
         'league_table': {
             # TODO Only get last matchday
             # LeagueTable.objects.values('competition').annotate(current_matchday=Max('matchday'))
-            'list': LeagueTable.objects.filter(
-                matchday=LeagueTable.objects.filter(matchday=LeagueTable.objects.annotate(Max('matchday')))
-            ),
+            'list': LeagueTable.objects.raw('''
+            SELECT league_table1.id, league_table1.league_caption, league_table1.matchday
+            FROM table_leaguetable league_table1, (
+              SELECT league_caption, MAX(matchday) AS current_matchday
+              FROM table_leaguetable
+              GROUP BY league_caption
+            ) AS league_table2
+            WHERE league_table1.league_caption = league_table2.league_caption AND league_table1.matchday = league_table2.current_matchday
+            '''),
             'count': LeagueTable.objects.count(),
             'standing': LeagueTable.objects.aggregate(
                 goals_avg=Avg(

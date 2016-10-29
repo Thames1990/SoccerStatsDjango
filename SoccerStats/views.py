@@ -67,10 +67,10 @@ def index(request):
             'list': cup_tables_current_matchday,
             'count': len(list(cup_tables_current_matchday)),
             # TODO
-            'group_standing_goals_avg': sum(groupstanding.goals for groupstanding in
-                                            (group.groupstanding_set.all() for group in
-                                             (cup_table.group_set.all() for cup_table in
-                                              cup_tables_current_matchday))) / len(list(cup_tables_current_matchday)),
+            # 'group_standing_goals_avg': sum(groupstanding.goals for groupstanding in
+            #                                 (group.groupstanding_set.all() for group in
+            #                                  (cup_table.group_set.all() for cup_table in
+            #                                   cup_tables_current_matchday))) / len(list(cup_tables_current_matchday)),
         },
         'league_table': {
             'list': league_tables_current_matchday,

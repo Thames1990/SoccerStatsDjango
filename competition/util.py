@@ -50,6 +50,8 @@ def create_all_competitions():
 
 def update_all_competitions():
     """Updates all competitions in the database"""
+    # TODO Check update_or_create
+    # TODO Rewrite all util functions for each app
     for competition in fetch_competitions():
         Competition.objects.filter(id=competition['id']).update(
             caption=competition['caption'],

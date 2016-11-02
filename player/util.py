@@ -94,37 +94,36 @@ def create_all_players():
     return players
 
 
-def update_player(player):
+def update_player(player, team_id):
     """
     Updates a player.
     :param player: JSON representation of the player to be updated
+    :param team_id: Id of the players team
     :return: Number of updated rows
     """
-    return Team.objects.filter(
-
+    name = player['name']
+    return Player.objects.filter(
+        name=name,
+        date_of_birth=player['dateOfBirth'],
     ).update(
-        # TODO
-        # team=Team.objects.get(id=team_id),
-        # name=player['name'],
-        # position=dict(Player.POSITION)[player['position']],
-        # jersey_number=player['jerseyNumber'],
-        # date_of_birth=player['dateOfBirth'] if player['dateOfBirth'] else None,
-        # nationality=dict(Player.NATION)[player['nationality']],
-        # contract_until=player['contractUntil'],
-        # market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
-        # image=get_player_image(player['name']),
+        team=Team.objects.get(id=team_id),
+        position=dict(Player.POSITION)[player['position']],
+        jersey_number=player['jerseyNumber'],
+        contract_until=player['contractUntil'],
+        market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
+        image=get_player_image(player['name']),
     )
 
 
-def update_players(team):
+def update_players(team_id):
     """
     Updates all players of a team.
-    :param team: JSON representation of the team
+    :param team_id: Id of the team
     :return: Number of updated rows
     """
     updated_rows = 0
-    for player in fetch_players(team.id):
-        updated_rows += update_player(player)
+    for player in fetch_players(team_id):
+        updated_rows += update_player(player, team_id)
     return updated_rows
 
 
@@ -135,5 +134,5 @@ def update_all_players():
     """
     updated_rows = 0
     for team in Team.objects.all():
-        update_players(team)
+        update_players(team.id)
     return updated_rows

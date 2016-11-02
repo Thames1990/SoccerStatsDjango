@@ -1,4 +1,8 @@
+import re
 import requests
+
+from player.models import Player
+from team.models import Team
 
 
 def get_player_image(player_name):
@@ -28,6 +32,11 @@ def get_player_image(player_name):
 
 
 def fetch_players(team_id):
+    """
+    Fetches JSON representation of players from football-data.org.
+    :param team_id: Id of a team
+    :return: JSON representation of players from a team
+    """
     try:
         return requests.get(
             url='http://api.football-data.org/v1/teams/' + str(team_id) + '/players',
@@ -39,32 +48,93 @@ def fetch_players(team_id):
         return {}
 
 
-def get_players(team_id):
-    from player.models import Player
+def create_player(player, team_id):
+    """
+    Creates a player.
+    :param player: JSON representation of a player
+    :param team_id: Id of a team
+    :return: Created player
+    """
+    return Player(
+        team=Team.objects.get(id=team_id),
+        name=player['name'],
+        position=dict(Player.POSITION)[player['position']],
+        jersey_number=player['jerseyNumber'],
+        date_of_birth=player['dateOfBirth'] if player['dateOfBirth'] else None,
+        nationality=dict(Player.NATION)[player['nationality']],
+        contract_until=player['contractUntil'],
+        market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
+        image=get_player_image(player['name']),
+    )
 
+
+def create_players(team_id):
+    """
+    Creates player from a team.
+    :param team_id: Id of the team
+    :return: Created players
+    """
+    players = []
     for player in fetch_players(team_id):
         # Empty players indicate an empty player list
         if not player:
             break
-
-        from team.models import Team
-        import re
-
-        Player.objects.get_or_create(
-            team=Team.objects.get(id=team_id),
-            name=player['name'],
-            position=dict(Player.POSITION)[player['position']],
-            jersey_number=player['jerseyNumber'],
-            date_of_birth=player['dateOfBirth'] if player['dateOfBirth'] else None,
-            nationality=dict(Player.NATION)[player['nationality']],
-            contract_until=player['contractUntil'],
-            market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
-            image=get_player_image(player['name']),
-        )
+        players.append(create_player(player, team_id))
+    return players
 
 
-def get_all_players():
-    from team.models import Team
-
+def create_all_players():
+    """
+    Creates all players.
+    :return: Created players
+    """
+    players = []
     for team in Team.objects.all():
-        get_players(team.id)
+        players.extend(create_players(team.id))
+    return players
+
+
+def update_player(player):
+    """
+    Updates a player.
+    :param player: JSON representation of the player to be updated
+    :return: Number of updated rows
+    """
+    return Team.objects.filter(
+
+    ).update(
+        # TODO
+        # team=Team.objects.get(id=team_id),
+        # name=player['name'],
+        # position=dict(Player.POSITION)[player['position']],
+        # jersey_number=player['jerseyNumber'],
+        # date_of_birth=player['dateOfBirth'] if player['dateOfBirth'] else None,
+        # nationality=dict(Player.NATION)[player['nationality']],
+        # contract_until=player['contractUntil'],
+        # market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
+        # image=get_player_image(player['name']),
+    )
+
+
+def update_players(players):
+    """
+    Updates all players of a team.
+    :param players: JSON representation of the players
+    :return: Number of updated rows
+    """
+    updated_rows = 0
+    for player in players:
+        updated_rows += update_player(player)
+    return updated_rows
+
+
+def update_all_players():
+    """
+    Updates all players.
+    :return: Number of updated rows
+    """
+    updated_rows = 0
+    for team in Team.objects.all():
+        for players in fetch_players(team.id):
+            update_players(players)
+    return updated_rows

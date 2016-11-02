@@ -22,9 +22,9 @@ def fetch_competitions(competition_id=None):
 
 def create_competition(competition):
     """
-    Creates a Competition object.
+    Creates a Competition.
     :param competition: JSON representation of the competition
-    :return: Competition object
+    :return: Created competition
     """
     return Competition(
         id=competition['id'],
@@ -40,26 +40,41 @@ def create_competition(competition):
 
 
 def create_all_competitions():
-    """Creates all competitions in the database."""
+    """
+    Creates all competitions.
+    :return: Created competitions
+    """
     competitions = []
     for competition in fetch_competitions():
         competitions.append(create_competition(competition))
 
-    Competition.objects.bulk_create(objs=competitions)
+    return Competition.objects.bulk_create(competitions)
+
+
+def update_competition(competition):
+    """
+    Updates a competition.
+    :param competition: JSON representation of the competition to be updated
+    :return: Number of updated rows
+    """
+    return Competition.objects.filter(id=competition['id']).update(
+        caption=competition['caption'],
+        league=competition['league'],
+        year=competition['year'],
+        current_matchday=competition['currentMatchday'],
+        number_of_matchdays=competition['numberOfMatchdays'],
+        number_of_teams=competition['numberOfTeams'],
+        number_of_games=competition['numberOfGames'],
+        last_updated=competition['lastUpdated'],
+    )
 
 
 def update_all_competitions():
-    """Updates all competitions in the database"""
-    # TODO Check update_or_create
-    # TODO Rewrite all util functions for each app
+    """
+    Updates all competitions.
+    :return: Number of updated rows
+    """
+    updated_rows = 0
     for competition in fetch_competitions():
-        Competition.objects.filter(id=competition['id']).update(
-            caption=competition['caption'],
-            league=competition['league'],
-            year=competition['year'],
-            current_matchday=competition['currentMatchday'],
-            number_of_matchdays=competition['numberOfMatchdays'],
-            number_of_teams=competition['numberOfTeams'],
-            number_of_games=competition['numberOfGames'],
-            last_updated=competition['lastUpdated'],
-        )
+        updated_rows += update_competition(competition)
+    return updated_rows

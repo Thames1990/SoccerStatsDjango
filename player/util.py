@@ -116,14 +116,14 @@ def update_player(player):
     )
 
 
-def update_players(players):
+def update_players(team):
     """
     Updates all players of a team.
-    :param players: JSON representation of the players
+    :param team: JSON representation of the team
     :return: Number of updated rows
     """
     updated_rows = 0
-    for player in players:
+    for player in fetch_players(team.id):
         updated_rows += update_player(player)
     return updated_rows
 
@@ -135,6 +135,5 @@ def update_all_players():
     """
     updated_rows = 0
     for team in Team.objects.all():
-        for players in fetch_players(team.id):
-            update_players(players)
+        update_players(team)
     return updated_rows

@@ -101,9 +101,8 @@ def update_player(player, team_id):
     :param team_id: Id of the players team
     :return: Number of updated rows
     """
-    name = player['name']
     return Player.objects.filter(
-        name=name,
+        name=player['name'],
         date_of_birth=player['dateOfBirth'],
     ).update(
         team=Team.objects.get(id=team_id),

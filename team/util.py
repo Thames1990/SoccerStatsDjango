@@ -1,9 +1,9 @@
 import re
 
 from competition.models import Competition
-from team.models import Team
-
 from competition.util import fetch_competitions
+from SoccerStats.util import timing
+from team.models import Team
 
 
 def fetch_teams(competition_id):
@@ -20,85 +20,47 @@ def fetch_teams(competition_id):
     ).json()['teams']
 
 
-def create_team(team, competition_id):
-    """
-    Creates a team.
-    :param team: Team to be created
-    :param competition_id: Id of the competition of the team
-    :return: Created team
-    """
-    Team(
-        id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
-        name=team['name'],
-        code=team['code'] if team['code'] else None,
-        short_name=team['shortName'],
-        squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
-        crest_url=team['crestUrl']  # TODO Add image check and fallback download from wikipedia
-    )
-    team.competition.add(Competition.objects.get(id=competition_id))
-    return team
-
-
-def create_teams(competition_id):
-    """
-    Creates teams of a specific competition.
-    :param competition_id: Id of the competition
-    :return: Created teams
-    """
-    teams = []
-
-    for team in fetch_teams(competition_id):
-        teams.append(create_team(team, competition_id))
-
-    return teams
-
-
-def create_all_teams():
+@timing
+def create_teams():
     """
     Creates all teams.
     :return: Created teams
     """
     teams = []
     for competition in Competition.objects.all():
-        teams.extend(create_teams(competition.id))
+        for team in fetch_teams(competition.id):
+            team_object = Team.objects.get_or_create(
+                id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
+                name=team['name'],
+                code=team['code'] if team['code'] else None,
+                short_name=team['shortName'],
+                squad_market_value=re.sub(
+                    '[^0-9]', '', team['squadMarketValue']
+                ) if team['squadMarketValue'] else None,
+                # TODO Add image check and fallback download from wikipedia
+                crest_url=team['crestUrl']
+            )[0]
+            team_object.competition.add(Competition.objects.get(id=competition.id))
+            teams.append(team_object)
 
-    return Team.objects.bulk_create(teams)
-
-
-def update_team(team):
-    """
-    Updates a team.
-    :param team: Team to be updated
-    :return: Number of updated rows
-    """
-    # TODO update competitions
-    return Team.objects.filter(id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]).update(
-        name=team['name'],
-        code=team['code'] if team['code'] else None,
-        short_name=team['shortName'],
-        squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
-        crest_url=team['crestUrl'],
-    )
+    return teams
 
 
-def update_teams(competition_id):
-    """
-    Updates teams of a specific competition.
-    :param competition_id: Id of the competition
-    :return: Number of updated rows
-    """
-    updated_rows = 0
-    for team in fetch_teams(competition_id):
-        updated_rows += update_team(team)
-    return updated_rows
-
-
-def update_all_teams():
+@timing
+def update_teams():
     """
     Updates all teams.
     :return: Number of updated rows
     """
     updated_rows = 0
     for competition in fetch_competitions():
-        updated_rows += update_teams(competition['id'])
+        for team in fetch_teams(competition['id']):
+            updated_rows += Team.objects.filter(id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]).update(
+                name=team['name'],
+                code=team['code'] if team['code'] else None,
+                short_name=team['shortName'],
+                squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
+                # TODO Add image check and fallback download from wikipedia
+                crest_url=team['crestUrl'],
+            )
     return updated_rows

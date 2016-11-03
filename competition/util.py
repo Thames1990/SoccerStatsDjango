@@ -1,3 +1,4 @@
+from SoccerStats.util import timing
 from competition.models import Competition
 
 
@@ -20,61 +21,47 @@ def fetch_competitions(competition_id=None):
     ).json()
 
 
-def create_competition(competition):
-    """
-    Creates a Competition.
-    :param competition: JSON representation of the competition
-    :return: Created competition
-    """
-    return Competition(
-        id=competition['id'],
-        caption=competition['caption'],
-        league=competition['league'],
-        year=competition['year'],
-        current_matchday=competition['currentMatchday'],
-        number_of_matchdays=competition['numberOfMatchdays'],
-        number_of_teams=competition['numberOfTeams'],
-        number_of_games=competition['numberOfGames'],
-        last_updated=competition['lastUpdated'],
-    )
-
-
-def create_all_competitions():
+@timing
+def create_competitions():
     """
     Creates all competitions.
     :return: Created competitions
     """
     competitions = []
     for competition in fetch_competitions():
-        competitions.append(create_competition(competition))
+        competitions.append(
+            Competition(
+                id=competition['id'],
+                caption=competition['caption'],
+                league=competition['league'],
+                year=competition['year'],
+                current_matchday=competition['currentMatchday'],
+                number_of_matchdays=competition['numberOfMatchdays'],
+                number_of_teams=competition['numberOfTeams'],
+                number_of_games=competition['numberOfGames'],
+                last_updated=competition['lastUpdated'],
+            )
+        )
 
     return Competition.objects.bulk_create(competitions)
 
 
-def update_competition(competition):
-    """
-    Updates a competition.
-    :param competition: JSON representation of the competition to be updated
-    :return: Number of updated rows
-    """
-    return Competition.objects.filter(id=competition['id']).update(
-        caption=competition['caption'],
-        league=competition['league'],
-        year=competition['year'],
-        current_matchday=competition['currentMatchday'],
-        number_of_matchdays=competition['numberOfMatchdays'],
-        number_of_teams=competition['numberOfTeams'],
-        number_of_games=competition['numberOfGames'],
-        last_updated=competition['lastUpdated'],
-    )
-
-
-def update_all_competitions():
+@timing
+def update_competitions():
     """
     Updates all competitions.
     :return: Number of updated rows
     """
     updated_rows = 0
     for competition in fetch_competitions():
-        updated_rows += update_competition(competition)
+        updated_rows += Competition.objects.filter(id=competition['id']).update(
+            caption=competition['caption'],
+            league=competition['league'],
+            year=competition['year'],
+            current_matchday=competition['currentMatchday'],
+            number_of_matchdays=competition['numberOfMatchdays'],
+            number_of_teams=competition['numberOfTeams'],
+            number_of_games=competition['numberOfGames'],
+            last_updated=competition['lastUpdated'],
+        )
     return updated_rows

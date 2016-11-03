@@ -91,7 +91,7 @@ def create_all_players():
     players = []
     for team in Team.objects.all():
         players.extend(create_players(team.id))
-    return players
+    return Player.objects.bulk_create(players)
 
 
 def update_player(player, team_id):

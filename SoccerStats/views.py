@@ -41,7 +41,7 @@ def index(request):
         },
         'fixture': {
             'count': Fixture.objects.count(),
-            'last_five': Fixture.objects.filter(status='FINISHED').order_by('-date')[:5],
+            'last_five': Fixture.objects.filter(status='Beendet').order_by('-date')[:5],
             'result_avg': Fixture.objects.aggregate(
                 goals_home_team=Avg(
                     'result__goals_home_team',

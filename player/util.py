@@ -57,21 +57,20 @@ def create_players():
     for team in Team.objects.all():
         for player in fetch_players(team.id):
             # Empty players indicate an empty player list
-            if not player:
-                break
-            players.append(
-                Player(
-                    team=team,
-                    name=player['name'],
-                    position=dict(Player.POSITION)[player['position']],
-                    jersey_number=player['jerseyNumber'],
-                    date_of_birth=player['dateOfBirth'] if player['dateOfBirth'] else None,
-                    nationality=dict(Player.NATION)[player['nationality']],
-                    contract_until=player['contractUntil'],
-                    market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
-                    image=get_player_image(player['name']),
+            if player:
+                players.append(
+                    Player(
+                        team=team,
+                        name=player['name'],
+                        position=dict(Player.POSITION)[player['position']],
+                        jersey_number=player['jerseyNumber'],
+                        date_of_birth=player['dateOfBirth'] if player['dateOfBirth'] else None,
+                        nationality=dict(Player.NATION)[player['nationality']],
+                        contract_until=player['contractUntil'],
+                        market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
+                        image=get_player_image(player['name']),
+                    )
                 )
-            )
     return Player.objects.bulk_create(players)
 
 

@@ -1,26 +1,43 @@
+from SoccerStats.util import timing
 from competition.models import Competition, CupId, LeagueId
+from table.models import CupTable, Group, GroupStanding, LeagueTable, Standing, Home, Away
 from team.models import Team
 
 
-def get_cup_table(json):
-    from table.models import CupTable, GroupStanding, Group
+# TODO Fix throttle issues (ca. 150 requests, 50 are allowed per minute)
+def fetch_table(competiton_id, matchday):
+    import requests
+
+    base_url = 'http://api.football-data.org/v1/competitions/' + str(competiton_id.value) + '/leagueTable'
+    if matchday:
+        base_url += '?matchday=' + str(matchday)
+    return requests.get(
+        base_url,
+        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
+    ).json()
+
+
+def create_cup_table(table):
+    groups = []
+    group_standings = []
 
     # DFB-Pokal doesn't have a table yet
-    if 'error' not in json:
-        cup_table = CupTable.objects.get_or_create(
-            competition=Competition.objects.get(caption=json['leagueCaption']),
-            league_caption=json['leagueCaption'],
-            matchday=json['matchday'],
-        )[0]
+    if 'error' not in table:
+        cup_table = CupTable(
+            competition=Competition.objects.get(caption=table['leagueCaption']),
+            league_caption=table['leagueCaption'],
+            matchday=table['matchday'],
+        )
 
-        for cup_group in json['standings']:
-            group = Group.objects.get_or_create(
+        for cup_group in table['standings']:
+            group = Group(
                 cup_table=cup_table,
                 name=cup_group,
-            )[0]
+            )
+            groups.append(group)
 
-            for group_standing in json['standings'][cup_group]:
-                GroupStanding.objects.get_or_create(
+            for group_standing in table['standings'][cup_group]:
+                GroupStanding(
                     group=group,
                     team=Team.objects.get(id=int(group_standing['teamId'])),
                     rank=group_standing['rank'],
@@ -31,20 +48,35 @@ def get_cup_table(json):
                     goals_against=group_standing['goalsAgainst'],
                     goal_difference=group_standing['goalDifference'],
                 )
+                group_standings.append(group_standing)
+
+        return {
+            'cup_table': cup_table,
+            'groups': groups,
+            'group_standings': group_standings,
+        }
 
 
-def get_league_table(json):
-    from table.models import LeagueTable, Standing, Home, Away
+def create_league_table(table):
     import re
 
-    league_table, created = LeagueTable.objects.get_or_create(
-        competition=Competition.objects.get(id=re.sub('[^0-9]', '', json['_links']['competition']['href'])[1:]),
-        league_caption=json['leagueCaption'],
-        matchday=json['matchday'],
+    standings = []
+    home_standings = []
+    away_standings = []
+
+    try:
+        Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:])
+    except KeyError:
+        print(table)
+
+    league_table = LeagueTable(
+        competition=Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]),
+        league_caption=table['leagueCaption'],
+        matchday=table['matchday'],
     )
 
-    for team in json['standing']:
-        standing = Standing.objects.get_or_create(
+    for team in table['standing']:
+        standing = Standing(
             league_table=league_table,
             position=team['position'],
             team=Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
@@ -56,60 +88,79 @@ def get_league_table(json):
             wins=team['wins'],
             draws=team['draws'],
             losses=team['losses'],
-        )[0]
+        )
+        standings.append(standing)
 
-        Home.objects.get_or_create(
-            standing=standing,
-            goals=team['home']['goals'],
-            goals_against=team['home']['goalsAgainst'],
-            wins=team['home']['wins'],
-            draws=team['home']['draws'],
-            losses=team['home']['losses'],
+        home_standings.append(
+            Home(
+                standing=standing,
+                goals=team['home']['goals'],
+                goals_against=team['home']['goalsAgainst'],
+                wins=team['home']['wins'],
+                draws=team['home']['draws'],
+                losses=team['home']['losses'],
+            )
         )
 
-        Away.objects.get_or_create(
-            standing=standing,
-            goals=team['away']['goals'],
-            goals_against=team['home']['goalsAgainst'],
-            wins=team['away']['wins'],
-            draws=team['away']['draws'],
-            losses=team['away']['losses'],
+        away_standings.append(
+            Away(
+                standing=standing,
+                goals=team['away']['goals'],
+                goals_against=team['home']['goalsAgainst'],
+                wins=team['away']['wins'],
+                draws=team['away']['draws'],
+                losses=team['away']['losses'],
+            )
         )
 
-
-def get_table(competiton_id, matchday=None):
-    import requests
-
-    base_url = 'http://api.football-data.org/v1/competitions/' + str(competiton_id.value) + '/leagueTable'
-    if matchday:
-        base_url += '?matchday=' + str(matchday)
-    json = requests.get(
-        base_url,
-        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
-    ).json()
-    if isinstance(competiton_id, CupId):
-        get_cup_table(json)
-    elif isinstance(competiton_id, LeagueId):
-        get_league_table(json)
+    return {
+        'league_table': league_table,
+        'standings': standings,
+        'home_standings': home_standings,
+        'away_standings': away_standings,
+    }
 
 
-def get_all_tables():
+@timing
+def create_tables():
     from competition.util import fetch_competitions
+
+    cup_tables = []
+    league_tables = []
+    groups = []
+    group_standings = []
+    standings = []
+    home_standings = []
+    away_standings = []
 
     for competition in fetch_competitions():
         competition = Competition.objects.get(id=competition['id'])
         for matchday in range(1, competition.current_matchday):
             try:
                 competiton_id = CupId(competition.id)
+                cup_table_objects = create_cup_table(fetch_table(competiton_id, matchday))
+                if cup_table_objects:
+                    cup_tables.append(cup_table_objects['cup_table'])
+                    groups.extend(cup_table_objects['groups'])
+                    group_standings.extend(cup_table_objects['group_standings'])
             except ValueError:
                 competiton_id = LeagueId(competition.id)
+                league_table_objects = create_league_table(fetch_table(competiton_id, matchday))
+                league_tables.append(league_table_objects['league_table'])
+                standings.extend(league_table_objects['standings'])
+                home_standings.extend(league_table_objects['home_standings'])
+                away_standings.extend(league_table_objects['away_standings'])
 
-            get_table(competiton_id, matchday)
+    CupTable.objects.bulk_create(cup_tables)
+    LeagueTable.objects.bulk_create(league_tables)
+    Group.objects.bulk_create(groups)
+    GroupStanding.objects.bulk_create(group_standings)
+    Standing.objects.bulk_create(standings)
+    Home.objects.bulk_create(home_standings)
+    Away.objects.bulk_create(away_standings)
 
 
 def get_cup_table_position_changes(cup_table):
-    from table.models import CupTable
-
     cup_table = CupTable.objects.get(id=cup_table.id)
     try:
         cup_table_last_matchday = CupTable.objects.get(
@@ -137,8 +188,6 @@ def get_cup_table_position_changes(cup_table):
 
 
 def get_league_table_position_changes(league_table):
-    from table.models import LeagueTable
-
     league_table = LeagueTable.objects.get(id=league_table.id)
     try:
         league_table_last_matchday = LeagueTable.objects.get(

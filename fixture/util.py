@@ -1,5 +1,6 @@
 import re
 
+from SoccerStats.util import timing
 from competition.models import Competition
 from fixture.models import Fixture, Result, HalfTime, ExtraTime, PenaltyShootout, Odds
 from team.models import Team
@@ -14,6 +15,7 @@ def fetch_fixtures(competition_id):
     ).json()['fixtures']
 
 
+@timing
 def create_fixtures():
     from competition.util import fetch_competitions
 

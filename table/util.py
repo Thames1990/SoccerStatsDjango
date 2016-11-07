@@ -1,10 +1,13 @@
-from SoccerStats.util import timing
+import re
+
+from SoccerStats.util import timing, rate_limited
 from competition.models import Competition, CupId, LeagueId
 from table.models import CupTable, Group, GroupStanding, LeagueTable, Standing, Home, Away
 from team.models import Team
 
 
 # TODO Fix throttle issues (ca. 150 requests, 50 are allowed per minute)
+@rate_limited(0.8)
 def fetch_table(competiton_id, matchday):
     import requests
 
@@ -25,7 +28,6 @@ def create_cup_table(table):
     if 'error' not in table:
         cup_table = CupTable(
             competition=Competition.objects.get(caption=table['leagueCaption']),
-            league_caption=table['leagueCaption'],
             matchday=table['matchday'],
         )
 
@@ -36,6 +38,7 @@ def create_cup_table(table):
             )
             groups.append(group)
 
+            # TODO Fix unique contraint errors
             for group_standing in table['standings'][cup_group]:
                 GroupStanding(
                     group=group,
@@ -58,8 +61,6 @@ def create_cup_table(table):
 
 
 def create_league_table(table):
-    import re
-
     standings = []
     home_standings = []
     away_standings = []
@@ -71,7 +72,6 @@ def create_league_table(table):
 
     league_table = LeagueTable(
         competition=Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]),
-        league_caption=table['leagueCaption'],
         matchday=table['matchday'],
     )
 
@@ -123,8 +123,6 @@ def create_league_table(table):
 
 @timing
 def create_tables():
-    from competition.util import fetch_competitions
-
     cup_tables = []
     league_tables = []
     groups = []
@@ -133,8 +131,7 @@ def create_tables():
     home_standings = []
     away_standings = []
 
-    for competition in fetch_competitions():
-        competition = Competition.objects.get(id=competition['id'])
+    for competition in Competition.objects.all():
         for matchday in range(1, competition.current_matchday):
             try:
                 competiton_id = CupId(competition.id)

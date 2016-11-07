@@ -12,24 +12,24 @@ def index(request):
     from django.db.models import Avg, Sum, DecimalField
 
     cup_tables_current_matchday = CupTable.objects.raw('''
-            SELECT cup_table1.id, cup_table1.league_caption, cup_table1.matchday
+            SELECT cup_table1.id, cup_table1.matchday
             FROM table_cuptable cup_table1, (
-              SELECT league_caption, MAX(matchday) AS current_matchday
+              SELECT id, MAX(matchday) AS current_matchday
               FROM table_cuptable
-              GROUP BY league_caption
+              GROUP BY id
             ) AS cup_table2
-            WHERE cup_table1.league_caption = cup_table2.league_caption
+            WHERE cup_table1.id = cup_table2.id
             AND cup_table1.matchday = cup_table2.current_matchday
             ''')
 
     league_tables_current_matchday = LeagueTable.objects.raw('''
-            SELECT league_table1.id, league_table1.league_caption, league_table1.matchday
+            SELECT league_table1.id, league_table1.matchday
             FROM table_leaguetable league_table1, (
-              SELECT league_caption, MAX(matchday) AS current_matchday
+              SELECT id, MAX(matchday) AS current_matchday
               FROM table_leaguetable
-              GROUP BY league_caption
+              GROUP BY id
             ) AS league_table2
-            WHERE league_table1.league_caption = league_table2.league_caption
+            WHERE league_table1.id = league_table2.id
             AND league_table1.matchday = league_table2.current_matchday
             ''')
 

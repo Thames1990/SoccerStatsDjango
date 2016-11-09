@@ -4,13 +4,10 @@ from competition.models import Competition
 from team.models import Team
 
 
+# TODO merge tables since they're equivalent?
 class LeagueTable(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
-    league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
-
-    def __str__(self):
-        return self.competition.caption + '|' + self.league_caption + '|' + str(self.matchday)
 
 
 class Standing(models.Model):
@@ -67,16 +64,12 @@ class Away(models.Model):
 
 class CupTable(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
-    league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
 
 
 class Group(models.Model):
     cup_table = models.ForeignKey(CupTable, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-
-    class Meta:
-        ordering = ['name']
 
 
 class GroupStanding(models.Model):
@@ -92,9 +85,9 @@ class GroupStanding(models.Model):
 
     def has_rank_changed(self, other_matchday_group_standing):
         """
-        Checks position difference. Is normally used to compare matchday point differences.
-        :param other_matchday_group_standing: The standing of a another matchday
-        :return: True, if the position has changed; False otherwise.
+        Checks rank difference. Is normally used to compare matchday point differences.
+        :param other_matchday_group_standing: The group standing of a another matchday
+        :return: True, if the rank has changed; False otherwise.
         """
         if isinstance(other_matchday_group_standing, GroupStanding):
             return self.rank != other_matchday_group_standing.rank
@@ -102,9 +95,9 @@ class GroupStanding(models.Model):
 
     def has_rank_improved(self, other_matchday_group_standing):
         """
-        Checks position improvement. Is normally used to compare matchday point improvements.
-        :param other_matchday_group_standing: The standing of a another matchday
-        :return: True, if the position has improved; False otherwise.
+        Checks rank improvement. Is normally used to compare matchday point improvements.
+        :param other_matchday_group_standing: The group standing of a another matchday
+        :return: True, if the rank has improved; False otherwise.
         """
         if isinstance(other_matchday_group_standing, GroupStanding):
             return self.rank < other_matchday_group_standing.rank

@@ -6,14 +6,18 @@
     <card>
         <grid>
             <div col="1/2">
-                <h2>{{ fixture.home_team.name }}</h2>
-                <img src="{{ fixture.home_team.crest_url }}"
-                     style="height: 60px; object-fit: cover; object-position: 50% 0">
+                <a href="{% url 'team:detail' fixture.home_team.id %}">
+                    <h2>{{ fixture.home_team.name }}</h2>
+                    <img src="{{ fixture.home_team.crest_url }}"
+                         style="height: 60px; object-fit: cover; object-position: 50% 0">
+                </a>
             </div>
             <div col="1/2">
-                <h2>{{ fixture.away_team.name }}</h2>
-                <img src="{{ fixture.away_team.crest_url }}"
-                     style="height: 60px; object-fit: cover; object-position: 50% 0">
+                <a href="{% url 'team:detail' fixture.away_team.id %}">
+                    <h2>{{ fixture.away_team.name }}</h2>
+                    <img src="{{ fixture.away_team.crest_url }}"
+                         style="height: 60px; object-fit: cover; object-position: 50% 0">
+                </a>
             </div>
         </grid>
         <hr>

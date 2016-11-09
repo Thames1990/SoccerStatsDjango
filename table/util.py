@@ -6,7 +6,6 @@ from table.models import CupTable, Group, GroupStanding, LeagueTable, Standing, 
 from team.models import Team
 
 
-# TODO Fix throttle issues (ca. 150 requests, 50 are allowed per minute)
 @rate_limited(0.8)
 def fetch_table(competiton_id, matchday):
     import requests
@@ -21,24 +20,21 @@ def fetch_table(competiton_id, matchday):
 
 
 def create_cup_table(table):
-    groups = []
     group_standings = []
 
     # DFB-Pokal doesn't have a table yet
     if 'error' not in table:
-        cup_table = CupTable(
+        cup_table = CupTable.objects.create(
             competition=Competition.objects.get(caption=table['leagueCaption']),
             matchday=table['matchday'],
         )
 
         for cup_group in table['standings']:
-            group = Group(
+            group = Group.objects.create(
                 cup_table=cup_table,
                 name=cup_group,
             )
-            groups.append(group)
 
-            # TODO Fix unique contraint errors
             for group_standing in table['standings'][cup_group]:
                 GroupStanding(
                     group=group,
@@ -53,15 +49,10 @@ def create_cup_table(table):
                 )
                 group_standings.append(group_standing)
 
-        return {
-            'cup_table': cup_table,
-            'groups': groups,
-            'group_standings': group_standings,
-        }
+        return group_standings
 
 
 def create_league_table(table):
-    standings = []
     home_standings = []
     away_standings = []
 
@@ -70,13 +61,13 @@ def create_league_table(table):
     except KeyError:
         print(table)
 
-    league_table = LeagueTable(
+    league_table = LeagueTable.objects.create(
         competition=Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]),
         matchday=table['matchday'],
     )
 
     for team in table['standing']:
-        standing = Standing(
+        standing = Standing.objects.create(
             league_table=league_table,
             position=team['position'],
             team=Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
@@ -89,7 +80,6 @@ def create_league_table(table):
             draws=team['draws'],
             losses=team['losses'],
         )
-        standings.append(standing)
 
         home_standings.append(
             Home(
@@ -114,8 +104,6 @@ def create_league_table(table):
         )
 
     return {
-        'league_table': league_table,
-        'standings': standings,
         'home_standings': home_standings,
         'away_standings': away_standings,
     }
@@ -123,11 +111,7 @@ def create_league_table(table):
 
 @timing
 def create_tables():
-    cup_tables = []
-    league_tables = []
-    groups = []
     group_standings = []
-    standings = []
     home_standings = []
     away_standings = []
 
@@ -137,28 +121,19 @@ def create_tables():
                 competiton_id = CupId(competition.id)
                 cup_table_objects = create_cup_table(fetch_table(competiton_id, matchday))
                 if cup_table_objects:
-                    cup_tables.append(cup_table_objects['cup_table'])
-                    groups.extend(cup_table_objects['groups'])
-                    group_standings.extend(cup_table_objects['group_standings'])
+                    group_standings.extend(cup_table_objects)
             except ValueError:
                 competiton_id = LeagueId(competition.id)
                 league_table_objects = create_league_table(fetch_table(competiton_id, matchday))
-                league_tables.append(league_table_objects['league_table'])
-                standings.extend(league_table_objects['standings'])
                 home_standings.extend(league_table_objects['home_standings'])
                 away_standings.extend(league_table_objects['away_standings'])
 
-    CupTable.objects.bulk_create(cup_tables)
-    LeagueTable.objects.bulk_create(league_tables)
-    Group.objects.bulk_create(groups)
     GroupStanding.objects.bulk_create(group_standings)
-    Standing.objects.bulk_create(standings)
     Home.objects.bulk_create(home_standings)
     Away.objects.bulk_create(away_standings)
 
 
 def get_cup_table_position_changes(cup_table):
-    cup_table = CupTable.objects.get(id=cup_table.id)
     try:
         cup_table_last_matchday = CupTable.objects.get(
             competition=cup_table.competition,
@@ -185,7 +160,6 @@ def get_cup_table_position_changes(cup_table):
 
 
 def get_league_table_position_changes(league_table):
-    league_table = LeagueTable.objects.get(id=league_table.id)
     try:
         league_table_last_matchday = LeagueTable.objects.get(
             competition=league_table.competition,

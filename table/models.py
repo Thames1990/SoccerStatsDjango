@@ -9,9 +9,6 @@ class LeagueTable(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     matchday = models.IntegerField()
 
-    class Meta:
-        unique_together = ('competition', 'matchday')
-
 
 class Standing(models.Model):
     league_table = models.ForeignKey(LeagueTable, on_delete=models.CASCADE)
@@ -25,9 +22,6 @@ class Standing(models.Model):
     wins = models.PositiveIntegerField()
     draws = models.PositiveIntegerField()
     losses = models.PositiveIntegerField()
-
-    class Meta:
-        unique_together = ('league_table', 'team', 'played_games')
 
     def has_position_changed(self, other_matchday_standing):
         """
@@ -72,17 +66,10 @@ class CupTable(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     matchday = models.IntegerField()
 
-    class Meta:
-        unique_together = ('competition', 'matchday')
-
 
 class Group(models.Model):
     cup_table = models.ForeignKey(CupTable, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-
-    class Meta:
-        ordering = ['name']
-        unique_together = ('cup_table', 'name')
 
 
 class GroupStanding(models.Model):

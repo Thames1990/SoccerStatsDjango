@@ -12,8 +12,8 @@ def index(request):
     from django.db.models import Avg, Sum, DecimalField
 
     cup_tables_current_matchday = CupTable.objects.raw('''
-            SELECT cup_table1.id, competition_competition.caption, cup_table1.matchday
-            FROM table_cuptable cup_table1 INNER JOIN competition_competition, (
+            SELECT cup_table1.id, cup_table1.league_caption, cup_table1.matchday
+            FROM table_cuptable cup_table1, (
               SELECT league_caption, MAX(matchday) AS current_matchday
               FROM table_cuptable
               GROUP BY league_caption
@@ -23,8 +23,8 @@ def index(request):
             ''')
 
     league_tables_current_matchday = LeagueTable.objects.raw('''
-            SELECT league_table1.id, competition_competition.caption, league_table1.matchday
-            FROM table_leaguetable league_table1 INNER JOIN competition_competition, (
+            SELECT league_table1.id, league_table1.league_caption, league_table1.matchday
+            FROM table_leaguetable league_table1, (
               SELECT league_caption, MAX(matchday) AS current_matchday
               FROM table_leaguetable
               GROUP BY league_caption

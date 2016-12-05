@@ -36,3 +36,17 @@ def rate_limited(max_per_second):
         return rate_limited_function
 
     return decorate
+
+
+def create_database():
+    from competition.utils import create_competitions
+    from fixture.utils import create_fixtures
+    from player.utils import create_players
+    from table.utils import create_all_tables
+    from team.utils import create_teams
+
+    create_competitions()
+    create_teams()
+    create_players()
+    create_fixtures()
+    create_all_tables()

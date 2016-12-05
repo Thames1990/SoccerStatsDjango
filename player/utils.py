@@ -43,7 +43,7 @@ def fetch_players(team_id):
             headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
         ).json()['players']
     except KeyError:
-        # TODO Log teams without players
+        # TODO Find a better way to handle teams without players
         # Return empty dictionary for iterable loop check
         return {}
 

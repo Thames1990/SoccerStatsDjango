@@ -1,4 +1,4 @@
-from SoccerStats.util import timing
+from SoccerStats.utils import timing
 from competition.models import Competition
 
 

@@ -1,8 +1,8 @@
 import re
 
 from competition.models import Competition
-from competition.util import fetch_competitions
-from SoccerStats.util import timing
+from competition.utils import fetch_competitions
+from SoccerStats.utils import timing
 from team.models import Team
 
 

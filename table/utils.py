@@ -1,4 +1,4 @@
-from SoccerStats.util import timing
+from SoccerStats.utils import timing
 from competition.models import Competition, CupId, LeagueId
 from table.models import CupTable, LeagueTable, Home, Away
 from team.models import Team
@@ -96,7 +96,7 @@ def create_table(competiton_id, matchday=None):
 
 @timing
 def create_all_tables():
-    from competition.util import fetch_competitions
+    from competition.utils import fetch_competitions
 
     for competition in fetch_competitions():
         competition = Competition.objects.get(id=competition['id'])
@@ -132,7 +132,6 @@ def get_cup_table_position_changes(cup_table):
             position_changes.append(group_position_changes)
         return position_changes
     except CupTable.DoesNotExist:
-        # TODO log
         pass
 
 
@@ -155,5 +154,43 @@ def get_league_table_position_changes(league_table):
                 position_changes.append(None)
         return position_changes
     except LeagueTable.DoesNotExist:
-        # TODO log
         pass
+
+
+def get_cup_table_current_matchday():
+    return CupTable.objects.raw('''
+            SELECT cup_table1.id, cup_table1.league_caption, cup_table1.matchday
+            FROM table_cuptable cup_table1, (
+              SELECT league_caption, MAX(matchday) AS current_matchday
+              FROM table_cuptable
+              GROUP BY league_caption
+            ) AS cup_table2
+            WHERE cup_table1.league_caption = cup_table2.league_caption
+            AND cup_table1.matchday = cup_table2.current_matchday
+            ''')
+
+
+def get_league_table_current_matchday():
+    return LeagueTable.objects.raw('''
+            SELECT league_table1.id, league_table1.league_caption, league_table1.matchday
+            FROM table_leaguetable league_table1, (
+              SELECT league_caption, MAX(matchday) AS current_matchday
+              FROM table_leaguetable
+              GROUP BY league_caption
+            ) AS league_table2
+            WHERE league_table1.league_caption = league_table2.league_caption
+            AND league_table1.matchday = league_table2.current_matchday
+            ''')
+
+
+def get_group_standing_average_goals(cup_tables_current_matchday):
+    return sum(groupstanding.goals for groupstanding in
+               (group.groupstanding_set.all() for group in
+                (cup_table.group_set.all() for cup_table in
+                 cup_tables_current_matchday))) / len(list(cup_tables_current_matchday))
+
+
+def get_standing_average_goals(league_tables_current_matchday):
+    return sum(standing.goals for standing in
+               (league_table.standing_set.all() for league_table in
+                league_tables_current_matchday)) / len(list(league_tables_current_matchday))

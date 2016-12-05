@@ -125,6 +125,8 @@ class Player(models.Model):
         ('Albania', 'Albanien'),
         ('Scotland', 'Schottland'),
         ('Mali', 'Mali'),
+        ('Martinique', 'Martinique'),
+        ('French-Guiana', 'Französisch-Guayana'),
     )
     nationality = models.CharField(max_length=255, choices=NATION)
     contract_until = models.DateField(null=True)

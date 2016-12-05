@@ -2,7 +2,7 @@ from django.views.generic import DetailView, ListView
 
 from .models import CupTable, LeagueTable
 
-from .util import get_cup_table_position_changes, get_league_table_position_changes
+from .utils import get_cup_table_position_changes, get_league_table_position_changes
 
 
 class CupTableDetailView(DetailView):

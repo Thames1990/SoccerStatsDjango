@@ -132,11 +132,11 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 SHELL_PLUS_PRE_IMPORTS = (
-    'competition.util',
-    'fixture.util',
-    'player.util',
-    'table.util',
-    'team.util',
+    'competition.utils',
+    'fixture.utils',
+    'player.utils',
+    'table.utils',
+    'team.utils',
 )
 
 SPAGHETTI_SAUCE = {

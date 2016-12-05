@@ -7,6 +7,7 @@ from team.models import Team
 # TODO merge tables since they're equivalent?
 class LeagueTable(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
+    league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
 
 
@@ -64,6 +65,7 @@ class Away(models.Model):
 
 class CupTable(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
+    league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
 
 

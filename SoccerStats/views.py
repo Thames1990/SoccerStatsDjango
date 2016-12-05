@@ -1,4 +1,3 @@
-from django.db import transaction
 from django.shortcuts import render
 
 
@@ -6,32 +5,14 @@ def index(request):
     from competition.models import Competition
     from fixture.models import Fixture
     from player.models import Player
-    from table.models import CupTable
-    from table.models import LeagueTable
     from team.models import Team
     from django.db.models import Avg, Sum, DecimalField
 
-    cup_tables_current_matchday = CupTable.objects.raw('''
-            SELECT cup_table1.id, cup_table1.league_caption, cup_table1.matchday
-            FROM table_cuptable cup_table1, (
-              SELECT league_caption, MAX(matchday) AS current_matchday
-              FROM table_cuptable
-              GROUP BY league_caption
-            ) AS cup_table2
-            WHERE cup_table1.league_caption = cup_table2.league_caption
-            AND cup_table1.matchday = cup_table2.current_matchday
-            ''')
+    from table.utils import get_cup_table_current_matchday, get_league_table_current_matchday, \
+        get_group_standing_average_goals, get_standing_average_goals
 
-    league_tables_current_matchday = LeagueTable.objects.raw('''
-            SELECT league_table1.id, league_table1.league_caption, league_table1.matchday
-            FROM table_leaguetable league_table1, (
-              SELECT league_caption, MAX(matchday) AS current_matchday
-              FROM table_leaguetable
-              GROUP BY league_caption
-            ) AS league_table2
-            WHERE league_table1.league_caption = league_table2.league_caption
-            AND league_table1.matchday = league_table2.current_matchday
-            ''')
+    cup_tables_current_matchday = get_cup_table_current_matchday()
+    league_tables_current_matchday = get_league_table_current_matchday()
 
     return render(request, 'SoccerStats/index.html', {
         'competition': {
@@ -66,19 +47,12 @@ def index(request):
         'cup_table': {
             'list': cup_tables_current_matchday,
             'count': len(list(cup_tables_current_matchday)),
-            # TODO
-            # 'group_standing_goals_avg': sum(groupstanding.goals for groupstanding in
-            #                                 (group.groupstanding_set.all() for group in
-            #                                  (cup_table.group_set.all() for cup_table in
-            #                                   cup_tables_current_matchday))) / len(list(cup_tables_current_matchday)),
+            # 'group_standing_goals_avg': get_group_standing_average_goals(cup_tables_current_matchday),
         },
         'league_table': {
             'list': league_tables_current_matchday,
             'count': len(list(league_tables_current_matchday)),
-            # TODO
-            # 'standing_goals_avg': sum(standing.goals for standing in
-            #                           (league_table.standing_set.all() for league_table in
-            #                            league_tables_current_matchday)) / len(list(league_tables_current_matchday)),
+            # 'standing_goals_avg': get_standing_average_goals(league_tables_current_matchday),
         },
         'team': {
             'count': Team.objects.count(),

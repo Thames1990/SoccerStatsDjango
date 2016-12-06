@@ -77,7 +77,7 @@ class Competition(models.Model):
         max_length=255,
         choices=((subclass.choices()[0], subclass.choices()[1]) for subclass in CompetitionId.__subclasses__())
     )
-    year = models.IntegerField(choices=[(r, r) for r in range(1980, (datetime.datetime.now().year + 1))])
+    year = models.IntegerField(choices=[(r, r) for r in range(2015, datetime.datetime.now().year)])
     current_matchday = models.PositiveSmallIntegerField()
     number_of_matchdays = models.PositiveSmallIntegerField()
     number_of_teams = models.PositiveSmallIntegerField()

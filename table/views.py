@@ -2,7 +2,7 @@ from django.views.generic import DetailView, ListView
 
 from .models import CupTable, LeagueTable
 
-from .utils import get_cup_table_position_changes, get_league_table_position_changes
+from .utils import get_cup_table_rank_changes, get_league_table_position_changes
 
 
 class CupTableDetailView(DetailView):
@@ -11,7 +11,7 @@ class CupTableDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(CupTableDetailView, self).get_context_data(**kwargs)
-        context['cup_table_position_changes'] = get_cup_table_position_changes(self.object)
+        context['cup_table_position_changes'] = get_cup_table_rank_changes(self.object)
         return context
 
 

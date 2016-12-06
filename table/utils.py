@@ -26,7 +26,6 @@ def create_cup_table(table):
     """
     Creates a CupTable.
     :param table: JSON representation of a cup table
-    :return: Created CupTable
     """
     # DFB-Pokal doesn't have a table yet
     if 'error' not in table:
@@ -58,15 +57,19 @@ def create_cup_table(table):
                 )
 
 
-def create_league_table(json):
+def create_league_table(table):
+    """
+    Creates a LeagueTable.
+    :param table: JSON representation of a cup table
+    """
     import re
     league_table = LeagueTable.objects.create(
-        competition=Competition.objects.get(id=re.sub('[^0-9]', '', json['_links']['competition']['href'])[1:]),
-        league_caption=json['leagueCaption'],
-        matchday=json['matchday'],
+        competition=Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]),
+        league_caption=table['leagueCaption'],
+        matchday=table['matchday'],
     )
 
-    for team in json['standing']:
+    for team in table['standing']:
         from table.models import Standing
         standing = Standing.objects.create(
             league_table=league_table,
@@ -103,6 +106,10 @@ def create_league_table(json):
 
 @timing
 def create_tables():
+    """
+    Creates all tables (CupTable and LeagueTable).
+    """
+    # TODO Rewrite with bulk_create
     from competition.utils import fetch_competitions
 
     for competition in fetch_competitions():
@@ -120,7 +127,15 @@ def create_tables():
                 create_league_table(table)
 
 
-def get_cup_table_position_changes(cup_table):
+# TODO Add update function
+
+
+def get_cup_table_rank_changes(cup_table):
+    """
+    Calculates rank changes in a cup table.
+    :param cup_table: Cup table to calculate the rank changes for
+    :return: List of rank changes
+    """
     cup_table = CupTable.objects.get(id=cup_table.id)
     try:
         cup_table_last_matchday = CupTable.objects.get(
@@ -147,6 +162,11 @@ def get_cup_table_position_changes(cup_table):
 
 
 def get_league_table_position_changes(league_table):
+    """
+    Calculates position changes for a league table.
+    :param league_table: League table to calculate position changes for
+    :return: List of position changes
+    """
     league_table = LeagueTable.objects.get(id=league_table.id)
     try:
         league_table_last_matchday = LeagueTable.objects.get(
@@ -222,6 +242,11 @@ def get_league_tables_current_matchday():
 
 
 def get_group_standing_average_goals(cup_tables_current_matchday):
+    """
+    Calculate average goals for a group standing (CupTable).
+    :param cup_tables_current_matchday: QuerySet of cup tables of the current matchday
+    :return: Average goals for all cup tables of the current matchday
+    """
     return sum(groupstanding.goals for groupstanding in
                (group.groupstanding_set.all() for group in
                 (cup_table.group_set.all() for cup_table in
@@ -229,6 +254,11 @@ def get_group_standing_average_goals(cup_tables_current_matchday):
 
 
 def get_standing_average_goals(league_tables_current_matchday):
+    """
+    Calculate average goals for a standing (LeagueTable).
+    :param league_tables_current_matchday: QuerySet of league tables of the current matchday
+    :return: Average goals for all league tables of the current matchday
+    """
     return sum(standing.goals for standing in
                (league_table.standing_set.all() for league_table in
                 league_tables_current_matchday)) / len(list(league_tables_current_matchday))

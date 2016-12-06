@@ -7,6 +7,11 @@ from team.models import Team
 
 
 def fetch_fixtures(competition_id):
+    """
+    Fetches JSON representation of fixtures from football-data.org.
+    :param competition_id: Id of a competition
+    :return: JSON representation of all fixtures of the competition
+    """
     import requests
 
     return requests.get(
@@ -17,6 +22,10 @@ def fetch_fixtures(competition_id):
 
 @timing
 def create_fixtures():
+    """
+    Create all fixtures.
+    :return: Created fixtures
+    """
     from competition.utils import fetch_competitions
 
     fixtures = []

@@ -71,6 +71,10 @@ class LeagueId(CompetitionId):
 
 
 class Competition(models.Model):
+    """
+    The list representation of this resource is the de-facto entry point to the API and by default returns all
+    available competitions for the current season.
+    """
     id = models.PositiveSmallIntegerField(primary_key=True)
     caption = models.CharField(max_length=255)
     league = models.CharField(

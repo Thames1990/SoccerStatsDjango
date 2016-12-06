@@ -2,6 +2,10 @@ from django.db import models
 
 
 class Fixture(models.Model):
+    """
+    The Fixture resource reflects a scheduled football game. A fixture typically belongs to a competition and is
+    played on a certain matchday. Fixture appears as Main Resource and as Subresource of a Competition.
+    """
     from competition.models import Competition
     from team.models import Team
 

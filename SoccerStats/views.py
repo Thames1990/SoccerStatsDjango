@@ -8,11 +8,11 @@ def index(request):
     from team.models import Team
     from django.db.models import Avg, Sum, DecimalField
 
-    from table.utils import get_cup_table_current_matchday, get_league_table_current_matchday, \
+    from table.utils import get_cup_tables_current_matchday, get_league_tables_current_matchday, \
         get_group_standing_average_goals, get_standing_average_goals
 
-    cup_tables_current_matchday = get_cup_table_current_matchday()
-    league_tables_current_matchday = get_league_table_current_matchday()
+    cup_tables_current_matchday = get_cup_tables_current_matchday()
+    league_tables_current_matchday = get_league_tables_current_matchday()
 
     return render(request, 'SoccerStats/index.html', {
         'competition': {

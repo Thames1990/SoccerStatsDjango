@@ -5,7 +5,7 @@ def timing(f):
     """
     Decorator to time functions in milliseconds.
     :param f: Function
-    :return: Function name and time measurement
+    :return: Decorator
     """
 
     def wrap(*args):
@@ -19,6 +19,11 @@ def timing(f):
 
 
 def rate_limited(max_per_second):
+    """
+    Decorator to limit functions calls per second.
+    :param max_per_second: Maximum of function calls per second
+    :return: Decorator
+    """
     min_interval = 1.0 / float(max_per_second)
 
     def decorate(func):
@@ -39,14 +44,18 @@ def rate_limited(max_per_second):
 
 
 def create_database():
+    """
+    Create whole database.
+    :return:
+    """
     from competition.utils import create_competitions
     from fixture.utils import create_fixtures
     from player.utils import create_players
-    from table.utils import create_all_tables
+    from table.utils import create_tables
     from team.utils import create_teams
 
     create_competitions()
     create_teams()
     create_players()
     create_fixtures()
-    create_all_tables()
+    create_tables()

@@ -4,23 +4,46 @@ from table.models import CupTable, LeagueTable, Home, Away
 from team.models import Team
 
 
-def create_cup_table(json):
+def fetch_tables(competiton_id, matchday):
+    """
+    Fetches JSON representation of tables from football-data.org
+    :param competiton_id: Id of a competition
+    :param matchday: Matchday of a competition
+    :return: JSON representation of a table from a competition on a sepcific matchday
+    """
+    import requests
+
+    base_url = 'http://api.football-data.org/v1/competitions/' + str(competiton_id.value) + '/leagueTable'
+    if matchday:
+        base_url += '?matchday=' + str(matchday)
+    return requests.get(
+        base_url,
+        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
+    ).json()
+
+
+def create_cup_table(table):
+    """
+    Creates a CupTable.
+    :param table: JSON representation of a cup table
+    :return: Created CupTable
+    """
     # DFB-Pokal doesn't have a table yet
-    if 'error' not in json:
+    if 'error' not in table:
         cup_table = CupTable.objects.create(
-            competition=Competition.objects.get(caption=json['leagueCaption']),
-            league_caption=json['leagueCaption'],
-            matchday=json['matchday'],
+            competition=Competition.objects.get(caption=table['leagueCaption']),
+            league_caption=table['leagueCaption'],
+            matchday=table['matchday'],
         )
 
-        for cup_group in json['standings']:
+        for cup_group in table['standings']:
             from table.models import Group
             group = Group.objects.create(
                 cup_table=cup_table,
                 name=cup_group,
             )
 
-            for group_standing in json['standings'][cup_group]:
+            for group_standing in table['standings'][cup_group]:
                 from table.models import GroupStanding
                 GroupStanding.objects.create(
                     group=group,
@@ -78,24 +101,8 @@ def create_league_table(json):
         )
 
 
-def create_table(competiton_id, matchday=None):
-    import requests
-
-    base_url = 'http://api.football-data.org/v1/competitions/' + str(competiton_id.value) + '/leagueTable'
-    if matchday:
-        base_url += '?matchday=' + str(matchday)
-    json = requests.get(
-        base_url,
-        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
-    ).json()
-    if isinstance(competiton_id, CupId):
-        create_cup_table(json)
-    elif isinstance(competiton_id, LeagueId):
-        create_league_table(json)
-
-
 @timing
-def create_all_tables():
+def create_tables():
     from competition.utils import fetch_competitions
 
     for competition in fetch_competitions():
@@ -106,7 +113,11 @@ def create_all_tables():
             except ValueError:
                 competiton_id = LeagueId(competition.id)
 
-            create_table(competiton_id, matchday)
+            table = fetch_tables(competition.id, matchday)
+            if isinstance(competiton_id, CupId):
+                create_cup_table(table)
+            elif isinstance(competiton_id, LeagueId):
+                create_league_table(table)
 
 
 def get_cup_table_position_changes(cup_table):
@@ -157,30 +168,57 @@ def get_league_table_position_changes(league_table):
         pass
 
 
-def get_cup_table_current_matchday():
-    return CupTable.objects.raw('''
-            SELECT cup_table1.id, cup_table1.league_caption, cup_table1.matchday
-            FROM table_cuptable cup_table1, (
-              SELECT league_caption, MAX(matchday) AS current_matchday
-              FROM table_cuptable
-              GROUP BY league_caption
-            ) AS cup_table2
-            WHERE cup_table1.league_caption = cup_table2.league_caption
-            AND cup_table1.matchday = cup_table2.current_matchday
-            ''')
+def get_cup_tables_current_matchday():
+    """
+    Get queryset of cup tables of the current matchday.
+    :return: Queryset of CupTable
+    """
+    from django.db.models import Max, Q
+    current_matchday_cup_tables = CupTable.objects.values('league_caption').annotate(current_matchday=Max('matchday'))
+    q_statement = Q()
+    for current_matchday_cup_table in current_matchday_cup_tables:
+        q_statement |= (
+            Q(league_caption__exact=current_matchday_cup_table['league_caption']) &
+            Q(matchday=current_matchday_cup_table['current_matchday'])
+        )
+    return CupTable.objects.filter(q_statement)
+    # return CupTable.objects.raw('''
+    #         SELECT cup_table1.id, cup_table1.league_caption, cup_table1.matchday
+    #         FROM table_cuptable cup_table1, (
+    #           SELECT league_caption, MAX(matchday) AS current_matchday
+    #           FROM table_cuptable
+    #           GROUP BY league_caption
+    #         ) AS cup_table2
+    #         WHERE cup_table1.league_caption = cup_table2.league_caption
+    #         AND cup_table1.matchday = cup_table2.current_matchday
+    #         ''')
 
 
-def get_league_table_current_matchday():
-    return LeagueTable.objects.raw('''
-            SELECT league_table1.id, league_table1.league_caption, league_table1.matchday
-            FROM table_leaguetable league_table1, (
-              SELECT league_caption, MAX(matchday) AS current_matchday
-              FROM table_leaguetable
-              GROUP BY league_caption
-            ) AS league_table2
-            WHERE league_table1.league_caption = league_table2.league_caption
-            AND league_table1.matchday = league_table2.current_matchday
-            ''')
+def get_league_tables_current_matchday():
+    """
+    Get queryset of league tables of the current matchday.
+    :return: Queryset of LeagueTable
+    """
+    from django.db.models import Max, Q
+    current_matchday_league_tables = \
+        LeagueTable.objects.values('league_caption').annotate(current_matchday=Max('matchday'))
+    q_statement = Q()
+    for current_matchday_league_table in current_matchday_league_tables:
+        q_statement |= (
+            Q(league_caption__exact=current_matchday_league_table['league_caption']) &
+            Q(matchday=current_matchday_league_table['current_matchday'])
+        )
+    return LeagueTable.objects.filter(q_statement)
+    # return LeagueTable.objects.raw('''
+    #         SELECT league_table1.id, league_table1.league_caption, league_table1.matchday
+    #         FROM table_leaguetable league_table1, (
+    #           SELECT league_caption, MAX(matchday) AS current_matchday
+    #           FROM table_leaguetable
+    #           GROUP BY league_caption
+    #         ) AS league_table2
+    #         WHERE league_table1.league_caption = league_table2.league_caption
+    #         AND league_table1.matchday = league_table2.current_matchday
+    #         ''')
 
 
 def get_group_standing_average_goals(cup_tables_current_matchday):

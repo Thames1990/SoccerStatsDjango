@@ -18,7 +18,7 @@ def index(request):
         'competition': {
             'list': Competition.objects.only('id', 'caption', 'current_matchday'),
             'count': Competition.objects.count(),
-            'team': Competition.objects.aggregate(count=Sum('number_of_teams'))
+            'team': Competition.objects.aggregate(count=Sum('number_of_teams')),
         },
         'fixture': {
             'count': Fixture.objects.count(),

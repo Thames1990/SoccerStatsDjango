@@ -193,12 +193,13 @@ def get_cup_tables_current_matchday():
     Get queryset of cup tables of the current matchday.
     :return: Queryset of CupTable
     """
+    # TODO Measure speed difference
     from django.db.models import Max, Q
     current_matchday_cup_tables = CupTable.objects.values('league_caption').annotate(current_matchday=Max('matchday'))
     q_statement = Q()
     for current_matchday_cup_table in current_matchday_cup_tables:
         q_statement |= (
-            Q(league_caption__exact=current_matchday_cup_table['league_caption']) &
+            Q(league_caption=current_matchday_cup_table['league_caption']) &
             Q(matchday=current_matchday_cup_table['current_matchday'])
         )
     return CupTable.objects.filter(q_statement)
@@ -219,13 +220,14 @@ def get_league_tables_current_matchday():
     Get queryset of league tables of the current matchday.
     :return: Queryset of LeagueTable
     """
+    # TODO Measure speed difference
     from django.db.models import Max, Q
     current_matchday_league_tables = \
         LeagueTable.objects.values('league_caption').annotate(current_matchday=Max('matchday'))
     q_statement = Q()
     for current_matchday_league_table in current_matchday_league_tables:
         q_statement |= (
-            Q(league_caption__exact=current_matchday_league_table['league_caption']) &
+            Q(league_caption=current_matchday_league_table['league_caption']) &
             Q(matchday=current_matchday_league_table['current_matchday'])
         )
     return LeagueTable.objects.filter(q_statement)
@@ -247,6 +249,7 @@ def get_group_standing_average_goals(cup_tables_current_matchday):
     :param cup_tables_current_matchday: QuerySet of cup tables of the current matchday
     :return: Average goals for all cup tables of the current matchday
     """
+    # TODO Fix Calculation
     return sum(groupstanding.goals for groupstanding in
                (group.groupstanding_set.all() for group in
                 (cup_table.group_set.all() for cup_table in
@@ -259,6 +262,7 @@ def get_standing_average_goals(league_tables_current_matchday):
     :param league_tables_current_matchday: QuerySet of league tables of the current matchday
     :return: Average goals for all league tables of the current matchday
     """
+    # TODO Fix Calculation
     return sum(standing.goals for standing in
                (league_table.standing_set.all() for league_table in
                 league_tables_current_matchday)) / len(list(league_tables_current_matchday))

@@ -54,14 +54,14 @@
                 </div>
                 <div col="2/12" txt="c">
                     <tag>
+                        {% spaceless %}
+                            <p style="font-size: xx-large">
+                                {{ last_five.result_set.all.0.goals_home_team|default_if_none:"0" }}
+                                :
+                                {{ last_five.result_set.all.0.goals_away_team|default_if_none:"0" }}
+                            </p>
+                        {% endspaceless %}
                         {% if last_five.result_set.all.0.halftime_set.all %}
-                            {% spaceless %}
-                                <p style="font-size: xx-large">
-                                    {{ last_five.result_set.all.0.goals_home_team|default_if_none:"0" }}
-                                    :
-                                    {{ last_five.result_set.all.0.goals_away_team|default_if_none:"0" }}
-                                </p>
-                            {% endspaceless %}
                             {% spaceless %}
                                 <p style="font-size: small">
                                     Halbzeitstand
@@ -69,14 +69,6 @@
                                     {{ last_five.result_set.all.0.halftime_set.all.0.goals_home_team|default_if_none:"0" }}
                                     :
                                     {{ last_five.result_set.all.0.halftime_set.all.0.goals_away_team|default_if_none:"0" }}
-                                </p>
-                            {% endspaceless %}
-                        {% else %}
-                            {% spaceless %}
-                                <p style="font-size: xx-large">
-                                    {{ last_five.result_set.all.0.goals_home_team|default_if_none:"0" }}
-                                    :
-                                    {{ last_five.result_set.all.0.goals_away_team|default_if_none:"0" }}
                                 </p>
                             {% endspaceless %}
                         {% endif %}
@@ -134,7 +126,7 @@
                 <h1>Pokal-Tabellen</h1>
             </div>
             <div col="2/3" txt="r">
-                <tag>{{ cup_table.count }} Pokale</tag>
+                <tag>{{ cup_table.count }} Pokal-Wettbewerbe</tag>
                 <tag>⌀{{ cup_table.group_standing_goals_avg }} Tore</tag>
             </div>
         </grid>

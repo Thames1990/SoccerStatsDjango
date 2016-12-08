@@ -1,9 +1,14 @@
-from SoccerStats.utils import timing
+import re
+
 from competition.models import Competition, CupId, LeagueId
 from table.models import CupTable, LeagueTable, Home, Away
 from team.models import Team
 
+from SoccerStats.utils import timing
+from competition.utils import fetch_competitions
 
+
+# TODO Use docstring format """Yield numbers from 0 to *to* every *delay* seconds."""
 def fetch_tables(competiton_id, matchday):
     """
     Fetches JSON representation of tables from football-data.org
@@ -62,7 +67,6 @@ def create_league_table(table):
     Creates a LeagueTable.
     :param table: JSON representation of a cup table
     """
-    import re
     league_table = LeagueTable.objects.create(
         competition=Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]),
         league_caption=table['leagueCaption'],
@@ -110,24 +114,117 @@ def create_tables():
     Creates all tables (CupTable and LeagueTable).
     """
     # TODO Rewrite with bulk_create
-    from competition.utils import fetch_competitions
-
     for competition in fetch_competitions():
         competition = Competition.objects.get(id=competition['id'])
         for matchday in range(1, competition.current_matchday):
             try:
-                competiton_id = CupId(competition.id)
+                create_cup_table(fetch_tables(CupId(competition.id), matchday))
             except ValueError:
-                competiton_id = LeagueId(competition.id)
+                create_league_table(fetch_tables(LeagueId(competition.id), matchday))
 
-            table = fetch_tables(competition.id, matchday)
-            if isinstance(competiton_id, CupId):
+
+def update_cup_table(table):
+    """
+    Updates a cup table.
+    :param table: JSON representation of a cup table
+    :return:
+    """
+    if 'error' not in table:
+        cup_table = CupTable.objects.get(
+            competition=Competition.objects.get(caption=table['leagueCaption']),
+            league_caption=table['leagueCaption'],
+            matchday=table['matchday'],
+        )
+
+        for cup_group in table['standings']:
+            from table.models import Group
+            group = Group.objects.get(
+                cup_table=cup_table,
+                name=cup_group,
+            )
+
+            for group_standing in table['standings'][cup_group]:
+                from table.models import GroupStanding
+                GroupStanding.objects.filter(
+                    group=group,
+                    team=Team.objects.get(id=int(group_standing['teamId']))
+                ).update(
+                    rank=group_standing['rank'],
+                    played_games=group_standing['playedGames'],
+                    crest_uri=group_standing['crestURI'],
+                    points=group_standing['points'],
+                    goals=group_standing['goals'],
+                    goals_against=group_standing['goalsAgainst'],
+                    goal_difference=group_standing['goalDifference'],
+                )
+
+
+def update_league_table(table):
+    """
+    Updates a league table.
+    :param table: JSON representation of a league table
+    :return:
+    """
+    league_table = LeagueTable.objects.get(
+        competition=Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]),
+        league_caption=table['leagueCaption'],
+        matchday=table['matchday'],
+    )
+
+    for team in table['standing']:
+        from table.models import Standing
+        standing = Standing.objects.get(
+            league_table=league_table,
+            team=Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:])
+        )
+        standing.position = team['position']
+        standing.played_games = team['playedGames']
+        standing.points = team['points']
+        standing.goals = team['goals']
+        standing.goals_against = team['goalsAgainst']
+        standing.goal_difference = team['goalDifference']
+        standing.wins = team['wins']
+        standing.draws = team['draws']
+        standing.losses = team['losses']
+        standing.save()
+
+        Home.objects.filter(standing=standing).update(
+            goals=team['home']['goals'],
+            goals_against=team['home']['goalsAgainst'],
+            wins=team['home']['wins'],
+            draws=team['home']['draws'],
+            losses=team['home']['losses'],
+        )
+
+        Away.objects.filter(standing=standing).update(
+            goals=team['away']['goals'],
+            goals_against=team['home']['goalsAgainst'],
+            wins=team['away']['wins'],
+            draws=team['away']['draws'],
+            losses=team['away']['losses'],
+        )
+
+
+@timing
+def update_tables():
+    """
+    Update all tables (CupTable, LeagueTable).
+    :return:
+    """
+    for competition in fetch_competitions():
+        competition_object = Competition.objects.get(id=competition['id'])
+        # TODO Think about range
+        for matchday in range(competition_object.current_matchday, competition['currentMatchday']):
+            try:
+                table = fetch_tables(CupId(competition_object.id), matchday)
+                if matchday == competition_object.current_matchday:
+                    update_cup_table(table)
                 create_cup_table(table)
-            elif isinstance(competiton_id, LeagueId):
+            except ValueError:
+                table = fetch_tables(LeagueId(competition_object.id), matchday)
+                if matchday == competition_object.current_matchday:
+                    update_league_table(table)
                 create_league_table(table)
-
-
-# TODO Add update function
 
 
 def get_cup_table_rank_changes(cup_table):

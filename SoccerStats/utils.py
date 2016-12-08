@@ -49,13 +49,29 @@ def create_database():
     :return:
     """
     from competition.utils import create_competitions
-    from fixture.utils import create_fixtures
-    from player.utils import create_players
-    from table.utils import create_tables
     from team.utils import create_teams
+    from player.utils import create_players
+    from fixture.utils import create_fixtures
+    from table.utils import create_tables
 
     create_competitions()
     create_teams()
     create_players()
     create_fixtures()
     create_tables()
+
+
+def update_database():
+    """
+    Update whole database.
+    :return:
+    """
+    from competition.utils import update_competitions
+    from team.utils import update_teams
+    from player.utils import update_players
+    from fixture.utils import update_fixtures
+
+    update_competitions()
+    update_teams()
+    update_players()
+    update_fixtures()

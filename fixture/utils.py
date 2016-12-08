@@ -1,9 +1,11 @@
 import re
 
-from SoccerStats.utils import timing
 from competition.models import Competition
 from fixture.models import Fixture, Result, HalfTime, ExtraTime, PenaltyShootout, Odds
 from team.models import Team
+
+from SoccerStats.utils import timing
+from competition.utils import fetch_competitions
 
 
 def fetch_fixtures(competition_id):
@@ -20,14 +22,13 @@ def fetch_fixtures(competition_id):
     ).json()['fixtures']
 
 
+# TODO Split function (fixture, result, [...])
 @timing
 def create_fixtures():
     """
     Create all fixtures.
     :return: Created fixtures
     """
-    from competition.utils import fetch_competitions
-
     fixtures = []
     results = []
     half_times = []
@@ -106,4 +107,70 @@ def create_fixtures():
     PenaltyShootout.objects.bulk_create(penalty_shootouts)
     Odds.objects.bulk_create(odds)
 
-# TODO Add update function
+
+@timing
+def update_fixtures():
+    """
+    Updates all fixtures.
+    """
+    # TODO Optimize update process
+    errors = 0
+
+    for competition in fetch_competitions():
+        for fixture in fetch_fixtures(competition['id']):
+            fixture_object = Fixture.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:])
+            # TODO Think about date conversion
+            fixture_object.date = fixture['date']
+            fixture_object.status = dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None
+            fixture_object.save()
+
+            result = Result.objects.get(id=fixture_object.id)
+            # TODO Fix Zero goals evaluates to null (issue #1)
+            result.goals_home_team = \
+                int(fixture['result']['goalsHomeTeam']) if fixture['result']['goalsHomeTeam'] else None
+            result.goals_away_team = \
+                int(fixture['result']['goalsAwayTeam']) if fixture['result']['goalsAwayTeam'] else None
+            result.save()
+
+            if 'halfTime' in fixture['result']:
+                try:
+                    half_time = HalfTime.objects.get(result=result)
+                    half_time.goals_home_team = int(fixture['result']['halfTime']['goalsHomeTeam'])
+                    half_time.goals_away_team = int(fixture['result']['halfTime']['goalsAwayTeam'])
+                    half_time.save()
+                except HalfTime.DoesNotExist:
+                    # TODO Shouldn't happen, but does (sometimes)?!
+                    errors += 1
+
+            if 'extraTime' in fixture['result']:
+                try:
+                    extra_time = ExtraTime.objects.get(result=result)
+                    extra_time.goals_home_team = int(fixture['result']['extraTime']['goalsHomeTeam'])
+                    extra_time.goals_away_team = int(fixture['result']['extraTime']['goalsAwayTeam'])
+                    extra_time.save()
+                except ExtraTime.DoesNotExist:
+                    # TODO Shouldn't happen, but does (sometimes)?!
+                    errors += 1
+
+            if 'penaltyShootout' in fixture['result']:
+                try:
+                    penalty_shootout = PenaltyShootout.objects.get(result=result)
+                    penalty_shootout.goals_home_team = int(fixture['result']['penaltyShootout']['goalsHomeTeam'])
+                    penalty_shootout.goals_away_team = int(fixture['result']['penaltyShootout']['goalsAwayTeam'])
+                    penalty_shootout.save()
+                except PenaltyShootout.DoesNotExist:
+                    # TODO Shouldn't happen, but does (sometimes)?!
+                    errors += 1
+
+            if fixture['odds']:
+                try:
+                    odds = Odds.objects.get(fixture=fixture_object)
+                    odds.home_win = fixture['odds']['homeWin']
+                    odds.draw = fixture['odds']['draw']
+                    odds.away_win = fixture['odds']['awayWin']
+                    odds.save()
+                except Odds.DoesNotExist:
+                    # TODO Shouldn't happen, but does (sometimes)?!
+                    errors += 1
+
+    return errors

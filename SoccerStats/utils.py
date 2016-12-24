@@ -70,8 +70,10 @@ def update_database():
     from team.utils import update_teams
     from player.utils import update_players
     from fixture.utils import update_fixtures
+    from table.utils import update_tables
 
     update_competitions()
     update_teams()
     update_players()
     update_fixtures()
+    update_tables()

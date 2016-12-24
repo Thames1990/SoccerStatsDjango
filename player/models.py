@@ -136,6 +136,12 @@ class Player(models.Model):
     class Meta:
         ordering = ['jersey_number']
 
+    def __str__(self):
+        return self.name + '(born in ' + self.nationality + ' on ' + str(self.date_of_birth) + \
+               ') is currently playing for ' + self.team.name + ' as a ' + self.position + \
+               ' and has a contract until ' + str(self.contract_until) + \
+               '(Marktwert: ' + str(self.market_value) + '€).'
+
     def age(self):
         import datetime
         return int((datetime.date.today() - self.date_of_birth).days / 365.25)

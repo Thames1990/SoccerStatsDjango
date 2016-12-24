@@ -11,3 +11,9 @@ class Team(models.Model):
     short_name = models.CharField(null=True, max_length=255)
     squad_market_value = models.PositiveIntegerField(db_index=True, null=True)
     crest_url = models.URLField(null=True)
+
+    def __str__(self):
+        return self.name + '(id: ' + str(self.id) + ', code: ' \
+               + self.code + ', short name: ' + self.short_name + \
+               ', market value: ' + str(self.squad_market_value) \
+               + '€) in ' + self.competition.name

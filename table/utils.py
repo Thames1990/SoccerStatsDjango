@@ -212,17 +212,27 @@ def update_tables():
     :return:
     """
     for competition in fetch_competitions():
+        # TODO Fix this shit
+        current_matchday = 1
         competition_object = Competition.objects.get(id=competition['id'])
-        # TODO Think about range
-        for matchday in range(competition_object.current_matchday, competition['currentMatchday']):
+        try:
+            current_matchday = LeagueTable.objects.filter(competition=competition_object).latest().matchday
+        except LeagueTable.DoesNotExist:
+            print(competition_object.id)
             try:
-                table = fetch_tables(CupId(competition_object.id), matchday)
-                if matchday == competition_object.current_matchday:
+                current_matchday = CupTable.objects.filter(competition=competition_object).latest().matchday
+            except CupTable.DoesNotExist:
+                print(competition_object.id)
+
+        for matchday in range(current_matchday, competition['currentMatchday']):
+            try:
+                table = fetch_tables(CupId(competition['id']), matchday)
+                if matchday == competition['currentMatchday']:
                     update_cup_table(table)
                 create_cup_table(table)
             except ValueError:
-                table = fetch_tables(LeagueId(competition_object.id), matchday)
-                if matchday == competition_object.current_matchday:
+                table = fetch_tables(LeagueId(competition['id']), matchday)
+                if matchday == competition['currentMatchday']:
                     update_league_table(table)
                 create_league_table(table)
 
@@ -264,7 +274,7 @@ def get_league_table_position_changes(league_table):
     :param league_table: League table to calculate position changes for
     :return: List of position changes
     """
-    league_table = LeagueTable.objects.get(id=league_table.id)
+    league_table = LeagueTable.objects.get(id=league_table.id, matchday=lea)
     try:
         league_table_last_matchday = LeagueTable.objects.get(
             competition=league_table.competition,

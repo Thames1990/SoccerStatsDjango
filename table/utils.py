@@ -8,13 +8,13 @@ from SoccerStats.utils import timing
 from competition.utils import fetch_competitions
 
 
-# TODO Use docstring format """Yield numbers from 0 to *to* every *delay* seconds."""
 def fetch_tables(competiton_id, matchday):
     """
-    Fetches JSON representation of tables from football-data.org
+    Fetches football-data.org JSON representation of a table from a competition with *competition_id* on a specific
+    *matchday*.
     :param competiton_id: Id of a competition
     :param matchday: Matchday of a competition
-    :return: JSON representation of a table from a competition on a sepcific matchday
+    :return: JSON representation of a table from a competition with *competition_id* on a specific *matchday*
     """
     import requests
 
@@ -29,7 +29,7 @@ def fetch_tables(competiton_id, matchday):
 
 def create_cup_table(table):
     """
-    Creates a CupTable.
+    Creates a CupTable from the JSON encoded representation *table*.
     :param table: JSON representation of a cup table
     """
     # DFB-Pokal doesn't have a table yet
@@ -116,7 +116,7 @@ def create_tables():
     # TODO Rewrite with bulk_create
     for competition in fetch_competitions():
         competition = Competition.objects.get(id=competition['id'])
-        for matchday in range(1, competition.current_matchday):
+        for matchday in range(1, competition.current_matchday + 1):
             try:
                 create_cup_table(fetch_tables(CupId(competition.id), matchday))
             except ValueError:
@@ -224,7 +224,7 @@ def update_tables():
             except CupTable.DoesNotExist:
                 print(competition_object.id)
 
-        for matchday in range(current_matchday, competition['currentMatchday']):
+        for matchday in range(current_matchday, competition['currentMatchday'] + 1):
             try:
                 table = fetch_tables(CupId(competition['id']), matchday)
                 if matchday == competition['currentMatchday']:

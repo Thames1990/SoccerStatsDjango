@@ -1,9 +1,10 @@
-import datetime
+from datetime import datetime
 from enum import Enum
 
 from django.db import models
 
 
+# TODO Use id fetch instead of Id model
 class CompetitionId(Enum):
     @classmethod
     def choices(cls):
@@ -81,7 +82,7 @@ class Competition(models.Model):
         max_length=255,
         choices=((subclass.choices()[0], subclass.choices()[1]) for subclass in CompetitionId.__subclasses__())
     )
-    year = models.IntegerField(choices=[(r, r) for r in range(2015, datetime.datetime.now().year)])
+    year = models.IntegerField(choices=[(r, r) for r in range(2015, datetime.now().year + 1)])
     current_matchday = models.PositiveSmallIntegerField()
     number_of_matchdays = models.PositiveSmallIntegerField()
     number_of_teams = models.PositiveSmallIntegerField()
@@ -90,6 +91,15 @@ class Competition(models.Model):
 
     class Meta:
         ordering = ['caption']
+
+    def __str__(self):
+        return 'Competition ' + self.caption + \
+               '(id: ' + str(self.id) + \
+               ', caption: ' + self.caption + \
+               ', league: ' + self.league + '). Currently at matchday ' + \
+               str(self.current_matchday) + ' of ' + str(self.number_of_matchdays) + \
+               ' with a total of ' + str(self.number_of_teams) + ' teams and ' + \
+               str(self.number_of_games) + ' games. Last update: ' + str(self.last_updated)
 
     def is_last_matchday(self):
         return self.current_matchday == self.number_of_matchdays

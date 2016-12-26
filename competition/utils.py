@@ -1,5 +1,9 @@
+import logging
+
 from SoccerStats.utils import timing
 from competition.models import Competition
+
+logger = logging.getLogger(__name__)
 
 
 def fetch_competitions(competition_id=None, season=None):
@@ -12,13 +16,11 @@ def fetch_competitions(competition_id=None, season=None):
     """
     import requests
 
-    base_url = 'http://api.football-data.org/v1/competitions/'
-    if competition_id and not season:
-        base_url += str(competition_id)
-    elif not competition_id and season:
-        base_url += '?season=' + str(season)
-    else:
-        print('No parameters were set. Loading current season competitions')
+    base_url = 'http://api.football-data.org/v1/competitions'
+    if competition_id:
+        base_url += '/' + str(competition_id)
+    if season:
+        base_url += '/?season=' + str(season)
 
     return requests.get(
         url=base_url,
@@ -26,8 +28,7 @@ def fetch_competitions(competition_id=None, season=None):
     ).json()
 
 
-# TODO Use id fetch instead of Id model
-def fetch_available_competition_ids():
+def fetch_competition_ids():
     """
     Fetches ids of all available competitions from every season documented at football-data.org.
     :return: List of ids of available competitions
@@ -37,7 +38,7 @@ def fetch_available_competition_ids():
     for season in range(2015, datetime.today().year + 1):
         for competition in fetch_competitions(season=season):
             if 'error' in competition:
-                print('Competitions for season ' + str(season) + ' aren\'t available')
+                logger.warning('Competitions for season ' + str(season) + ' aren\'t available')
                 break
             competition_ids.append(competition['id'])
     return competition_ids
@@ -50,20 +51,21 @@ def create_competitions():
     :return: Created competitions
     """
     competitions = []
-    for competition in fetch_competitions():
-        competitions.append(
-            Competition(
-                id=competition['id'],
-                caption=competition['caption'],
-                league=competition['league'],
-                year=competition['year'],
-                current_matchday=competition['currentMatchday'],
-                number_of_matchdays=competition['numberOfMatchdays'],
-                number_of_teams=competition['numberOfTeams'],
-                number_of_games=competition['numberOfGames'],
-                last_updated=competition['lastUpdated'],
+    for competition_id in fetch_competition_ids():
+        for competition in fetch_competitions(competition_id=competition_id):
+            competitions.append(
+                Competition(
+                    id=competition['id'],
+                    caption=competition['caption'],
+                    league=competition['league'],
+                    year=competition['year'],
+                    current_matchday=competition['currentMatchday'],
+                    number_of_matchdays=competition['numberOfMatchdays'],
+                    number_of_teams=competition['numberOfTeams'],
+                    number_of_games=competition['numberOfGames'],
+                    last_updated=competition['lastUpdated'],
+                )
             )
-        )
 
     return Competition.objects.bulk_create(competitions)
 
@@ -75,15 +77,16 @@ def update_competitions():
     :return: Number of updated rows
     """
     updated_rows = 0
-    for competition in fetch_competitions():
-        updated_rows += Competition.objects.filter(id=competition['id']).update(
-            caption=competition['caption'],
-            league=competition['league'],
-            year=competition['year'],
-            current_matchday=competition['currentMatchday'],
-            number_of_matchdays=competition['numberOfMatchdays'],
-            number_of_teams=competition['numberOfTeams'],
-            number_of_games=competition['numberOfGames'],
-            last_updated=competition['lastUpdated'],
-        )
+    for competition_id in fetch_competition_ids():
+        for competition in fetch_competitions(competition_id=competition_id):
+            updated_rows += Competition.objects.filter(id=competition['id']).update(
+                caption=competition['caption'],
+                league=competition['league'],
+                year=competition['year'],
+                current_matchday=competition['currentMatchday'],
+                number_of_matchdays=competition['numberOfMatchdays'],
+                number_of_teams=competition['numberOfTeams'],
+                number_of_games=competition['numberOfGames'],
+                last_updated=competition['lastUpdated'],
+            )
     return updated_rows

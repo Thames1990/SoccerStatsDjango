@@ -128,9 +128,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'SoccerStats/static')
 
+# Django Debug Toolbar
+
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": lambda request: True,
 }
+
+# Django Extensions
 
 SHELL_PLUS_PRE_IMPORTS = (
     'competition.utils',
@@ -141,6 +145,8 @@ SHELL_PLUS_PRE_IMPORTS = (
     'SoccerStats.utils',
 )
 
+# django-spaghetti-and-meatballs
+
 SPAGHETTI_SAUCE = {
     'apps': [
         'competition',
@@ -150,4 +156,99 @@ SPAGHETTI_SAUCE = {
         'team',
     ],
     'show_fields': False,
+}
+
+# Logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] %(levelname)s %(message)s',
+            'datefmt': '%d.%m.%Y %H:%M:%S',
+        },
+        'verbose': {
+            'format': '[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
+            'datefmt': '%d.%m.%Y %H:%M:%S',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'debug_log': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'SoccerStats/log/debug.log'),
+            'maxBytes': 1024 * 1024 * 15,
+            'backupCount': 10,
+            'formatter': 'verbose',
+        },
+        'production_log': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_false'],
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'SoccerStats/log/production.log'),
+            'maxBytes': 1024 * 1024 * 15,
+            'backupCount': 10,
+            'formatter': 'verbose',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'verbose',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'py.warnings': {
+            'handlers': ['console'],
+        },
+        'competition': {
+            'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
+        },
+        'fixture': {
+            'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
+        },
+        'player': {
+            'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
+        },
+        'table': {
+            'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
+        },
+        'team': {
+            'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
+        },
+    }
 }

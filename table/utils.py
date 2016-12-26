@@ -5,7 +5,6 @@ from table.models import CupTable, LeagueTable, Home, Away
 from team.models import Team
 
 from SoccerStats.utils import timing
-from competition.utils import fetch_competitions
 
 
 def fetch_tables(competiton_id, matchday):
@@ -114,8 +113,7 @@ def create_tables():
     Creates all tables (CupTable and LeagueTable).
     """
     # TODO Rewrite with bulk_create
-    for competition in fetch_competitions():
-        competition = Competition.objects.get(id=competition['id'])
+    for competition in Competition.objects.all():
         for matchday in range(1, competition.current_matchday + 1):
             try:
                 create_cup_table(fetch_tables(CupId(competition.id), matchday))
@@ -211,28 +209,20 @@ def update_tables():
     Update all tables (CupTable, LeagueTable).
     :return:
     """
-    for competition in fetch_competitions():
-        # TODO Fix this shit
-        current_matchday = 1
-        competition_object = Competition.objects.get(id=competition['id'])
-        try:
-            current_matchday = LeagueTable.objects.filter(competition=competition_object).latest().matchday
-        except LeagueTable.DoesNotExist:
-            print(competition_object.id)
+    for competition in Competition.objects.all():
+        if LeagueTable.objects.filter(competition=competition).exists():
+            current_matchday = LeagueTable.objects.filter(competition=competition).latest().matchday
+        else:
+            current_matchday = CupTable.objects.filter(competition=competition).latest().matchday
+        for matchday in range(current_matchday, competition.current_matchday + 1):
             try:
-                current_matchday = CupTable.objects.filter(competition=competition_object).latest().matchday
-            except CupTable.DoesNotExist:
-                print(competition_object.id)
-
-        for matchday in range(current_matchday, competition['currentMatchday'] + 1):
-            try:
-                table = fetch_tables(CupId(competition['id']), matchday)
-                if matchday == competition['currentMatchday']:
+                table = fetch_tables(CupId(competition.id), matchday)
+                if matchday == competition.current_matchday:
                     update_cup_table(table)
                 create_cup_table(table)
             except ValueError:
-                table = fetch_tables(LeagueId(competition['id']), matchday)
-                if matchday == competition['currentMatchday']:
+                table = fetch_tables(LeagueId(competition.id), matchday)
+                if matchday == competition.current_matchday:
                     update_league_table(table)
                 create_league_table(table)
 
@@ -274,7 +264,8 @@ def get_league_table_position_changes(league_table):
     :param league_table: League table to calculate position changes for
     :return: List of position changes
     """
-    league_table = LeagueTable.objects.get(id=league_table.id, matchday=lea)
+    # TODO Is this redundant? What t
+    league_table = LeagueTable.objects.get(id=league_table.id, matchday=league_table.matchday)
     try:
         league_table_last_matchday = LeagueTable.objects.get(
             competition=league_table.competition,

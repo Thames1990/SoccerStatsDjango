@@ -1,7 +1,6 @@
 import re
 
 from competition.models import Competition
-from competition.utils import fetch_competitions
 from SoccerStats.utils import timing
 from team.models import Team
 
@@ -38,7 +37,7 @@ def create_teams():
                     '[^0-9]', '', team['squadMarketValue']
                 ) if team['squadMarketValue'] else None,
                 # TODO Add image check and fallback download from wikipedia
-                crest_url=team['crestUrl']
+                crest_url=team['crestUrl'],
             )[0]
             team_object.competition.add(Competition.objects.get(id=competition.id))
             teams.append(team_object)
@@ -53,14 +52,16 @@ def update_teams():
     :return: Number of updated rows
     """
     updated_rows = 0
-    for competition in fetch_competitions():
+    for competition in Competition.objects.all():
         for team in fetch_teams(competition['id']):
-            updated_rows += Team.objects.filter(id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]).update(
-                name=team['name'],
-                code=team['code'] if team['code'] else None,
-                short_name=team['shortName'],
-                squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
-                # TODO Add image check and fallback download from wikipedia
-                crest_url=team['crestUrl'],
-            )
+            updated_rows += \
+                Team.objects.filter(id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]).update(
+                    name=team['name'],
+                    code=team['code'] if team['code'] else None,
+                    short_name=team['shortName'],
+                    squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team[
+                        'squadMarketValue'] else None,
+                    # TODO Add image check and fallback download from wikipedia
+                    crest_url=team['crestUrl'],
+                )
     return updated_rows

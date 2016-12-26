@@ -4,7 +4,7 @@ from enum import Enum
 from django.db import models
 
 
-# TODO Use id fetch instead of Id model
+# TODO Maybe get away from hard coded ids and try to distinguish leagues and cups by standing information
 class CompetitionId(Enum):
     @classmethod
     def choices(cls):
@@ -14,8 +14,8 @@ class CompetitionId(Enum):
         """
         import inspect
         members = inspect.getmembers(cls, lambda m: not (inspect.isroutine(m)))
-        props = [m for m in members if not (m[0][:2] == '__')]
-        choices = tuple([(str(p[1].value), p[0]) for p in props])
+        props = [member for member in members if not (member[0][:2] == '__')]
+        choices = tuple([(str(prop[1].value), prop[0]) for prop in props])
         return choices
 
     @classmethod

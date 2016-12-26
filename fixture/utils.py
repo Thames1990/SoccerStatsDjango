@@ -5,7 +5,6 @@ from fixture.models import Fixture, Result, HalfTime, ExtraTime, PenaltyShootout
 from team.models import Team
 
 from SoccerStats.utils import timing
-from competition.utils import fetch_competitions
 
 
 def fetch_fixtures(competition_id):
@@ -36,8 +35,8 @@ def create_fixtures():
     penalty_shootouts = []
     odds = []
 
-    for competition in fetch_competitions():
-        for fixture in fetch_fixtures(competition['id']):
+    for competition in Competition.objects.all():
+        for fixture in fetch_fixtures(competition.id):
             fixture_object = Fixture(
                 id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
                 competition=Competition.objects.get(
@@ -115,8 +114,8 @@ def update_fixtures():
     # TODO Optimize update process
     errors = 0
 
-    for competition in fetch_competitions():
-        for fixture in fetch_fixtures(competition['id']):
+    for competition in Competition.objects.all():
+        for fixture in fetch_fixtures(competition.id):
             fixture_object = Fixture.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:])
             fixture_object.date = fixture['date']
             fixture_object.status = dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None

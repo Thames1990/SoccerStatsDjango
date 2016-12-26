@@ -1,0 +1,98 @@
+{% extends 'SoccerStats/base.html' %}
+
+{% load list_extras %}
+
+{% block content %}
+    <h2>{{ table.league_caption }} Tabelle</h2>
+    {% if table.competition.is_cup %}
+        <grid>
+            {% for group in table.group_set.all %}
+                <div col="1/2">
+                    <card>
+                        <h5>Gruppe {{ group.name }}</h5>
+                        <hr>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th width="30%">Verein</th>
+                                <th>Sp</th>
+                                <th>Tore</th>
+                                <th>Pkte.</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for group_standing in group.groupstanding_set.all %}
+                                <tr>
+                                    <td>
+                                        {% if table_changes %}
+                                            <tag>
+                                                {% if table_changes|get_at_index:forloop.parentloop.counter0|get_at_index:forloop.counter0 == True %}
+                                                    <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                                                {% elif table_changes|get_at_index:forloop.parentloop.counter0|get_at_index:forloop.counter0 == False %}
+                                                    <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                                {% else %}
+                                                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                                {% endif %}
+                                            </tag>
+                                        {% endif %}
+                                        {{ group_standing.rank }}
+                                    </td>
+                                    <td width="30%">{{ group_standing.team.name }}</td>
+                                    <td>{{ group_standing.played_games }}</td>
+                                    <td>{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
+                                    <td>{{ group_standing.points }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </card>
+                </div>
+            {% endfor %}
+        </grid>
+    {% else %}
+        <table>
+            <thead>
+            <tr>
+                <th>Position</th>
+                <th>Verein</th>
+                <th>Spiele</th>
+                <th>g.</th>
+                <th>u.</th>
+                <th>v.</th>
+                <th>Tore</th>
+                <th>Diff.</th>
+                <th>Pkte.</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for standing in table.standing_set.all %}
+                <tr>
+                    <td>
+                        {% if table_changes %}
+                            <tag>
+                                {% if table_changes|get_at_index:forloop.counter0 == True %}
+                                    <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                                {% elif table_changes|get_at_index:forloop.counter0 == False %}
+                                    <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                {% else %}
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                {% endif %}
+                            </tag>
+                        {% endif %}
+                        {{ standing.position }}
+                    </td>
+                    <td>{{ standing.team.name }}</td>
+                    <td>{{ standing.played_games }}</td>
+                    <td>{{ standing.wins }}</td>
+                    <td>{{ standing.draws }}</td>
+                    <td>{{ standing.losses }}</td>
+                    <td>{{ standing.goals }}:{{ standing.goals_against }}</td>
+                    <td>{{ standing.goal_difference }}</td>
+                    <td>{{ standing.points }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

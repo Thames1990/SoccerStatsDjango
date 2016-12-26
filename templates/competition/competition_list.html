@@ -9,6 +9,14 @@
                     <hr>
                     <table>
                         <tr>
+                            <th>Pokal</th>
+                            {% if competition.is_cup %}
+                                <td>Ja</td>
+                            {% else %}
+                                <td>Nein</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
                             <th>Aktueller Spieltag</th>
                             <td>{{ competition.current_matchday }}</td>
                         </tr>

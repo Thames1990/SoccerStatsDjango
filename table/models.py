@@ -4,8 +4,7 @@ from competition.models import Competition
 from team.models import Team
 
 
-# TODO merge tables since they're equivalent?
-class LeagueTable(models.Model):
+class Table(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
@@ -13,12 +12,9 @@ class LeagueTable(models.Model):
     class Meta:
         get_latest_by = 'matchday'
 
-    def __str__(self):
-        return 'League table ' + self.league_caption + ' on matchday ' + str(self.matchday)
-
 
 class Standing(models.Model):
-    league_table = models.ForeignKey(LeagueTable, on_delete=models.CASCADE)
+    table = models.ForeignKey(Table, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     position = models.PositiveIntegerField()
     played_games = models.PositiveIntegerField()
@@ -30,11 +26,8 @@ class Standing(models.Model):
     draws = models.PositiveIntegerField()
     losses = models.PositiveIntegerField()
 
-    def __str__(self):
-        return self.team.name + ' is currently at position ' + str(self.position) + ' in ' + \
-               self.league_table.league_caption + ' has played ' + str(self.played_games) + ' games (wins: ' + \
-               str(self.wins) + ', draws: ' + str(self.draws) + ', losses: ' + str(self.losses) + ') with' + \
-               str(self.goals) + ' scored goals and ' + str(self.goals_against) + ' conceded goals.'
+    class Meta:
+        ordering = ['position']
 
     def has_position_changed(self, other_matchday_standing):
         """
@@ -57,7 +50,7 @@ class Standing(models.Model):
         raise ValueError(other_matchday_standing + ' is no valid Standing')
 
 
-class Home(models.Model):
+class HomeStanding(models.Model):
     standing = models.ForeignKey(Standing, on_delete=models.CASCADE)
     goals = models.PositiveIntegerField()
     goals_against = models.PositiveIntegerField()
@@ -65,16 +58,11 @@ class Home(models.Model):
     draws = models.PositiveIntegerField()
     losses = models.PositiveIntegerField()
 
-    def __str__(self):
-        return self.standing.__str__() + ' Home statistics: ' + \
-               'wins: ' + str(self.wins) + \
-               ', draws: ' + str(self.draws) + \
-               ', losses: ' + str(self.losses) + \
-               str(self.goals) + ' scored goals and ' + \
-               str(self.goals_against) + ' conceded goals.'
+    def goal_difference(self):
+        return self.goals - self.goals_against
 
 
-class Away(models.Model):
+class AwayStanding(models.Model):
     standing = models.ForeignKey(Standing, on_delete=models.CASCADE)
     goals = models.PositiveIntegerField()
     goals_against = models.PositiveIntegerField()
@@ -82,35 +70,13 @@ class Away(models.Model):
     draws = models.PositiveIntegerField()
     losses = models.PositiveIntegerField()
 
-    def __str__(self):
-        return self.standing.__str__() + ' Away statistics: ' + \
-               'wins: ' + str(self.wins) + \
-               ', draws: ' + str(self.draws) + \
-               ', losses: ' + str(self.losses) + \
-               str(self.goals) + ' scored goals and ' + \
-               str(self.goals_against) + ' conceded goals.'
-
-
-class CupTable(models.Model):
-    competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
-    league_caption = models.CharField(max_length=255)
-    matchday = models.IntegerField()
-
-    class Meta:
-        get_latest_by = 'matchday'
-
-    def __str__(self):
-        return 'Cup table ' + self.league_caption + \
-               '(id: ' + str(self.competition_id) + ')' + \
-               ' on matchday ' + str(self.matchday)
+    def goal_difference(self):
+        return self.goals - self.goals_against
 
 
 class Group(models.Model):
-    cup_table = models.ForeignKey(CupTable, on_delete=models.CASCADE)
+    table = models.ForeignKey(Table, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return 'Group ' + self.name + ' in ' + self.cup_table.league_caption
 
 
 class GroupStanding(models.Model):
@@ -124,12 +90,8 @@ class GroupStanding(models.Model):
     goals_against = models.PositiveSmallIntegerField()
     goal_difference = models.PositiveSmallIntegerField()
 
-    def __str__(self):
-        return self.team.name + ' is currently at rank ' + str(self.rank) + ' in group ' + \
-               self.group.name + ' of ' + self.group.cup_table.league_caption + \
-               ' has played ' + str(self.played_games) + ' games (wins: ' + \
-               str(self.wins) + ', draws: ' + str(self.draws) + ', losses: ' + str(self.losses) + ') with' + \
-               str(self.goals) + ' scored goals and ' + str(self.goals_against) + ' conceded goals.'
+    class Meta:
+        ordering = ['rank']
 
     def has_rank_changed(self, other_matchday_group_standing):
         """

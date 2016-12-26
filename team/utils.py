@@ -19,49 +19,45 @@ def fetch_teams(competition_id):
     ).json()['teams']
 
 
+def create_team(team):
+    """
+    Creates a Team object.
+    :param team: JSON representation of a team
+    :return: Created Team object
+    """
+    return Team(
+        id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
+        name=team['name'],
+        code=team['code'] or None,
+        short_name=team['shortName'],
+        squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
+        # TODO Add image check and fallback download from wikipedia
+        crest_url=team['crestUrl'],
+    )
+
+
 @timing
 def create_teams():
-    """
-    Creates all teams.
-    :return: Created teams
-    """
-    teams = []
+    """Creates all teams."""
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
-            team_object = Team.objects.get_or_create(
-                id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
-                name=team['name'],
-                code=team['code'] if team['code'] else None,
-                short_name=team['shortName'],
-                squad_market_value=re.sub(
-                    '[^0-9]', '', team['squadMarketValue']
-                ) if team['squadMarketValue'] else None,
-                # TODO Add image check and fallback download from wikipedia
-                crest_url=team['crestUrl'],
-            )[0]
+            team_object = create_team(team)
             team_object.competition.add(Competition.objects.get(id=competition.id))
-            teams.append(team_object)
-
-    return teams
+            team_object.save()
 
 
 @timing
 def update_teams():
-    """
-    Updates all teams.
-    :return: Number of updated rows
-    """
-    updated_rows = 0
+    """Updates all teams."""
     for competition in Competition.objects.all():
         for team in fetch_teams(competition['id']):
-            updated_rows += \
-                Team.objects.filter(id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]).update(
-                    name=team['name'],
-                    code=team['code'] if team['code'] else None,
-                    short_name=team['shortName'],
-                    squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team[
-                        'squadMarketValue'] else None,
-                    # TODO Add image check and fallback download from wikipedia
-                    crest_url=team['crestUrl'],
-                )
-    return updated_rows
+            Team.objects.filter(
+                id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]
+            ).update(
+                name=team['name'],
+                code=team['code'] if team['code'] else None,
+                short_name=team['shortName'],
+                squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
+                # TODO Add image check and fallback download from wikipedia
+                crest_url=team['crestUrl'],
+            )

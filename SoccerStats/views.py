@@ -8,11 +8,9 @@ def index(request):
     from team.models import Team
     from django.db.models import Avg, Sum, DecimalField
 
-    from table.utils import get_cup_tables_current_matchday, get_league_tables_current_matchday, \
-        get_group_standing_average_goals, get_standing_average_goals
+    from table.utils import get_tables_current_matchday
 
-    cup_tables_current_matchday = get_cup_tables_current_matchday()
-    league_tables_current_matchday = get_league_tables_current_matchday()
+    tables_current_matchday = get_tables_current_matchday()
 
     return render(request, 'SoccerStats/index.html', {
         'competition': {
@@ -44,15 +42,9 @@ def index(request):
             ),
             'best_five': Player.objects.order_by('-market_value')[:5],
         },
-        'cup_table': {
-            'list': cup_tables_current_matchday,
-            'count': len(list(cup_tables_current_matchday)),
-            # 'group_standing_goals_avg': get_group_standing_average_goals(cup_tables_current_matchday),
-        },
-        'league_table': {
-            'list': league_tables_current_matchday,
-            'count': len(list(league_tables_current_matchday)),
-            # 'standing_goals_avg': get_standing_average_goals(league_tables_current_matchday),
+        'table': {
+            'list': tables_current_matchday,
+            'count': len(list(tables_current_matchday)),
         },
         'team': {
             'count': Team.objects.count(),

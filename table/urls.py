@@ -1,27 +1,17 @@
 from django.conf.urls import url
 
-from .views import CupTableDetailView, CupTableListView, LeagueTableDetailView, LeagueTableListView
+from .views import TableDetailView, TableListView
 
 app_name = 'table'
 urlpatterns = [
     url(
-        r'^cup/(?P<pk>\d+)/$',
-        CupTableDetailView.as_view(),
-        name='cup_detail'
+        r'^(?P<pk>\d+)/$',
+        TableDetailView.as_view(),
+        name='detail'
     ),
     url(
-        r'^cup/$',
-        CupTableListView.as_view(),
-        name='cup_list'
-    ),
-    url(
-        r'^league/(?P<pk>\d+)/$',
-        LeagueTableDetailView.as_view(),
-        name='league_detail'
-    ),
-    url(
-        r'^league/$',
-        LeagueTableListView.as_view(),
-        name='league_list'
+        r'^$',
+        TableListView.as_view(),
+        name='list'
     ),
 ]

@@ -13,37 +13,15 @@ class Fixture(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_team')
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_team')
-    date = models.DateTimeField(db_index=True)
-    STATUS = (
-        ('SCHEDULED', 'Geplant'),
-        ('TIMED', 'Festgelegt'),
-        ('POSTPONED', 'Verschoben'),
-        ('IN_PLAY', 'Im Spiel'),
-        ('CANCELED', 'Abgebrochen'),
-        ('CANCELLED', 'Abgebrochen'),
-        ('FINISHED', 'Beendet'),
-        # TODO Ask author what FT should be
-        ('FT', 'FT'),
-    )
-    status = models.CharField(db_index=True, max_length=255, choices=STATUS, null=True)
+    date = models.DateTimeField()
+    status = models.CharField(max_length=255, null=True)
     matchday = models.PositiveSmallIntegerField()
-
-    def __str__(self):
-        return 'Fixture ' + str(self.id) + '(' + self.competition + \
-               ') between ' + self.home_team + ' and ' + self.away_team + \
-               ' on ' + str(self.date) + ' (matchday ' + str(self.matchday) + \
-               ') is ' + self.status + '.'
 
 
 class Result(models.Model):
-    id = models.PositiveSmallIntegerField(primary_key=True)
     fixture = models.ForeignKey(Fixture, on_delete=models.CASCADE)
-    goals_home_team = models.PositiveSmallIntegerField(null=True)
-    goals_away_team = models.PositiveSmallIntegerField(null=True)
-
-    def __str__(self):
-        return 'Result ' + str(self.id) + ' of fixture ' + str(self.fixture.id) + ': ' + \
-               str(self.goals_home_team) + ':' + str(self.goals_away_team) + '.'
+    goals_home_team = models.PositiveSmallIntegerField()
+    goals_away_team = models.PositiveSmallIntegerField()
 
 
 class HalfTime(models.Model):
@@ -51,19 +29,11 @@ class HalfTime(models.Model):
     goals_home_team = models.PositiveSmallIntegerField()
     goals_away_team = models.PositiveSmallIntegerField()
 
-    def __str__(self):
-        return 'Halftime result ' + str(self.id) + ' of fixture ' + str(self.fixture.id) + ': ' + \
-               str(self.goals_home_team) + ':' + str(self.goals_away_team) + '.'
-
 
 class ExtraTime(models.Model):
     result = models.ForeignKey(Result, on_delete=models.CASCADE)
     goals_home_team = models.PositiveSmallIntegerField()
     goals_away_team = models.PositiveSmallIntegerField()
-
-    def __str__(self):
-        return 'Extra time rResult ' + str(self.id) + ' of fixture ' + str(self.fixture.id) + ': ' + \
-               str(self.goals_home_team) + ':' + str(self.goals_away_team) + '.'
 
 
 class PenaltyShootout(models.Model):
@@ -71,21 +41,11 @@ class PenaltyShootout(models.Model):
     goals_home_team = models.PositiveSmallIntegerField()
     goals_away_team = models.PositiveSmallIntegerField()
 
-    def __str__(self):
-        return 'Penalty shootout result ' + str(self.id) + ' of fixture ' + str(self.fixture.id) + ': ' + \
-               str(self.goals_home_team) + ':' + str(self.goals_away_team) + '.'
-
 
 class Odds(models.Model):
     fixture = models.ForeignKey(Fixture, on_delete=models.CASCADE)
     home_win = models.FloatField()
     draw = models.FloatField()
     away_win = models.FloatField()
-
-    def __str__(self):
-        return 'Odds of fixture ' + str(self.fixture.id) + ': ' + \
-               'home win: ' + str(self.home_win) + \
-               ' | draw: ' + str(self.draw) + \
-               ' | away win: ' + str(self.away_win) + '.'
 
 # TODO Add Head2Head

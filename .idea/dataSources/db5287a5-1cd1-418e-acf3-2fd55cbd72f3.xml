@@ -25,57 +25,56 @@
     <table id="19" parent="2" name="fixture_result"/>
     <table id="20" parent="2" name="player_player"/>
     <table id="21" parent="2" name="sqlite_sequence"/>
-    <table id="22" parent="2" name="table_away"/>
-    <table id="23" parent="2" name="table_cuptable"/>
-    <table id="24" parent="2" name="table_group"/>
-    <table id="25" parent="2" name="table_groupstanding"/>
-    <table id="26" parent="2" name="table_home"/>
-    <table id="27" parent="2" name="table_leaguetable"/>
-    <table id="28" parent="2" name="table_standing"/>
-    <table id="29" parent="2" name="team_team"/>
-    <table id="30" parent="2" name="team_team_competition"/>
-    <column id="31" parent="3" name="id">
+    <table id="22" parent="2" name="table_awaystanding"/>
+    <table id="23" parent="2" name="table_group"/>
+    <table id="24" parent="2" name="table_groupstanding"/>
+    <table id="25" parent="2" name="table_homestanding"/>
+    <table id="26" parent="2" name="table_standing"/>
+    <table id="27" parent="2" name="table_table"/>
+    <table id="28" parent="2" name="team_team"/>
+    <table id="29" parent="2" name="team_team_competition"/>
+    <column id="30" parent="3" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="32" parent="3" name="name">
+    <column id="31" parent="3" name="name">
       <Position>1</Position>
       <DataType>VARCHAR(80)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="33" parent="3" name="sqlite_autoindex_auth_group_1">
+    <index id="32" parent="3" name="sqlite_autoindex_auth_group_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>name</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="34" parent="3">
+    <key id="33" parent="3">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="35" parent="4" name="id">
+    <column id="34" parent="4" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="36" parent="4" name="group_id">
+    <column id="35" parent="4" name="group_id">
       <Position>1</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="37" parent="4" name="permission_id">
+    <column id="36" parent="4" name="permission_id">
       <Position>2</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="38" parent="4" name="auth_group_permissions_group_id_0cd325b0_uniq">
+    <index id="37" parent="4" name="auth_group_permissions_group_id_0cd325b0_uniq">
       <ColNames>group_id
 permission_id</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="39" parent="4">
+    <key id="38" parent="4">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="40" parent="4" name="#FAKE_auth_group_permissions_2">
+    <foreign-key id="39" parent="4" name="#FAKE_auth_group_permissions_2">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>group_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -85,7 +84,7 @@ permission_id</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <foreign-key id="41" parent="4" name="#FAKE_auth_group_permissions_1">
+    <foreign-key id="40" parent="4" name="#FAKE_auth_group_permissions_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>permission_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -95,35 +94,35 @@ permission_id</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="42" parent="5" name="id">
+    <column id="41" parent="5" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="43" parent="5" name="content_type_id">
+    <column id="42" parent="5" name="content_type_id">
       <Position>1</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="44" parent="5" name="codename">
+    <column id="43" parent="5" name="codename">
       <Position>2</Position>
       <DataType>VARCHAR(100)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="45" parent="5" name="name">
+    <column id="44" parent="5" name="name">
       <Position>3</Position>
       <DataType>VARCHAR(255)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="46" parent="5" name="auth_permission_content_type_id_01ab375a_uniq">
+    <index id="45" parent="5" name="auth_permission_content_type_id_01ab375a_uniq">
       <ColNames>content_type_id
 codename</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="47" parent="5">
+    <key id="46" parent="5">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="48" parent="5" name="#FAKE_auth_permission_1">
+    <foreign-key id="47" parent="5" name="#FAKE_auth_permission_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>content_type_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -133,92 +132,92 @@ codename</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="49" parent="6" name="id">
+    <column id="48" parent="6" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="50" parent="6" name="password">
+    <column id="49" parent="6" name="password">
       <Position>1</Position>
       <DataType>VARCHAR(128)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="51" parent="6" name="last_login">
+    <column id="50" parent="6" name="last_login">
       <Position>2</Position>
       <DataType>DATETIME(0,-1)|12</DataType>
     </column>
-    <column id="52" parent="6" name="is_superuser">
+    <column id="51" parent="6" name="is_superuser">
       <Position>3</Position>
       <DataType>BOOL(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="53" parent="6" name="first_name">
+    <column id="52" parent="6" name="first_name">
       <Position>4</Position>
       <DataType>VARCHAR(30)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="54" parent="6" name="last_name">
+    <column id="53" parent="6" name="last_name">
       <Position>5</Position>
       <DataType>VARCHAR(30)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="55" parent="6" name="email">
+    <column id="54" parent="6" name="email">
       <Position>6</Position>
       <DataType>VARCHAR(254)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="56" parent="6" name="is_staff">
+    <column id="55" parent="6" name="is_staff">
       <Position>7</Position>
       <DataType>BOOL(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="57" parent="6" name="is_active">
+    <column id="56" parent="6" name="is_active">
       <Position>8</Position>
       <DataType>BOOL(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="58" parent="6" name="date_joined">
+    <column id="57" parent="6" name="date_joined">
       <Position>9</Position>
       <DataType>DATETIME(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="59" parent="6" name="username">
+    <column id="58" parent="6" name="username">
       <Position>10</Position>
       <DataType>VARCHAR(150)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="60" parent="6" name="sqlite_autoindex_auth_user_1">
+    <index id="59" parent="6" name="sqlite_autoindex_auth_user_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>username</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="61" parent="6">
+    <key id="60" parent="6">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="62" parent="7" name="id">
+    <column id="61" parent="7" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="63" parent="7" name="user_id">
+    <column id="62" parent="7" name="user_id">
       <Position>1</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="64" parent="7" name="group_id">
+    <column id="63" parent="7" name="group_id">
       <Position>2</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="65" parent="7" name="auth_user_groups_user_id_94350c0c_uniq">
+    <index id="64" parent="7" name="auth_user_groups_user_id_94350c0c_uniq">
       <ColNames>user_id
 group_id</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="66" parent="7">
+    <key id="65" parent="7">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="67" parent="7" name="#FAKE_auth_user_groups_2">
+    <foreign-key id="66" parent="7" name="#FAKE_auth_user_groups_2">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>user_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -228,7 +227,7 @@ group_id</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <foreign-key id="68" parent="7" name="#FAKE_auth_user_groups_1">
+    <foreign-key id="67" parent="7" name="#FAKE_auth_user_groups_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>group_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -238,30 +237,30 @@ group_id</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="69" parent="8" name="id">
+    <column id="68" parent="8" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="70" parent="8" name="user_id">
+    <column id="69" parent="8" name="user_id">
       <Position>1</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="71" parent="8" name="permission_id">
+    <column id="70" parent="8" name="permission_id">
       <Position>2</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="72" parent="8" name="auth_user_user_permissions_user_id_14a6b632_uniq">
+    <index id="71" parent="8" name="auth_user_user_permissions_user_id_14a6b632_uniq">
       <ColNames>user_id
 permission_id</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="73" parent="8">
+    <key id="72" parent="8">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="74" parent="8" name="#FAKE_auth_user_user_permissions_2">
+    <foreign-key id="73" parent="8" name="#FAKE_auth_user_user_permissions_2">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>user_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -271,7 +270,7 @@ permission_id</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <foreign-key id="75" parent="8" name="#FAKE_auth_user_user_permissions_1">
+    <foreign-key id="74" parent="8" name="#FAKE_auth_user_user_permissions_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>permission_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -281,47 +280,52 @@ permission_id</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="76" parent="9" name="id">
+    <column id="75" parent="9" name="id">
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="77" parent="9" name="caption">
+    <column id="76" parent="9" name="is_cup">
       <Position>1</Position>
-      <DataType>VARCHAR(255)(0,-1)|12</DataType>
+      <DataType>BOOL(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="78" parent="9" name="league">
+    <column id="77" parent="9" name="caption">
       <Position>2</Position>
       <DataType>VARCHAR(255)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="79" parent="9" name="year">
+    <column id="78" parent="9" name="league">
       <Position>3</Position>
+      <DataType>VARCHAR(255)(0,-1)|12</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="79" parent="9" name="year">
+      <Position>4</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="80" parent="9" name="current_matchday">
-      <Position>4</Position>
-      <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="81" parent="9" name="number_of_matchdays">
       <Position>5</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="82" parent="9" name="number_of_teams">
+    <column id="81" parent="9" name="number_of_matchdays">
       <Position>6</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="83" parent="9" name="number_of_games">
+    <column id="82" parent="9" name="number_of_teams">
       <Position>7</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="84" parent="9" name="last_updated">
+    <column id="83" parent="9" name="number_of_games">
       <Position>8</Position>
+      <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="84" parent="9" name="last_updated">
+      <Position>9</Position>
       <DataType>DATETIME(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
@@ -500,43 +504,35 @@ model</ColNames>
       <DataType>DATETIME(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="120" parent="15" name="matchday">
+    <column id="120" parent="15" name="status">
       <Position>2</Position>
+      <DataType>VARCHAR(255)(0,-1)|12</DataType>
+    </column>
+    <column id="121" parent="15" name="matchday">
+      <Position>3</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="121" parent="15" name="away_team_id">
-      <Position>3</Position>
-      <DataType>INTEGER(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="122" parent="15" name="competition_id">
+    <column id="122" parent="15" name="away_team_id">
       <Position>4</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="123" parent="15" name="home_team_id">
+    <column id="123" parent="15" name="competition_id">
       <Position>5</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="124" parent="15" name="status">
+    <column id="124" parent="15" name="home_team_id">
       <Position>6</Position>
-      <DataType>VARCHAR(255)(0,-1)|12</DataType>
+      <DataType>INTEGER(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
     </column>
-    <index id="125" parent="15" name="fixture_fixture_5fc73231">
-      <ColNames>date</ColNames>
-      <Unique>1</Unique>
-    </index>
-    <index id="126" parent="15" name="fixture_fixture_9acb4454">
-      <ColNames>status</ColNames>
-      <Unique>1</Unique>
-    </index>
-    <key id="127" parent="15">
+    <key id="125" parent="15">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="128" parent="15" name="#FAKE_fixture_fixture_3">
+    <foreign-key id="126" parent="15" name="#FAKE_fixture_fixture_3">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>away_team_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -546,7 +542,7 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <foreign-key id="129" parent="15" name="#FAKE_fixture_fixture_2">
+    <foreign-key id="127" parent="15" name="#FAKE_fixture_fixture_2">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>competition_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -556,7 +552,7 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <foreign-key id="130" parent="15" name="#FAKE_fixture_fixture_1">
+    <foreign-key id="128" parent="15" name="#FAKE_fixture_fixture_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>home_team_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -566,30 +562,30 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="131" parent="16" name="id">
+    <column id="129" parent="16" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="132" parent="16" name="goals_home_team">
+    <column id="130" parent="16" name="goals_home_team">
       <Position>1</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="133" parent="16" name="goals_away_team">
+    <column id="131" parent="16" name="goals_away_team">
       <Position>2</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="134" parent="16" name="result_id">
+    <column id="132" parent="16" name="result_id">
       <Position>3</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="135" parent="16">
+    <key id="133" parent="16">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="136" parent="16" name="#FAKE_fixture_halftime_1">
+    <foreign-key id="134" parent="16" name="#FAKE_fixture_halftime_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>result_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -599,35 +595,35 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="137" parent="17" name="id">
+    <column id="135" parent="17" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="138" parent="17" name="home_win">
+    <column id="136" parent="17" name="home_win">
       <Position>1</Position>
       <DataType>REAL(0,-1)|6</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="139" parent="17" name="draw">
+    <column id="137" parent="17" name="draw">
       <Position>2</Position>
       <DataType>REAL(0,-1)|6</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="140" parent="17" name="away_win">
+    <column id="138" parent="17" name="away_win">
       <Position>3</Position>
       <DataType>REAL(0,-1)|6</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="141" parent="17" name="fixture_id">
+    <column id="139" parent="17" name="fixture_id">
       <Position>4</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="142" parent="17">
+    <key id="140" parent="17">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="143" parent="17" name="#FAKE_fixture_odds_1">
+    <foreign-key id="141" parent="17" name="#FAKE_fixture_odds_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>fixture_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -637,30 +633,30 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="144" parent="18" name="id">
+    <column id="142" parent="18" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="145" parent="18" name="goals_home_team">
+    <column id="143" parent="18" name="goals_home_team">
       <Position>1</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="146" parent="18" name="goals_away_team">
+    <column id="144" parent="18" name="goals_away_team">
       <Position>2</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="147" parent="18" name="result_id">
+    <column id="145" parent="18" name="result_id">
       <Position>3</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="148" parent="18">
+    <key id="146" parent="18">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="149" parent="18" name="#FAKE_fixture_penaltyshootout_1">
+    <foreign-key id="147" parent="18" name="#FAKE_fixture_penaltyshootout_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>result_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -670,28 +666,30 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="150" parent="19" name="id">
+    <column id="148" parent="19" name="id">
+      <DataType>INTEGER(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="149" parent="19" name="goals_home_team">
+      <Position>1</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="151" parent="19" name="goals_home_team">
-      <Position>1</Position>
-      <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
-    </column>
-    <column id="152" parent="19" name="goals_away_team">
+    <column id="150" parent="19" name="goals_away_team">
       <Position>2</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
     </column>
-    <column id="153" parent="19" name="fixture_id">
+    <column id="151" parent="19" name="fixture_id">
       <Position>3</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="154" parent="19">
+    <key id="152" parent="19">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="155" parent="19" name="#FAKE_fixture_result_1">
+    <foreign-key id="153" parent="19" name="#FAKE_fixture_result_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>fixture_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -701,59 +699,55 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="156" parent="20" name="id">
+    <column id="154" parent="20" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="157" parent="20" name="name">
+    <column id="155" parent="20" name="name">
       <Position>1</Position>
       <DataType>VARCHAR(255)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="158" parent="20" name="position">
+    <column id="156" parent="20" name="position">
       <Position>2</Position>
       <DataType>VARCHAR(255)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="159" parent="20" name="jersey_number">
+    <column id="157" parent="20" name="jersey_number">
       <Position>3</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
     </column>
-    <column id="160" parent="20" name="date_of_birth">
+    <column id="158" parent="20" name="date_of_birth">
       <Position>4</Position>
       <DataType>DATE(0,-1)|12</DataType>
     </column>
-    <column id="161" parent="20" name="contract_until">
+    <column id="159" parent="20" name="nationality">
       <Position>5</Position>
+      <DataType>VARCHAR(255)(0,-1)|12</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="160" parent="20" name="contract_until">
+      <Position>6</Position>
       <DataType>DATE(0,-1)|12</DataType>
     </column>
-    <column id="162" parent="20" name="market_value">
-      <Position>6</Position>
+    <column id="161" parent="20" name="market_value">
+      <Position>7</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
     </column>
-    <column id="163" parent="20" name="image">
-      <Position>7</Position>
+    <column id="162" parent="20" name="image">
+      <Position>8</Position>
       <DataType>VARCHAR(200)(0,-1)|12</DataType>
     </column>
-    <column id="164" parent="20" name="team_id">
-      <Position>8</Position>
+    <column id="163" parent="20" name="team_id">
+      <Position>9</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="165" parent="20" name="nationality">
-      <Position>9</Position>
-      <DataType>VARCHAR(255)(0,-1)|12</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <index id="166" parent="20" name="player_player_2acbeb36">
-      <ColNames>market_value</ColNames>
-      <Unique>1</Unique>
-    </index>
-    <key id="167" parent="20">
+    <key id="164" parent="20">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="168" parent="20" name="#FAKE_player_player_1">
+    <foreign-key id="165" parent="20" name="#FAKE_player_player_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>team_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -763,52 +757,52 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="169" parent="21" name="name">
+    <column id="166" parent="21" name="name">
       <DataType>(0,-1)|12</DataType>
     </column>
-    <column id="170" parent="21" name="seq">
+    <column id="167" parent="21" name="seq">
       <Position>1</Position>
       <DataType>(0,-1)|12</DataType>
     </column>
-    <column id="171" parent="22" name="id">
+    <column id="168" parent="22" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="172" parent="22" name="goals">
+    <column id="169" parent="22" name="goals">
       <Position>1</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="173" parent="22" name="goals_against">
+    <column id="170" parent="22" name="goals_against">
       <Position>2</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="174" parent="22" name="wins">
+    <column id="171" parent="22" name="wins">
       <Position>3</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="175" parent="22" name="draws">
+    <column id="172" parent="22" name="draws">
       <Position>4</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="176" parent="22" name="losses">
+    <column id="173" parent="22" name="losses">
       <Position>5</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="177" parent="22" name="standing_id">
+    <column id="174" parent="22" name="standing_id">
       <Position>6</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="178" parent="22">
+    <key id="175" parent="22">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="179" parent="22" name="#FAKE_table_away_1">
+    <foreign-key id="176" parent="22" name="#FAKE_table_awaystanding_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>standing_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -818,120 +812,87 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="180" parent="23" name="id">
+    <column id="177" parent="23" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="181" parent="23" name="league_caption">
+    <column id="178" parent="23" name="name">
       <Position>1</Position>
       <DataType>VARCHAR(255)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="182" parent="23" name="matchday">
+    <column id="179" parent="23" name="table_id">
       <Position>2</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="183" parent="23" name="competition_id">
-      <Position>3</Position>
-      <DataType>INTEGER(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <key id="184" parent="23">
+    <key id="180" parent="23">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="185" parent="23" name="#FAKE_table_cuptable_1">
+    <foreign-key id="181" parent="23" name="#FAKE_table_group_1">
       <NameSurrogate>1</NameSurrogate>
-      <ColNames>competition_id</ColNames>
+      <ColNames>table_id</ColNames>
       <Deferrable>1</Deferrable>
       <InitiallyDeferred>1</InitiallyDeferred>
-      <RefTableName>competition_competition</RefTableName>
+      <RefTableName>table_table</RefTableName>
       <RefColNames>id</RefColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="186" parent="24" name="id">
+    <column id="182" parent="24" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="187" parent="24" name="name">
-      <Position>1</Position>
-      <DataType>VARCHAR(255)(0,-1)|12</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="188" parent="24" name="cup_table_id">
-      <Position>2</Position>
-      <DataType>INTEGER(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <key id="189" parent="24">
-      <ColNames>id</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <foreign-key id="190" parent="24" name="#FAKE_table_group_1">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>cup_table_id</ColNames>
-      <Deferrable>1</Deferrable>
-      <InitiallyDeferred>1</InitiallyDeferred>
-      <RefTableName>table_cuptable</RefTableName>
-      <RefColNames>id</RefColNames>
-      <OnDelete>no-action</OnDelete>
-      <OnUpdate>no-action</OnUpdate>
-    </foreign-key>
-    <column id="191" parent="25" name="id">
-      <DataType>INTEGER(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="192" parent="25" name="rank">
+    <column id="183" parent="24" name="rank">
       <Position>1</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="193" parent="25" name="played_games">
+    <column id="184" parent="24" name="played_games">
       <Position>2</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="194" parent="25" name="crest_uri">
+    <column id="185" parent="24" name="crest_uri">
       <Position>3</Position>
       <DataType>VARCHAR(200)(0,-1)|12</DataType>
     </column>
-    <column id="195" parent="25" name="points">
+    <column id="186" parent="24" name="points">
       <Position>4</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="196" parent="25" name="goals">
+    <column id="187" parent="24" name="goals">
       <Position>5</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="197" parent="25" name="goals_against">
+    <column id="188" parent="24" name="goals_against">
       <Position>6</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="198" parent="25" name="goal_difference">
+    <column id="189" parent="24" name="goal_difference">
       <Position>7</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="199" parent="25" name="group_id">
+    <column id="190" parent="24" name="group_id">
       <Position>8</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="200" parent="25" name="team_id">
+    <column id="191" parent="24" name="team_id">
       <Position>9</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="201" parent="25">
+    <key id="192" parent="24">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="202" parent="25" name="#FAKE_table_groupstanding_2">
+    <foreign-key id="193" parent="24" name="#FAKE_table_groupstanding_2">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>group_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -941,7 +902,7 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <foreign-key id="203" parent="25" name="#FAKE_table_groupstanding_1">
+    <foreign-key id="194" parent="24" name="#FAKE_table_groupstanding_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>team_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -951,45 +912,45 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="204" parent="26" name="id">
+    <column id="195" parent="25" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="205" parent="26" name="goals">
+    <column id="196" parent="25" name="goals">
       <Position>1</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="206" parent="26" name="goals_against">
+    <column id="197" parent="25" name="goals_against">
       <Position>2</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="207" parent="26" name="wins">
+    <column id="198" parent="25" name="wins">
       <Position>3</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="208" parent="26" name="draws">
+    <column id="199" parent="25" name="draws">
       <Position>4</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="209" parent="26" name="losses">
+    <column id="200" parent="25" name="losses">
       <Position>5</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="210" parent="26" name="standing_id">
+    <column id="201" parent="25" name="standing_id">
       <Position>6</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="211" parent="26">
+    <key id="202" parent="25">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="212" parent="26" name="#FAKE_table_home_1">
+    <foreign-key id="203" parent="25" name="#FAKE_table_homestanding_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>standing_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -999,30 +960,113 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="213" parent="27" name="id">
+    <column id="204" parent="26" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="214" parent="27" name="league_caption">
+    <column id="205" parent="26" name="position">
+      <Position>1</Position>
+      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="206" parent="26" name="played_games">
+      <Position>2</Position>
+      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="207" parent="26" name="points">
+      <Position>3</Position>
+      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="208" parent="26" name="goals">
+      <Position>4</Position>
+      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="209" parent="26" name="goals_against">
+      <Position>5</Position>
+      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="210" parent="26" name="goal_difference">
+      <Position>6</Position>
+      <DataType>INTEGER(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="211" parent="26" name="wins">
+      <Position>7</Position>
+      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="212" parent="26" name="draws">
+      <Position>8</Position>
+      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="213" parent="26" name="losses">
+      <Position>9</Position>
+      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="214" parent="26" name="table_id">
+      <Position>10</Position>
+      <DataType>INTEGER(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="215" parent="26" name="team_id">
+      <Position>11</Position>
+      <DataType>INTEGER(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="216" parent="26">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="217" parent="26" name="#FAKE_table_standing_2">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>table_id</ColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+      <RefTableName>table_table</RefTableName>
+      <RefColNames>id</RefColNames>
+      <OnDelete>no-action</OnDelete>
+      <OnUpdate>no-action</OnUpdate>
+    </foreign-key>
+    <foreign-key id="218" parent="26" name="#FAKE_table_standing_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>team_id</ColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+      <RefTableName>team_team</RefTableName>
+      <RefColNames>id</RefColNames>
+      <OnDelete>no-action</OnDelete>
+      <OnUpdate>no-action</OnUpdate>
+    </foreign-key>
+    <column id="219" parent="27" name="id">
+      <DataType>INTEGER(0,-1)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="220" parent="27" name="league_caption">
       <Position>1</Position>
       <DataType>VARCHAR(255)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="215" parent="27" name="matchday">
+    <column id="221" parent="27" name="matchday">
       <Position>2</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="216" parent="27" name="competition_id">
+    <column id="222" parent="27" name="competition_id">
       <Position>3</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="217" parent="27">
+    <key id="223" parent="27">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="218" parent="27" name="#FAKE_table_leaguetable_1">
+    <foreign-key id="224" parent="27" name="#FAKE_table_table_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>competition_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -1032,146 +1076,59 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="219" parent="28" name="id">
-      <DataType>INTEGER(0,-1)|4</DataType>
+    <column id="225" parent="28" name="id">
+      <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="220" parent="28" name="position">
+    <column id="226" parent="28" name="name">
       <Position>1</Position>
-      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
+      <DataType>VARCHAR(255)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="221" parent="28" name="played_games">
+    <column id="227" parent="28" name="code">
       <Position>2</Position>
-      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
+      <DataType>VARCHAR(255)(0,-1)|12</DataType>
     </column>
-    <column id="222" parent="28" name="points">
+    <column id="228" parent="28" name="short_name">
       <Position>3</Position>
-      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
+      <DataType>VARCHAR(255)(0,-1)|12</DataType>
     </column>
-    <column id="223" parent="28" name="goals">
+    <column id="229" parent="28" name="squad_market_value">
       <Position>4</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
     </column>
-    <column id="224" parent="28" name="goals_against">
+    <column id="230" parent="28" name="crest_url">
       <Position>5</Position>
-      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="225" parent="28" name="goal_difference">
-      <Position>6</Position>
-      <DataType>INTEGER(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="226" parent="28" name="wins">
-      <Position>7</Position>
-      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="227" parent="28" name="draws">
-      <Position>8</Position>
-      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="228" parent="28" name="losses">
-      <Position>9</Position>
-      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="229" parent="28" name="league_table_id">
-      <Position>10</Position>
-      <DataType>INTEGER(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="230" parent="28" name="team_id">
-      <Position>11</Position>
-      <DataType>INTEGER(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
+      <DataType>VARCHAR(200)(0,-1)|12</DataType>
     </column>
     <key id="231" parent="28">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="232" parent="28" name="#FAKE_table_standing_2">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>league_table_id</ColNames>
-      <Deferrable>1</Deferrable>
-      <InitiallyDeferred>1</InitiallyDeferred>
-      <RefTableName>table_leaguetable</RefTableName>
-      <RefColNames>id</RefColNames>
-      <OnDelete>no-action</OnDelete>
-      <OnUpdate>no-action</OnUpdate>
-    </foreign-key>
-    <foreign-key id="233" parent="28" name="#FAKE_table_standing_1">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>team_id</ColNames>
-      <Deferrable>1</Deferrable>
-      <InitiallyDeferred>1</InitiallyDeferred>
-      <RefTableName>team_team</RefTableName>
-      <RefColNames>id</RefColNames>
-      <OnDelete>no-action</OnDelete>
-      <OnUpdate>no-action</OnUpdate>
-    </foreign-key>
-    <column id="234" parent="29" name="id">
-      <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="235" parent="29" name="name">
-      <Position>1</Position>
-      <DataType>VARCHAR(255)(0,-1)|12</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <column id="236" parent="29" name="code">
-      <Position>2</Position>
-      <DataType>VARCHAR(255)(0,-1)|12</DataType>
-    </column>
-    <column id="237" parent="29" name="short_name">
-      <Position>3</Position>
-      <DataType>VARCHAR(255)(0,-1)|12</DataType>
-    </column>
-    <column id="238" parent="29" name="squad_market_value">
-      <Position>4</Position>
-      <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
-    </column>
-    <column id="239" parent="29" name="crest_url">
-      <Position>5</Position>
-      <DataType>VARCHAR(200)(0,-1)|12</DataType>
-    </column>
-    <index id="240" parent="29" name="team_team_94b5480b">
-      <ColNames>squad_market_value</ColNames>
-      <Unique>1</Unique>
-    </index>
-    <key id="241" parent="29">
-      <ColNames>id</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <column id="242" parent="30" name="id">
+    <column id="232" parent="29" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="243" parent="30" name="team_id">
+    <column id="233" parent="29" name="team_id">
       <Position>1</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="244" parent="30" name="competition_id">
+    <column id="234" parent="29" name="competition_id">
       <Position>2</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="245" parent="30" name="team_team_competition_team_id_caf8daf8_uniq">
+    <index id="235" parent="29" name="team_team_competition_team_id_caf8daf8_uniq">
       <ColNames>team_id
 competition_id</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="246" parent="30">
+    <key id="236" parent="29">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="247" parent="30" name="#FAKE_team_team_competition_2">
+    <foreign-key id="237" parent="29" name="#FAKE_team_team_competition_2">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>team_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -1181,7 +1138,7 @@ competition_id</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <foreign-key id="248" parent="30" name="#FAKE_team_team_competition_1">
+    <foreign-key id="238" parent="29" name="#FAKE_team_team_competition_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>competition_id</ColNames>
       <Deferrable>1</Deferrable>

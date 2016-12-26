@@ -123,11 +123,10 @@
     <card>
         <grid>
             <div col="1/3">
-                <h1>Pokal-Tabellen</h1>
+                <h1>Tabellen</h1>
             </div>
             <div col="2/3" txt="r">
-                <tag>{{ cup_table.count }} Pokal-Wettbewerbe</tag>
-                <tag>⌀{{ cup_table.group_standing_goals_avg }} Tore</tag>
+                <tag>{{ table.count }} Wettbewerbe</tag>
             </div>
         </grid>
         <table>
@@ -138,39 +137,10 @@
             </tr>
             </thead>
             <tbody>
-            {% for cup_table in cup_table.list %}
-                <tr onclick="document.location.href = '{% url 'table:cup_detail' cup_table.id %}'" style="cursor: hand">
-                    <td>{{ cup_table.competition.caption }}</td>
-                    <td>{{ cup_table.matchday }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </card>
-
-    <card>
-        <grid>
-            <div col="1/3">
-                <h1>Liga-Tabellen</h1>
-            </div>
-            <div col="2/3" txt="r">
-                <tag>{{ league_table.count }} Ligen</tag>
-                <tag>⌀{{ league_table.standing_goals_avg }} Tore</tag>
-            </div>
-        </grid>
-        <table>
-            <thead>
-            <tr>
-                <th>Liga</th>
-                <th>Aktueller Spieltag</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for league_table in league_table.list %}
-                <tr onclick="document.location.href = '{% url 'table:league_detail' league_table.id %}'"
-                    style="cursor: hand">
-                    <td>{{ league_table.competition.caption }}</td>
-                    <td>{{ league_table.matchday }}</td>
+            {% for table in table.list %}
+                <tr onclick="document.location.href = '{% url 'table:cup_detail' table.id %}'" style="cursor: hand">
+                    <td>{{ table.competition.caption }}</td>
+                    <td>{{ table.matchday }}</td>
                 </tr>
             {% endfor %}
             </tbody>

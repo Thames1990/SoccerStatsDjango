@@ -54,6 +54,8 @@ def create_database():
     from fixture.utils import create_fixtures
     from table.utils import create_tables
 
+    # TODO Combine all functions into one loop cycle
+
     create_competitions()
     create_teams()
     create_players()
@@ -71,6 +73,8 @@ def update_database():
     from player.utils import update_players
     from fixture.utils import update_fixtures
     from table.utils import update_tables
+
+    # TODO Combine all functions into one loop cycle
 
     update_competitions()
     update_teams()

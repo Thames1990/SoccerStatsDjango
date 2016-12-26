@@ -63,7 +63,7 @@ def create_competitions():
         competitions.append(
             Competition(
                 id=competition['id'],
-                cup='standings' in fetch_tables(competiton_id=competition['id']),
+                is_cup='standings' in fetch_tables(competiton_id=competition['id']),
                 caption=competition['caption'],
                 league=competition['league'],
                 year=competition['year'],

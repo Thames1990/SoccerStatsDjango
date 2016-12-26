@@ -160,6 +160,7 @@ SPAGHETTI_SAUCE = {
 
 # Logging
 
+# TODO Move log files to /var/log/
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

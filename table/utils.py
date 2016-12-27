@@ -42,7 +42,7 @@ def create_table(table, is_cup):
 
         # DFB-Pokal doesn't have a table yet
         if 'error' not in table:
-            table = Table.objects.create(
+            table_object = Table.objects.create(
                 competition=Competition.objects.get(caption=table['leagueCaption']),
                 league_caption=table['leagueCaption'],
                 matchday=table['matchday'],
@@ -51,7 +51,7 @@ def create_table(table, is_cup):
             for cup_group in table['standings']:
                 from table.models import Group
                 group = Group.objects.create(
-                    table=table,
+                    table=table_object,
                     name=cup_group,
                 )
 
@@ -75,7 +75,7 @@ def create_table(table, is_cup):
         home_standings = []
         away_standings = []
 
-        table = Table.objects.create(
+        table_object = Table.objects.create(
             competition=Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]),
             league_caption=table['leagueCaption'],
             matchday=table['matchday'],
@@ -84,7 +84,7 @@ def create_table(table, is_cup):
         for team in table['standing']:
             from table.models import Standing
             standing = Standing.objects.create(
-                table=table,
+                table=table_object,
                 position=team['position'],
                 team=Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
                 played_games=team['playedGames'],

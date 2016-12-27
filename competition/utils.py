@@ -7,7 +7,7 @@ from SoccerStats.utils import timing
 logger = logging.getLogger(__name__)
 
 
-def fetch_competitions(competition_id=None, season=None):
+def fetch_competition(competition_id=None, season=None):
     """
     Fetches JSON representation of competitions from football-data.org.
     Fetches a single competition if competition_id is specified, all competitions otherwise.
@@ -29,23 +29,23 @@ def fetch_competitions(competition_id=None, season=None):
     ).json()
 
 
-def fetch_competition_ids():
+def fetch_competitions():
     """
-    Fetches ids of all available competitions from every season documented at football-data.org.
-    :return: List of ids of available competitions
+    Fetches all available competitions from every season documented at football-data.org.
+    :return: List of JSON representation of all available competitions
     """
     from datetime import datetime
 
-    competition_ids = []
+    competitions = []
 
     for season in range(2015, datetime.today().year + 1):
-        for competition in fetch_competitions(season=season):
+        for competition in fetch_competition(season=season):
             if 'error' in competition:
                 logger.warning('Competitions for season ' + str(season) + ' aren\'t available')
                 break
-            competition_ids.append(competition['id'])
+            competitions.append(competition)
 
-    return competition_ids
+    return competitions
 
 
 @timing
@@ -58,8 +58,7 @@ def create_competitions():
 
     competitions = []
 
-    for competition_id in fetch_competition_ids():
-        competition = fetch_competitions(competition_id=competition_id)
+    for competition in fetch_competitions():
         competitions.append(
             Competition(
                 id=competition['id'],
@@ -81,8 +80,8 @@ def create_competitions():
 @timing
 def update_competitions():
     """Updates all competitions."""
-    for competition_id in fetch_competition_ids():
-        competition = fetch_competitions(competition_id=competition_id)
+    for competition_id in fetch_competitions():
+        competition = fetch_competition(competition_id=competition_id)
         Competition.objects.filter(
             id=competition['id']
         ).update(

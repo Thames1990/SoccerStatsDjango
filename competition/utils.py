@@ -52,7 +52,7 @@ def fetch_competitions():
 def create_competitions():
     """
     Creates all competitions.
-    :return: Created competitions
+    :return: Created Competition objects
     """
     from table.utils import fetch_tables
 

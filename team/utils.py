@@ -39,11 +39,12 @@ def create_team(team):
 @timing
 def create_teams():
     """Creates all teams."""
+    # TODO Fix this shit
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
             team_object = create_team(team)
-            team_object.competition.add(Competition.objects.get(id=competition.id))
             team_object.save()
+            team_object.competition.add(competition)
 
 
 @timing

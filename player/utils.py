@@ -48,10 +48,10 @@ def create_player(team, player):
     return Player(
         team=team,
         name=player['name'],
-        position=dict(Player.POSITION)[player['position']],
+        position=player['position'],
         jersey_number=player['jerseyNumber'],
         date_of_birth=player['dateOfBirth'] if player['dateOfBirth'] else None,
-        nationality=dict(Player.NATION)[player['nationality']],
+        nationality=player['nationality'],
         contract_until=player['contractUntil'],
         market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
         image=get_player_image(player['name']),

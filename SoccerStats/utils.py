@@ -1,4 +1,7 @@
+import logging
 import time
+
+logger = logging.getLogger(__name__)
 
 
 def timing(f):
@@ -12,7 +15,7 @@ def timing(f):
         start_time = time.time()
         ret = f(*args)
         end_time = time.time()
-        print('%s function took %0.3f ms' % (f.__name__, (end_time - start_time) * 1000.0))
+        logger.info('%s function took %0.3f ms' % (f.__name__, (end_time - start_time) * 1000.0))
         return ret
 
     return wrap

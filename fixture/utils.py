@@ -25,9 +25,9 @@ def create_fixture(fixture):
     """
     Create a Fixture object.
     :param fixture: JSON representation of a fixture
-    :return: Fixture object created from *fixture* JSON representation
+    :return: Fixture database object created from *fixture* JSON representation
     """
-    return Fixture(
+    return Fixture.objects.create(
         id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
         competition=Competition.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]),
         home_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
@@ -43,9 +43,9 @@ def create_result(fixture_object, fixture):
     Create a Result object.
     :param fixture_object: Fixture object already created from *fixture* JSON representation
     :param fixture: JSON representation of a result
-    :return: Result object created from *fixture* JSON representation
+    :return: Result database object created from *fixture* JSON representation
     """
-    return Result(
+    return Result.objects.create(
         fixture=fixture_object,
         goals_home_team=int(fixture['result']['goalsHomeTeam']),
         goals_away_team=int(fixture['result']['goalsAwayTeam']),
@@ -112,8 +112,6 @@ def create_odds(fixture_object, fixture):
 @timing
 def create_fixtures():
     """Create all fixtures."""
-    fixtures = []
-    results = []
     half_times = []
     extra_times = []
     penalty_shootouts = []
@@ -122,12 +120,10 @@ def create_fixtures():
     for competition in Competition.objects.all():
         for fixture in fetch_fixtures(competition.id):
             fixture_object = create_fixture(fixture)
-            fixtures.append(fixture_object)
 
             if (fixture['result']['goalsHomeTeam'] or fixture['result']['goalsHomeTeam'] == 0) and \
                     (fixture['result']['goalsAwayTeam'] or fixture['result']['goalsAwayTeam'] == 0):
                 result = create_result(fixture_object, fixture)
-                results.append(result)
 
             if 'halfTime' in fixture['result']:
                 half_times.append(create_half_time(result, fixture))
@@ -141,8 +137,6 @@ def create_fixtures():
             if fixture['odds']:
                 odds.append(create_odds(fixture_object, fixture))
 
-    Fixture.objects.bulk_create(fixtures)
-    Result.objects.bulk_create(results)
     HalfTime.objects.bulk_create(half_times)
     ExtraTime.objects.bulk_create(extra_times)
     PenaltyShootout.objects.bulk_create(penalty_shootouts)

@@ -23,11 +23,5 @@ class Competition(models.Model):
         ordering = ['caption']
         get_latest_by = 'last_updated'
 
-    def __str__(self):
-        field_values = []
-        for field in self._meta.get_all_field_names():
-            field_values.append(getattr(self, field, ''))
-        return ' '.join(field_values)
-
     def is_last_matchday(self):
         return self.current_matchday == self.number_of_matchdays

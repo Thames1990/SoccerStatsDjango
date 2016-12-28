@@ -3,6 +3,7 @@ import logging
 from competition.models import Competition
 
 from SoccerStats.utils import timing
+from table.utils import fetch_tables
 
 logger = logging.getLogger(__name__)
 
@@ -54,8 +55,6 @@ def create_competitions():
     Creates all competitions.
     :return: Created Competition objects
     """
-    from table.utils import fetch_tables
-
     competitions = []
 
     for competition in fetch_competitions():
@@ -80,11 +79,11 @@ def create_competitions():
 @timing
 def update_competitions():
     """Updates all competitions."""
-    for competition_id in fetch_competitions():
-        competition = fetch_competition(competition_id=competition_id)
+    for competition in fetch_competitions():
         Competition.objects.filter(
             id=competition['id']
         ).update(
+            is_cup='standings' in fetch_tables(competiton_id=competition['id']),
             current_matchday=competition['currentMatchday'],
             last_updated=competition['lastUpdated'],
         )

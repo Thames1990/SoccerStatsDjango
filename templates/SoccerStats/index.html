@@ -138,7 +138,7 @@
             </thead>
             <tbody>
             {% for table in table.list %}
-                <tr onclick="document.location.href = '{% url 'table:cup_detail' table.id %}'" style="cursor: hand">
+                <tr onclick="document.location.href = '{% url 'table:detail' table.id %}'" style="cursor: hand">
                     <td>{{ table.competition.caption }}</td>
                     <td>{{ table.matchday }}</td>
                 </tr>

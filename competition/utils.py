@@ -3,7 +3,7 @@ import logging
 from competition.models import Competition
 
 from SoccerStats.utils import timing
-from table.utils import fetch_tables
+from table.utils import fetch_table
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +61,7 @@ def create_competitions():
         competitions.append(
             Competition(
                 id=competition['id'],
-                is_cup='standings' in fetch_tables(competiton_id=competition['id']),
+                is_cup='standings' in fetch_table(competiton_id=competition['id']),
                 caption=competition['caption'],
                 league=competition['league'],
                 year=competition['year'],
@@ -83,7 +83,7 @@ def update_competitions():
         Competition.objects.filter(
             id=competition['id']
         ).update(
-            is_cup='standings' in fetch_tables(competiton_id=competition['id']),
+            is_cup='standings' in fetch_table(competiton_id=competition['id']),
             current_matchday=competition['currentMatchday'],
             last_updated=competition['lastUpdated'],
         )

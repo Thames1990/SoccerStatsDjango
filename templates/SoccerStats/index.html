@@ -132,7 +132,7 @@
         <table>
             <thead>
             <tr>
-                <th>Pokal</th>
+                <th>Wettbewerb</th>
                 <th>Aktueller Spieltag</th>
             </tr>
             </thead>
@@ -140,7 +140,11 @@
             {% for table in table.list %}
                 <tr onclick="document.location.href = '{% url 'table:detail' table.id %}'" style="cursor: hand">
                     <td>{{ table.competition.caption }}</td>
-                    <td>{{ table.matchday }}</td>
+                    {% if table.competition.number_of_matchdays == table.matchday %}
+                        <td>{{ table.matchday }} (Beendet)</td>
+                    {% else %}
+                        <td>{{ table.matchday }}</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>

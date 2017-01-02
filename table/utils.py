@@ -5,12 +5,13 @@ from competition.models import Competition
 from table.models import Table, HomeStanding, AwayStanding, GroupStanding
 from team.models import Team
 
-from SoccerStats.utils import timing
+from SoccerStats.utils import timing, rate_limited
 
 logger = logging.getLogger(__name__)
 
 
-def fetch_tables(competiton_id, matchday=None):
+@rate_limited(0.8)
+def fetch_table(competiton_id, matchday=None):
     """
     Fetches football-data.org JSON representation of a table from a competition with *competition_id* on a specific
     *matchday*.
@@ -37,91 +38,90 @@ def create_table(table, is_cup):
     :return: List of GroupStanding objects if *table* is a cup;
     dictionary of lists of HomeStanding and AwayStanding objects otherwise
     """
-    if 'error' not in table:
-        if is_cup:
-            group_standings = []
+    if is_cup:
+        group_standings = []
 
-            table_object = Table.objects.create(
-                competition=Competition.objects.get(caption=table['leagueCaption']),
-                league_caption=table['leagueCaption'],
-                matchday=table['matchday'],
+        table_object = Table.objects.create(
+            competition=Competition.objects.get(caption=table['leagueCaption']),
+            league_caption=table['leagueCaption'],
+            matchday=table['matchday'],
+        )
+
+        for cup_group in table['standings']:
+            from table.models import Group
+            group = Group.objects.create(
+                table=table_object,
+                name=cup_group,
             )
 
-            for cup_group in table['standings']:
-                from table.models import Group
-                group = Group.objects.create(
-                    table=table_object,
-                    name=cup_group,
+            for group_standing in table['standings'][cup_group]:
+                group_standings.append(
+                    GroupStanding(
+                        group=group,
+                        team=Team.objects.get(id=int(group_standing['teamId'])),
+                        rank=group_standing['rank'],
+                        played_games=group_standing['playedGames'],
+                        crest_uri=group_standing['crestURI'],
+                        points=group_standing['points'],
+                        goals=group_standing['goals'],
+                        goals_against=group_standing['goalsAgainst'],
+                        goal_difference=group_standing['goalDifference'],
+                    )
                 )
 
-                for group_standing in table['standings'][cup_group]:
-                    group_standings.append(
-                        GroupStanding(
-                            group=group,
-                            team=Team.objects.get(id=int(group_standing['teamId'])),
-                            rank=group_standing['rank'],
-                            played_games=group_standing['playedGames'],
-                            crest_uri=group_standing['crestURI'],
-                            points=group_standing['points'],
-                            goals=group_standing['goals'],
-                            goals_against=group_standing['goalsAgainst'],
-                            goal_difference=group_standing['goalDifference'],
-                        )
-                    )
+        return group_standings
+    else:
+        home_standings = []
+        away_standings = []
 
-            return group_standings
-        else:
-            home_standings = []
-            away_standings = []
+        table_object = Table.objects.create(
+            competition=Competition.objects.get(caption=table['leagueCaption']),
+            league_caption=table['leagueCaption'],
+            matchday=table['matchday'],
+        )
 
-            table_object = Table.objects.create(
-                competition=Competition.objects.get(caption=table['leagueCaption']),
-                league_caption=table['leagueCaption'],
-                matchday=table['matchday'],
+        for team in table['standing']:
+            from table.models import Standing
+            standing = Standing.objects.create(
+                table=table_object,
+                position=team['position'],
+                team=Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
+                played_games=team['playedGames'],
+                points=team['points'],
+                goals=team['goals'],
+                goals_against=team['goalsAgainst'],
+                goal_difference=team['goalDifference'],
+                wins=team['wins'],
+                draws=team['draws'],
+                losses=team['losses'],
             )
 
-            for team in table['standing']:
-                from table.models import Standing
-                standing = Standing.objects.create(
-                    table=table_object,
-                    position=team['position'],
-                    team=Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
-                    played_games=team['playedGames'],
-                    points=team['points'],
-                    goals=team['goals'],
-                    goals_against=team['goalsAgainst'],
-                    goal_difference=team['goalDifference'],
-                    wins=team['wins'],
-                    draws=team['draws'],
-                    losses=team['losses'],
+            home_standings.append(
+                HomeStanding(
+                    standing=standing,
+                    goals=team['home']['goals'],
+                    goals_against=team['home']['goalsAgainst'],
+                    wins=team['home']['wins'],
+                    draws=team['home']['draws'],
+                    losses=team['home']['losses'],
                 )
+            )
 
-                home_standings.append(
-                    HomeStanding(
-                        standing=standing,
-                        goals=team['home']['goals'],
-                        goals_against=team['home']['goalsAgainst'],
-                        wins=team['home']['wins'],
-                        draws=team['home']['draws'],
-                        losses=team['home']['losses'],
-                    )
+            away_standings.append(
+                AwayStanding(
+                    standing=standing,
+                    goals=team['away']['goals'],
+                    goals_against=team['home']['goalsAgainst'],
+                    wins=team['away']['wins'],
+                    draws=team['away']['draws'],
+                    losses=team['away']['losses'],
                 )
+            )
 
-                away_standings.append(
-                    AwayStanding(
-                        standing=standing,
-                        goals=team['away']['goals'],
-                        goals_against=team['home']['goalsAgainst'],
-                        wins=team['away']['wins'],
-                        draws=team['away']['draws'],
-                        losses=team['away']['losses'],
-                    )
-                )
-
-            return {
-                'home_standings': home_standings,
-                'away_standings': away_standings,
-            }
+        return {
+            'home_standings': home_standings,
+            'away_standings': away_standings,
+        }
 
 
 @timing
@@ -133,28 +133,34 @@ def create_tables():
 
     for competition in Competition.objects.all():
         for matchday in range(1, competition.current_matchday + 1):
-            if competition.is_cup:
-                try:
-                    group_standing_objects = create_table(
-                        table=fetch_tables(competition.id, matchday),
-                        is_cup=True,
+            table = fetch_table(competition.id, matchday)
+            if 'error' not in table:
+                if competition.is_cup:
+                    group_standings.extend(
+                        create_table(
+                            table=table,
+                            is_cup=True,
+                        )
                     )
-                    group_standings.extend(group_standing_objects)
-                except TypeError:
-                    print()
-            else:
-                standings = create_table(
-                    table=fetch_tables(competition.id, matchday),
-                    is_cup=False,
-                )
-                # TODO AttributeError: 'NoneType' object has no attribute 'get'
-                # TODO Check function return type
-                home_standings.extend(standings.get('home_standings'))
-                away_standings.extend(standings.get('away_standings'))
+                else:
+                    standings = create_table(
+                        table=table,
+                        is_cup=False,
+                    )
+                    home_standings.extend(standings['home_standings'])
+                    away_standings.extend(standings['away_standings'])
 
     GroupStanding.objects.bulk_create(group_standings)
     HomeStanding.objects.bulk_create(home_standings)
     AwayStanding.objects.bulk_create(away_standings)
+
+
+def test():
+    for competition in Competition.objects.all():
+        for matchday in range(1, competition.current_matchday + 1):
+            table = fetch_table(competition.id, matchday)
+            if 'error' in table:
+                logger.debug('ID: ' + str(competition.id) + ', matchday: ' + str(matchday))
 
 
 def update_table(table, is_cup):
@@ -245,7 +251,7 @@ def update_tables():
     for competition in Competition.objects.all():
         current_matchday = Table.objects.filter(competition=competition).latest().matchday
         for matchday in range(current_matchday, competition.current_matchday + 1):
-            table = fetch_tables(competition.id, matchday)
+            table = fetch_table(competition.id, matchday)
             if matchday == competition.current_matchday:
                 update_table(
                     table=table,

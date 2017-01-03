@@ -11,3 +11,12 @@ class Team(models.Model):
     short_name = models.CharField(null=True, max_length=255)
     squad_market_value = models.PositiveIntegerField(null=True)
     crest_url = models.URLField(null=True)
+
+    def __str__(self):
+        return '%s | %s | code: %s | short name: %s | squad market value: %s €' % (
+            self.id,
+            self.name,
+            self.code,
+            self.short_name,
+            self.squad_market_value,
+        )

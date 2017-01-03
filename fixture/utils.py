@@ -1,7 +1,7 @@
 import re
 
 from competition.models import Competition
-from fixture.models import Fixture, Result, HalfTime, ExtraTime, PenaltyShootout, Odds
+from fixture.models import Fixture, Result, HalfTime, ExtraTime, PenaltyShootout, Odd
 from team.models import Team
 
 from SoccerStats.utils import timing
@@ -101,7 +101,7 @@ def create_odds(fixture_object, fixture):
     :param fixture: JSON representation of a result
     :return: Odds object created from *fixture* JSON representation
     """
-    return Odds(
+    return Odd(
         fixture=fixture_object,
         home_win=fixture['odds']['homeWin'],
         draw=fixture['odds']['draw'],
@@ -140,7 +140,7 @@ def create_fixtures():
     HalfTime.objects.bulk_create(half_times)
     ExtraTime.objects.bulk_create(extra_times)
     PenaltyShootout.objects.bulk_create(penalty_shootouts)
-    Odds.objects.bulk_create(odds)
+    Odd.objects.bulk_create(odds)
 
 
 @timing
@@ -184,9 +184,9 @@ def update_fixtures():
                             penalty_shootout.save()
 
             if fixture['odds']:
-                odds, created = Odds.objects.get_or_create(fixture=fixture_object)
+                odd, created = Odd.objects.get_or_create(fixture=fixture_object)
                 if created:
-                    odds.home_win = fixture['odds']['homeWin']
-                    odds.draw = fixture['odds']['draw']
-                    odds.away_win = fixture['odds']['awayWin']
-                    odds.save()
+                    odd.home_win = fixture['odds']['homeWin']
+                    odd.draw = fixture['odds']['draw']
+                    odd.away_win = fixture['odds']['awayWin']
+                    odd.save()

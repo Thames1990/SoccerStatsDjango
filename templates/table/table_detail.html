@@ -23,7 +23,7 @@
                             </thead>
                             <tbody>
                             {% for group_standing in group.groupstanding_set.all %}
-                                <tr>
+                                <tr onclick="document.location.href = '{% url 'team:detail' group_standing.team.id %}'" style="cursor: hand">
                                     <td>
                                         {% if table_changes %}
                                             <tag>

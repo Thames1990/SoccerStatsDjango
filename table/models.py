@@ -6,11 +6,17 @@ from team.models import Team
 
 class Table(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
-    league_caption = models.CharField(max_length=255)
     matchday = models.IntegerField()
 
     class Meta:
         get_latest_by = 'matchday'
+
+    def __str__(self):
+        return '%s | %s | matchday: %s' % (
+            self.id,
+            self.competition.caption,
+            self.matchday,
+        )
 
 
 class Standing(models.Model):
@@ -28,6 +34,23 @@ class Standing(models.Model):
 
     class Meta:
         ordering = ['position']
+
+    def __str__(self):
+        return 'id: %s | table id: %s | %s | position: %s | played games: %s | points: %s | goals: %s:%s (%s) | ' \
+               'wins: %s | draws: %s | losses: %s' % (
+                   self.id,
+                   self.table_id,
+                   self.team.name,
+                   self.position,
+                   self.played_games,
+                   self.points,
+                   self.goals,
+                   self.goals_against,
+                   self.goal_difference,
+                   self.wins,
+                   self.draws,
+                   self.losses,
+               )
 
     def has_position_changed(self, other_matchday_standing):
         """
@@ -58,6 +81,18 @@ class HomeStanding(models.Model):
     draws = models.PositiveIntegerField()
     losses = models.PositiveIntegerField()
 
+    def __str__(self):
+        return 'id: %s | standing id: %s | goals: %s:%s (%s) | wins: %s | draws: %s | losses %s' % (
+            self.id,
+            self.standing_id,
+            self.goals,
+            self.goals_against,
+            self.goal_difference(),
+            self.wins,
+            self.draws,
+            self.losses,
+        )
+
     def goal_difference(self):
         return self.goals - self.goals_against
 
@@ -70,6 +105,18 @@ class AwayStanding(models.Model):
     draws = models.PositiveIntegerField()
     losses = models.PositiveIntegerField()
 
+    def __str__(self):
+        return 'id: %s | standing id: %s | goals: %s:%s (%s) | wins: %s | draws: %s | losses %s' % (
+            self.id,
+            self.standing_id,
+            self.goals,
+            self.goals_against,
+            self.goal_difference(),
+            self.wins,
+            self.draws,
+            self.losses,
+        )
+
     def goal_difference(self):
         return self.goals - self.goals_against
 
@@ -77,6 +124,16 @@ class AwayStanding(models.Model):
 class Group(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return 'id: %s | table id: %s | %s' % (
+            self.id,
+            self.table_id,
+            self.name,
+        )
+
+    class Meta:
+        ordering = ['name']
 
 
 class GroupStanding(models.Model):
@@ -92,6 +149,19 @@ class GroupStanding(models.Model):
 
     class Meta:
         ordering = ['rank']
+
+    def __str__(self):
+        return 'id: %s | %s | %s | rank: %s | played games: %s | points: %s | goals: %s:%s (%s)' % (
+            self.id,
+            self.group.name,
+            self.team.name,
+            self.rank,
+            self.played_games,
+            self.points,
+            self.goals,
+            self.goals_against,
+            self.goal_difference,
+        )
 
     def has_rank_changed(self, other_matchday_group_standing):
         """

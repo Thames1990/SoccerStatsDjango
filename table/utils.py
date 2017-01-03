@@ -25,7 +25,7 @@ def fetch_table(competiton_id, matchday=None):
     if matchday:
         base_url += '?matchday=' + str(matchday)
     return requests.get(
-        base_url,
+        url=base_url,
         headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
     ).json()
 
@@ -153,14 +153,6 @@ def create_tables():
     GroupStanding.objects.bulk_create(group_standings)
     HomeStanding.objects.bulk_create(home_standings)
     AwayStanding.objects.bulk_create(away_standings)
-
-
-def test():
-    for competition in Competition.objects.all():
-        for matchday in range(1, competition.current_matchday + 1):
-            table = fetch_table(competition.id, matchday)
-            if 'error' in table:
-                logger.debug('ID: ' + str(competition.id) + ', matchday: ' + str(matchday))
 
 
 def update_table(table, is_cup):

@@ -1,95 +1,56 @@
 {% extends 'SoccerStats/base.html' %}
 
-{% load humanize %}
-
 {% block content %}
-    <grid>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Competition</th>
+            <th>Home team</th>
+            <th>Away team</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Matchday</th>
+        </tr>
+        </thead>
         {% for fixture in fixtures %}
-            <div col="1/2">
-                <card>
-                    <h5>{{ fixture.home_team_name }} - {{ fixture.away_team_name }}</h5>
-                    <hr>
-                    <table>
-                        <tr>
-                            <th>Datum</th>
-                            <td>{{ fixture.date.date }}</td>
-                        </tr>
-                        <tr>
-                            <th>Uhrzeit</th>
-                            <td>{{ fixture.date.time }}</td>
-                        </tr>
-                        <tr>
-                            <th>Status</th>
-                            <td>{{ fixture.status }}</td>
-                        </tr>
-                        {% if fixture.result_set.all.0.goals_home_team or fixture.result_set.all.0.goals_away_team %}
-                            <tr>
-                                <th>Resultat</th>
-                                {% spaceless %}
-                                    <td>
-                                        {{ fixture.result_set.all.0.goals_home_team|default_if_none:"0" }}
-                                        :
-                                        {{ fixture.result_set.all.0.goals_away_team|default_if_none:"0" }}
-                                    </td>
-                                {% endspaceless %}
-                            </tr>
-                            {% if fixture.result_set.all.0.halftime_set.all %}
-                                <tr>
-                                    <th>Halbzeit</th>
-                                    {% spaceless %}
-                                        <td>
-                                            {{ fixture.result_set.all.0.halftime_set.all.0.goals_home_team }}
-                                            :
-                                            {{ fixture.result_set.all.0.halftime_set.all.0.goals_away_team }}
-                                        </td>
-                                    {% endspaceless %}
-                                </tr>
-                            {% endif %}
-                            {% if fixture.result_set.all.0.extratime_set.all %}
-                                <tr>
-                                    <th>Nachspielzeit</th>
-                                    {% spaceless %}
-                                        <td>
-                                            {{ fixture.result_set.all.0.extratime_set.all.0.goals_home_team }}
-                                            :
-                                            {{ fixture.result_set.all.0.extratime_set.all.0.goals_away_team }}
-                                        </td>
-                                    {% endspaceless %}
-                                </tr>
-                            {% endif %}
-                            {% if fixture.result_set.all.0.penaltyshootout_set.all %}
-                                <tr>
-                                    <th>Elfmeterschießen</th>
-                                    {% spaceless %}
-                                        <td>
-                                            {{ fixture.result_set.all.0.penaltyshootout_set.all.0.goals_home_team }}
-                                            :
-                                            {{ fixture.result_set.all.0.penaltyshootout_set.all.0.goals_away_team }}
-                                        </td>
-                                    {% endspaceless %}
-                                </tr>
-                            {% endif %}
-                        {% endif %}
-                        {% if fixture.odds_set.all %}
-                            <tr>
-                                <th colspan="2">Wettchancen</th>
-                            </tr>
-                            <tr>
-                                <th>Heimsieg</th>
-                                <td>{{ fixture.odds_set.all.0.home_win }}</td>
-                            </tr>
-                            <tr>
-                                <th>Unentschieden</th>
-                                <td>{{ fixture.odds_set.all.0.draw }}</td>
-                            </tr>
-                            <tr>
-                                <th>Auswärtssieg</th>
-                                <td>{{ fixture.odds_set.all.0.away_win }}</td>
-                            </tr>
-                        {% endif %}
-                    </table>
-                </card>
-            </div>
+            <tbody>
+            <tr
+                    onclick="document.location.href = '{% url 'fixture:detail' fixture.id %}'"
+                    style="cursor: hand"
+            >
+                <td>{{ fixture.competition.caption }}</td>
+                <td>{{ fixture.home_team.name }}</td>
+                <td>{{ fixture.away_team.name }}</td>
+                <td>{{ fixture.date }}</td>
+                <td>{{ fixture.status }}</td>
+                <td>{{ fixture.matchday }}</td>
+            </tr>
+            </tbody>
         {% endfor %}
-    </grid>
+    </table>
+
+    {% if is_paginated %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li>
+                        <a href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li><span>{{ page_obj.number }}</span></li>
+                {% if page_obj.has_next %}
+                    <li>
+                        <a href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% else %}
+        <h3>Fixtures</h3>
+        <p>Fixtures not available</p>
+    {% endif %}
 {% endblock %}

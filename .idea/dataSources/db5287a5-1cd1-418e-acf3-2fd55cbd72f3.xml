@@ -20,7 +20,7 @@
     <table id="14" parent="2" name="fixture_extratime"/>
     <table id="15" parent="2" name="fixture_fixture"/>
     <table id="16" parent="2" name="fixture_halftime"/>
-    <table id="17" parent="2" name="fixture_odds"/>
+    <table id="17" parent="2" name="fixture_odd"/>
     <table id="18" parent="2" name="fixture_penaltyshootout"/>
     <table id="19" parent="2" name="fixture_result"/>
     <table id="20" parent="2" name="player_player"/>
@@ -299,34 +299,34 @@ permission_id</ColNames>
       <DataType>VARCHAR(255)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="79" parent="9" name="year">
+    <column id="79" parent="9" name="current_matchday">
       <Position>4</Position>
-      <DataType>INTEGER(0,-1)|4</DataType>
+      <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="80" parent="9" name="current_matchday">
+    <column id="80" parent="9" name="number_of_matchdays">
       <Position>5</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="81" parent="9" name="number_of_matchdays">
+    <column id="81" parent="9" name="number_of_teams">
       <Position>6</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="82" parent="9" name="number_of_teams">
+    <column id="82" parent="9" name="number_of_games">
       <Position>7</Position>
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="83" parent="9" name="number_of_games">
+    <column id="83" parent="9" name="last_updated">
       <Position>8</Position>
-      <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
+      <DataType>DATETIME(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="84" parent="9" name="last_updated">
+    <column id="84" parent="9" name="year">
       <Position>9</Position>
-      <DataType>DATETIME(0,-1)|12</DataType>
+      <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
     <key id="85" parent="9">
@@ -623,7 +623,7 @@ model</ColNames>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="141" parent="17" name="#FAKE_fixture_odds_1">
+    <foreign-key id="141" parent="17" name="#FAKE_fixture_odd_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>fixture_id</ColNames>
       <Deferrable>1</Deferrable>

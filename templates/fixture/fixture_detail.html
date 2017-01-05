@@ -3,102 +3,106 @@
 {% load humanize %}
 
 {% block content %}
-    <card>
-        <grid>
-            <div col="1/2">
-                <a href="{% url 'team:detail' fixture.home_team.id %}">
-                    <h2>{{ fixture.home_team.name }}</h2>
-                    <img src="{{ fixture.home_team.crest_url }}"
-                         style="height: 60px; object-fit: cover; object-position: 50% 0">
-                </a>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-6 text-center">
+                    <a href="{% url 'team:detail' fixture.home_team.id %}">
+                        <img
+                                class="img-thumbnail"
+                                src="{{ fixture.home_team.crest_url }}"
+                                alt="{{ fixture.home_team.name }}"
+                                style="max-height:10em"
+                                onerror="this.style.display='none'"
+                        >
+                        <h3>{{ fixture.home_team.name }}</h3>
+                    </a>
+                </div>
+                <div class="col-xs-6 text-center">
+                    <a href="{% url 'team:detail' fixture.away_team.id %}">
+                        <img
+                                class="img-thumbnail"
+                                src="{{ fixture.away_team.crest_url }}"
+                                alt="{{ fixture.away_team.name }}"
+                                style="max-height:10em"
+                                onerror="this.style.display='none'"
+                        >
+                        <h3>{{ fixture.away_team.name }}</h3>
+                    </a>
+                </div>
             </div>
-            <div col="1/2">
-                <a href="{% url 'team:detail' fixture.away_team.id %}">
-                    <h2>{{ fixture.away_team.name }}</h2>
-                    <img src="{{ fixture.away_team.crest_url }}"
-                         style="height: 60px; object-fit: cover; object-position: 50% 0">
-                </a>
-            </div>
-        </grid>
-        <hr>
-        <table>
-            <tr>
-                <th>Datum</th>
-                <td>{{ fixture.date.date }}</td>
-            </tr>
-            <tr>
-                <th>Uhrzeit</th>
-                <td>{{ fixture.date.time }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ fixture.status }}</td>
-            </tr>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <p>Datum</p>
+                <p>{{ fixture.date.date }}</p>
+            </li>
+            <li class="list-group-item">
+                <p>Uhrzeit</p>
+                <p>{{ fixture.date.time }}</p>
+            </li>
+            <li class="list-group-item">
+                <p>Status</p>
+                <p>{{ fixture.status }}</p>
+            </li>
             {% if fixture.result_set.all.0.goals_home_team or fixture.result_set.all.0.goals_away_team %}
-                <tr>
-                    <th>Resultat</th>
-                    {% spaceless %}
-                        <td>
-                            {{ fixture.result_set.all.0.goals_home_team|default_if_none:"0" }}
-                            :
-                            {{ fixture.result_set.all.0.goals_away_team|default_if_none:"0" }}
-                        </td>
-                    {% endspaceless %}
-                </tr>
+                <li class="list-group-item">
+                    <p>Resultat</p>
+                    <p>
+                        {{ fixture.result_set.all.0.goals_home_team|default_if_none:"0" }}
+                        :
+                        {{ fixture.result_set.all.0.goals_away_team|default_if_none:"0" }}
+                    </p>
+                </li>
                 {% if fixture.result_set.all.0.halftime_set.all %}
-                    <tr>
-                        <th>Halbzeit</th>
-                        {% spaceless %}
-                            <td>
-                                {{ fixture.result_set.all.0.halftime_set.all.0.goals_home_team }}
-                                :
-                                {{ fixture.result_set.all.0.halftime_set.all.0.goals_away_team }}
-                            </td>
-                        {% endspaceless %}
-                    </tr>
+                    <li class="list-group-item">
+                        <p>Halbzeit</p>
+                        <p>
+                            {{ fixture.result_set.all.0.halftime_set.all.0.goals_home_team }}
+                            :
+                            {{ fixture.result_set.all.0.halftime_set.all.0.goals_away_team }}
+                        </p>
+                    </li>
                 {% endif %}
                 {% if fixture.result_set.all.0.extratime_set.all %}
-                    <tr>
-                        <th>Nachspielzeit</th>
-                        {% spaceless %}
-                            <td>
-                                {{ fixture.result_set.all.0.extratime_set.all.0.goals_home_team }}
-                                :
-                                {{ fixture.result_set.all.0.extratime_set.all.0.goals_away_team }}
-                            </td>
-                        {% endspaceless %}
-                    </tr>
+                    <li class="list-group-item">
+                        <p>Nachspielzeit</p>
+                        <p>
+                            {{ fixture.result_set.all.0.extratime_set.all.0.goals_home_team }}
+                            :
+                            {{ fixture.result_set.all.0.extratime_set.all.0.goals_away_team }}
+                        </p>
+                    </li>
                 {% endif %}
                 {% if fixture.result_set.all.0.penaltyshootout_set.all %}
-                    <tr>
-                        <th>Elfmeterschießen</th>
-                        {% spaceless %}
-                            <td>
-                                {{ fixture.result_set.all.0.penaltyshootout_set.all.0.goals_home_team }}
-                                :
-                                {{ fixture.result_set.all.0.penaltyshootout_set.all.0.goals_away_team }}
-                            </td>
-                        {% endspaceless %}
-                    </tr>
+                    <li class="list-group-item">
+                        <p>Elfmeterschießen</p>
+                        <p>
+                            {{ fixture.result_set.all.0.penaltyshootout_set.all.0.goals_home_team }}
+                            :
+                            {{ fixture.result_set.all.0.penaltyshootout_set.all.0.goals_away_team }}
+                        </p>
+                    </li>
                 {% endif %}
             {% endif %}
             {% if fixture.odds_set.all %}
-                <tr>
-                    <th colspan="2">Wettchancen</th>
-                </tr>
-                <tr>
-                    <th>Heimsieg</th>
-                    <td>{{ fixture.odds_set.all.0.home_win }}</td>
-                </tr>
-                <tr>
-                    <th>Unentschieden</th>
-                    <td>{{ fixture.odds_set.all.0.draw }}</td>
-                </tr>
-                <tr>
-                    <th>Auswärtssieg</th>
-                    <td>{{ fixture.odds_set.all.0.away_win }}</td>
-                </tr>
+                <li class="list-group-item">
+                    <p>Wettchancen</p>
+                </li>
+                <li class="list-group-item">
+                    <p>Heimsieg</p>
+                    <p>{{ fixture.odds_set.all.0.home_win }}</p>
+                </li>
+                <li class="list-group-item">
+                    <p>Unentschieden</p>
+                    <p>{{ fixture.odds_set.all.0.draw }}</p>
+                </li>
+                <li class="list-group-item">
+                    <p>Auswärtssieg</p>
+                    <p>{{ fixture.odds_set.all.0.away_win }}</p>
+                </li>
             {% endif %}
-        </table>
-    </card>
+        </ul>
+    </div>
 {% endblock %}

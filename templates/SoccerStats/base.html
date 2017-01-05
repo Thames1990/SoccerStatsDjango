@@ -1,58 +1,107 @@
-{% load list_extras %}
 {% load staticfiles %}
+{% load list_extras %}
 
 <html lang="de">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}SoccerStats{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'SoccerStats/css/bare.min.css' %}">
+    <meta name="description" content="Page Description">
+    <meta name="author" content="Thomas Mohr">
+    <link rel="stylesheet" href="{% static 'SoccerStats/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'SoccerStats/css/bootstrap-theme.min.css' %}">
     <link rel="stylesheet" href="{% static 'SoccerStats/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'SoccerStats/css/font-awesome.min.css' %}">
     <link rel="icon" href="{% static 'SoccerStats/icons/favicon.ico' %}">
-    <script src="https://use.fontawesome.com/f21c3244d2.js"></script>
 </head>
 <body>
-<nav>
-    <label>
-        <input type="checkbox">
-        <header>
-            <a href="{% url 'index' %}"><i class="fa fa-futbol-o" aria-hidden="true"></i> SoccerStats</a>
-        </header>
-        <ul>
-            <li>
-                <a>Datenbank</a>
-                <menu>
-                    <menuitem><a href="{% url 'competition:list' %}">Wettbewerbe</a></menuitem>
-                    <menuitem><a href="{% url 'fixture:list' %}">Begegnungen</a></menuitem>
-                    <menuitem><a href="{% url 'player:list' %}">Spieler</a></menuitem>
-                    <menuitem><a href="{% url 'table:list' %}">Tabellen</a></menuitem>
-                    <menuitem><a href="{% url 'team:list' %}">Mannschaften</a></menuitem>
-                </menu>
-            </li>
-            <li><a href="{% url 'plate' %}">Model</a></li>
-        </ul>
-    </label>
-</nav>
-{% if messages %}
-    <section>
-        {% for message in messages %}
-            {% if message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}
-                <p><strong>DEBUG</strong>{{ message }}</p>
-            {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
-                <p><strong>INFO</strong>{{ message }}</p>
-            {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                <p><strong>SUCCESS</strong>{{ message }}</p>
-            {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-                <p><strong>WARNING</strong>{{ message }}</p>
-            {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <p><strong>ERROR</strong>{{ message }}</p>
-            {% endif %}
-        {% endfor %}
-    </section>
-{% endif %}
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <span>
+                    <img alt="Brand" src="{% static 'SoccerStats/icons/favicon.ico' %}"> SoccerStats
+                </span>
+            </a>
+        </div>
 
-<section>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Competitions <b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for competition_tuple in competition_tuples %}
+                            <li>
+                                <a href="{% url 'competition:detail' competition_tuple.id %}">
+                                    {{ competition_tuple.caption }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Fixtures <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for fixture_tuple in fixture_tuples %}
+                            <li>
+                                <a href="{% url 'fixture:detail' fixture_tuple.id %}">
+                                    {{ fixture_tuple.home_team__name }} vs. {{ fixture_tuple.away_team__name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Players <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for player_tuple in player_tuples %}
+                            <li><a href="{% url 'player:detail' player_tuple.id %}">{{ player_tuple.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tables <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for table in table_tuples %}
+                            <li>
+                                <a href="{% url 'table:detail' table.id %}">
+                                    {{ table.competition.caption }} on matchday {{ table.matchday }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teams <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for team_tuple in team_tuples %}
+                            <li><a href="{% url 'team:detail' team_tuple.id %}">{{ team_tuple.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li>
+                    <a href="{% url 'plate' %}">Model</a>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div>
+</nav>
+
+<div class="container">
     {% block content %}{% endblock %}
-</section>
+</div>
+
+<script src="{% static 'SoccerStats/js/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'SoccerStats/js/bootstrap.min.js' %}"></script>
 </body>
 </html>

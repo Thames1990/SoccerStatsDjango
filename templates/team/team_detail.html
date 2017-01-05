@@ -3,56 +3,63 @@
 {% load humanize %}
 
 {% block content %}
-    <card>
-        <grid>
-            <div col="5/6">
-                <h1>{{ team.name }}</h1>
-                <table>
-                    <tr>
-                        <th>Kadergröße</th>
-                        <td>{{ team.player_set.all|length }}</td>
-                    </tr>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-4">
+                    <h3 class="panel-title">{{ team.name }}</h3>
+                </div>
+                <div class="col-xs-8 text-right">
+                    <span class="label label-default">
+                        Kadergröße: {{ team.player_set.all|length }}
+                    </span>
                     {% if team.squad_market_value %}
-                        <tr>
-                            <th>Marktwert</th>
-                            <td>{{ team.squad_market_value|intword }} €</td>
-                        </tr>
+                        <span class="label label-default">
+                            Marktwert: {{ team.squad_market_value|intword }} €
+                        </span>
                     {% endif %}
-                </table>
+                </div>
             </div>
-            <div col="1/6">
-                {% if team.crest_url %}
-                    <img src="{{ team.crest_url }}">
-                {% endif %}
-            </div>
-        </grid>
-        <hr>
-        <h3>Spieler</h3>
-        <table>
-            <thead>
-            <tr>
-                <th>Nummer</th>
-                <th>Spieler</th>
-                <th>Geb./Alter</th>
-                <th>Nat.</th>
-                <th>Marktwert</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for player in team.player_set.all %}
-                <tr onclick="document.location.href = '{% url 'player:detail' player.id %}'" style="cursor: hand">
-                    <td>{{ player.jersey_number }}</td>
-                    <td>{{ player.name }}</td>
-                    <td>{{ player.date_of_birth }} ({{ player.age }})</td>
-                    <td>{{ player.nationality }}</td>
-                    {% if player.market_value %}
-                        <td>{{ player.market_value|intword }} €</td>
-                    {% else %}
-                        <td>N/A</td>
-                    {% endif %}
+        </div>
+        {% if team.crest_url %}
+            <img
+                    class="img-thumbnail"
+                    src="{{ team.crest_url }}"
+                    alt="{{ team.name }}"
+                    style="max-height:10em"
+                    onerror="this.style.display='none'"
+            >
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Nummer</th>
+                    <th>Spieler</th>
+                    <th>Geb./Alter</th>
+                    <th>Nat.</th>
+                    <th>Marktwert</th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </card>
+                </thead>
+                <tbody>
+                {% for player in team.player_set.all %}
+                    <tr
+                            onclick="document.location.href = '{% url 'player:detail' player.id %}'"
+                            style="cursor: hand"
+                    >
+                        <td>{{ player.jersey_number }}</td>
+                        <td>{{ player.name }}</td>
+                        <td>{{ player.date_of_birth }} ({{ player.age }})</td>
+                        <td>{{ player.nationality }}</td>
+                        {% if player.market_value %}
+                            <td>{{ player.market_value|intword }} €</td>
+                        {% else %}
+                            <td>N/A</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

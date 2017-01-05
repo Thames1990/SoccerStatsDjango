@@ -264,7 +264,6 @@ def get_table_changes(table):
     if table.matchday > 1:
         table_last_matchday = Table.objects.get(
             competition=table.competition,
-            league_caption=table.league_caption,
             matchday=table.matchday - 1,
         )
 
@@ -293,9 +292,8 @@ def get_table_changes(table):
                     position_changes.append(None)
             return position_changes
     else:
-        logger.info(
-            table.league_caption + ' on matchday ' + str(table.matchday) + ' can\'t be compared with previous matchdays'
-        )
+        logger.info(table.competition.caption + ' on matchday ' + str(table.matchday) +
+                    ' can\'t be compared with previous matchdays')
 
 
 def get_tables_current_matchday():
@@ -303,6 +301,7 @@ def get_tables_current_matchday():
     Get queryset of tables (cup or league) of the current matchday.
     :return: Queryset of Table objects
     """
+    # TODO Change league_caption to competition.caption
     return Table.objects.raw('''
             SELECT table1.id, table1.league_caption, table1.matchday
             FROM table_table table1, (

@@ -1,50 +1,58 @@
 {% extends 'SoccerStats/base.html' %}
 
 {% block content %}
-    <card>
-        {% if competition.is_cup %}
-            <grid>
-                <div col="5/6">
-                    <h3>{{ competition.caption }}</h3>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-4">
+                    <h3 class="panel-title">{{ competition.caption }}</h3>
                 </div>
-                <div col="1/6">
-                    <tag><i class="fa fa-trophy fa-2x" aria-hidden="true"></i></tag>
-                </div>
-            </grid>
-        {% else %}
-            <h3>{{ competition.caption }}</h3>
-        {% endif %}
-        <hr>
-        <table>
-            <tr>
-                <th>Aktueller Spieltag</th>
-                <td>{{ competition.current_matchday }}</td>
-            </tr>
-            <tr>
-                <th>Spieltage</th>
-                <td>{{ competition.number_of_matchdays }}</td>
-            </tr>
-            <tr>
-                <th>Mannschaften</th>
-                <td>{{ competition.number_of_teams }}</td>
-            </tr>
-            <tr>
-                <th>Spiele</th>
-                <td>{{ competition.number_of_games }}</td>
-            </tr>
-        </table>
-        <hr>
-        <h4>Vereine</h4>
-        <table>
-            <tbody>
-            {% for team in competition.team_set.all %}
-                <tr>
-                    <td>
-                        <a href="{% url 'team:detail' team.id %}" style="width: 100%">{{ team.name }}</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </card>
+                {% if competition.is_cup %}
+                    <div class="col-xs-8 text-right">
+                        <span class="label label-default"><i class="fa fa-trophy" aria-hidden="true"></i></span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="panel-body">
+            <ul class="list-group">
+                <a class="list-group-item">
+                    <span class="badge">{{ competition.current_matchday }}</span>
+                    Aktueller Spieltag
+                </a>
+                <a class="list-group-item">
+                    <span class="badge">{{ competition.number_of_matchdays }}</span>
+                    Spieltage
+                </a>
+                <a class="list-group-item">
+                    <span class="badge">{{ competition.number_of_teams }}</span>
+                    Mannschaften
+                </a>
+                <a class="list-group-item">
+                    <span class="badge">{{ competition.number_of_games }}</span>
+                    Spiele
+                </a>
+            </ul>
+            <h4>Vereine</h4>
+            <ul class="list-group">
+                {% for team in competition.team_set.all %}
+                    <a class="list-group-item" href="{% url 'team:detail' team.id %}">
+                        <div class="row">
+                            <div class="col-xs-10">
+                                {{ team.name }}
+                            </div>
+                            <div class="col-xs-2 text-right">
+                                <img
+                                        class="img-thumbnail"
+                                        src="{{ team.crest_url }}"
+                                        alt="{{ team.name }}"
+                                        style="max-height: 2em"
+                                        onerror="this.style.display='none'"
+                                >
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </ul>
+        </div>
 {% endblock %}

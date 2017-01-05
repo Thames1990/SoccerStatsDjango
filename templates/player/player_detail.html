@@ -3,107 +3,99 @@
 {% load humanize %}
 
 {% block content %}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">{{ player.name }}</h3>
-        </div>
-        <div class="row">
-            <div class="col-xs-4">
-                {% if player.image %}
-                    <img
-                            class="img-responsive"
-                            src="{{ player.image }}"
-                            alt="{{ player.name }}"
-                            onerror="this.style.display='none'"
-                    >
-                {% endif %}
-            </div>
-            <div class="col-xs-8">
-                <ul class="list-group">
-                    {% if player.date_of_birth %}
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <p>Geb./Alter</p>
-                                </div>
-                                <div class="col-xs-6 text-right">
-                                    <p>{{ player.date_of_birth }} ({{ player.age }})</p>
-                                </div>
-                            </div>
-                        </li>
-                    {% endif %}
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <p>Nationalität</p>
-                            </div>
-                            <div class="col-xs-6 text-right">
-                                <p>{{ player.nationality }}</p>
-                            </div>
+    <div class="card text-xs-center">
+        <h3 class="card-header">{{ player.name }}</h3>
+        {% if player.image %}
+            <img
+                    class="card-img-top"
+                    src="{{ player.image }}"
+                    alt="{{ player.name }}"
+                    onerror="this.style.display='none'"
+            >
+        {% endif %}
+        <ul class="list-group list-group-flush">
+            {% if player.date_of_birth %}
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <p>Geb./Alter</p>
                         </div>
-                    </li>
-                    <li
-                            class="list-group-item"
-                            onclick="document.location.href = '{% url 'team:detail' player.team.id %}'"
-                            style="cursor: hand"
-                    >
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <p>Aktueller Verein</p>
-                            </div>
-                            <div class="col-xs-6 text-right">
-                                <p>{{ player.team.name }}</p>
-                            </div>
+                        <div class="col-xs-6 text-right">
+                            <p>{{ player.date_of_birth }} ({{ player.age }})</p>
                         </div>
-                    </li>
-                    {% if player.contract_until %}
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <p>Vertrag bis</p>
-                                </div>
-                                <div class="col-xs-6 text-right">
-                                    <p>{{ player.contract_until }}</p>
-                                </div>
-                            </div>
-                        </li>
-                    {% endif %}
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <p>Position</p>
-                            </div>
-                            <div class="col-xs-6 text-right">
-                                <p>{{ player.position }}</p>
-                            </div>
+                    </div>
+                </li>
+            {% endif %}
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <p>Nationalität</p>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <p>{{ player.nationality }}</p>
+                    </div>
+                </div>
+            </li>
+            <li
+                    class="list-group-item"
+                    onclick="document.location.href = '{% url 'team:detail' player.team.id %}'"
+                    style="cursor: hand"
+            >
+                <div class="row">
+                    <div class="col-xs-6">
+                        <p>Aktueller Verein</p>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <p>{{ player.team.name }}</p>
+                    </div>
+                </div>
+            </li>
+            {% if player.contract_until %}
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <p>Vertrag bis</p>
                         </div>
-                    </li>
-                    {% if player.jersey_number %}
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <p>Trikotnummer</p>
-                                </div>
-                                <div class="col-xs-6 text-right">
-                                    <p>{{ player.jersey_number }}</p>
-                                </div>
-                            </div>
-                        </li>
-                    {% endif %}
-                    {% if player.market_value %}
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <p>Marktwert</p>
-                                </div>
-                                <div class="col-xs-6 text-right">
-                                    <p>{{ player.market_value|intword }} €</p>
-                                </div>
-                            </div>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
+                        <div class="col-xs-6 text-right">
+                            <p>{{ player.contract_until }}</p>
+                        </div>
+                    </div>
+                </li>
+            {% endif %}
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <p>Position</p>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <p>{{ player.position }}</p>
+                    </div>
+                </div>
+            </li>
+            {% if player.jersey_number %}
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <p>Trikotnummer</p>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <p>{{ player.jersey_number }}</p>
+                        </div>
+                    </div>
+                </li>
+            {% endif %}
+            {% if player.market_value %}
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <p>Marktwert</p>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <p>{{ player.market_value|intword }} €</p>
+                        </div>
+                    </div>
+                </li>
+            {% endif %}
+        </ul>
     </div>
 {% endblock %}

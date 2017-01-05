@@ -5,13 +5,13 @@
 {# TODO Fix table changes #}
 
 {% block content %}
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="card">
+        <div class="card-header">
             <h3 class="panel-title">{{ table.competition.caption }} Tabelle</h3>
         </div>
         {% if table.competition.is_cup %}
             <div class="row">
-                <ul class="list-group">
+                <ul class="list-group list-group-flush">
                     {% for group in table.group_set.all %}
                         {# TODO Fix overdraw #}
                         <li class="list-group-item col-md-6">
@@ -49,7 +49,7 @@
             </div>
         {% else %}
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-inverse table-hover">
                     <thead>
                     <tr>
                         <th>Position</th>
@@ -70,9 +70,9 @@
                             <td>
                                 {% if table_changes %}
                                     <span class="badge">
-                                        {% if table_changes|get_at_index:forloop.counter0 == True %}
+                                        {% if table_changes|filter_at_index:forloop.counter0 == True %}
                                             <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                                        {% elif table_changes|get_at_index:forloop.counter0 == False %}
+                                        {% elif table_changes|filter_at_index:forloop.counter0 == False %}
                                             <i class="fa fa-arrow-down" aria-hidden="true"></i>
                                         {% else %}
                                             <i class="fa fa-arrow-right" aria-hidden="true"></i>

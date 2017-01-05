@@ -1,8 +1,8 @@
 {% extends 'SoccerStats/base.html' %}
 
 {% block content %}
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="card">
+        <div class="card-header">
             <div class="row">
                 <div class="col-xs-4">
                     <h3 class="panel-title">{{ competition.caption }}</h3>
@@ -14,27 +14,27 @@
                 {% endif %}
             </div>
         </div>
-        <div class="panel-body">
-            <ul class="list-group">
-                <a class="list-group-item">
-                    <span class="badge">{{ competition.current_matchday }}</span>
-                    Aktueller Spieltag
-                </a>
-                <a class="list-group-item">
-                    <span class="badge">{{ competition.number_of_matchdays }}</span>
-                    Spieltage
-                </a>
-                <a class="list-group-item">
-                    <span class="badge">{{ competition.number_of_teams }}</span>
-                    Mannschaften
-                </a>
-                <a class="list-group-item">
-                    <span class="badge">{{ competition.number_of_games }}</span>
-                    Spiele
-                </a>
-            </ul>
+        <ul class="list-group list-group-flush">
+            <a class="list-group-item">
+                <span class="tag tag-default tag-pill float-xs-right">{{ competition.current_matchday }}</span>
+                Aktueller Spieltag
+            </a>
+            <a class="list-group-item">
+                <span class="tag tag-default tag-pill float-xs-right">{{ competition.number_of_matchdays }}</span>
+                Spieltage
+            </a>
+            <a class="list-group-item">
+                <span class="tag tag-default tag-pill float-xs-right">{{ competition.number_of_teams }}</span>
+                Mannschaften
+            </a>
+            <a class="list-group-item">
+                <span class="tag tag-default tag-pill float-xs-right">{{ competition.number_of_games }}</span>
+                Spiele
+            </a>
+        </ul>
+        <div class="card-block">
             <h4>Vereine</h4>
-            <ul class="list-group">
+            <ul class="list-group list-group-flush">
                 {% for team in competition.team_set.all %}
                     <a class="list-group-item" href="{% url 'team:detail' team.id %}">
                         <div class="row">

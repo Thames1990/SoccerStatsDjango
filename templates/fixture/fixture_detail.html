@@ -4,8 +4,8 @@
 
 {% block content %}
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="card">
+        <div class="card-header">
             <div class="row">
                 <div class="col-xs-6 text-center">
                     <a href="{% url 'team:detail' fixture.home_team.id %}">
@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <ul class="list-group">
+        <ul class="list-group list-group-flush">
             <li class="list-group-item">
                 <p>Datum</p>
                 <p>{{ fixture.date.date }}</p>

@@ -3,19 +3,23 @@
 {% load humanize %}
 
 {% block content %}
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="card">
+        <div class="card-header">
             <div class="row">
                 <div class="col-xs-4">
                     <h3 class="panel-title">Wettbewerbe</h3>
                 </div>
                 <div class="col-xs-8 text-right">
-                    <span class="label label-default">{{ competition.count }} Wettbewerbe</span>
-                    <span class="label label-default">{{ competition.team.count }} Mannschaften</span>
+                    <span class="tag tag-default tag-pill float-xs-right">
+                        {{ competition.count }} Wettbewerbe
+                    </span>
+                    <span class="tag tag-default tag-pill float-xs-right">
+                        {{ competition.team.count }} Mannschaften
+                    </span>
                 </div>
             </div>
         </div>
-        <div class="panel-body">
+        <div class="card-block">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -40,20 +44,26 @@
         </div>
     </div>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="card">
+        <div class="card-header">
             <div class="row">
                 <div class="col-xs-4">
                     <h3 class="panel-title">Begegnungen</h3>
                 </div>
                 <div class="col-xs-8 text-right">
-                    <span class="label label-default">{{ fixture.count }} Begegnungen</span>
-                    <span class="label label-default">⌀{{ fixture.result_avg.goals_home_team }} Tore</span>
-                    <span class="label label-default">⌀{{ fixture.result_avg.goals_away_team }} Gegentore</span>
+                    <span class="tag tag-default tag-pill float-xs-right">
+                        {{ fixture.count }} Begegnungen
+                    </span>
+                    <span class="tag tag-default tag-pill float-xs-right">
+                        ⌀{{ fixture.result_avg.goals_home_team }} Tore
+                    </span>
+                    <span class="tag tag-default tag-pill float-xs-right">
+                        ⌀{{ fixture.result_avg.goals_away_team }} Gegentore
+                    </span>
                 </div>
             </div>
         </div>
-        <div class="panel-body">
+        <div class="card-block">
             {% for last_five in fixture.last_five %}
                 <div
                         class="row"
@@ -104,19 +114,23 @@
         </div>
     </div>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="card">
+        <div class="card-header">
             <div class="row">
                 <div class="col-xs-4">
                     <h3 class="panel-title">Spieler</h3>
                 </div>
                 <div class="col-xs-8 text-right">
-                    <span class="label label-default">{{ player.count }} Spieler</span>
-                    <span class="label label-default">⌀{{ player.market_value.avg|intword }} € Marktwert</span>
+                    <span class="tag tag-default tag-pill float-xs-right">
+                        {{ player.count }} Spieler
+                    </span>
+                    <span class="tag tag-default tag-pill float-xs-right">
+                        ⌀{{ player.market_value.avg|intword }} € Marktwert
+                    </span>
                 </div>
             </div>
         </div>
-        <div class="panel-body">
+        <div class="card-block">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -143,18 +157,20 @@
         </div>
     </div>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="card">
+        <div class="card-header">
             <div class="row">
                 <div class="col-xs-4">
                     <h3 class="panel-title">Tabellen</h3>
                 </div>
                 <div class="col-xs-8 text-right">
-                    <span class="label label-default">{{ table.count }} Wettbewerbe</span>
+                    <span class="tag tag-default tag-pill float-xs-right">
+                        {{ table.count }} Wettbewerbe
+                    </span>
                 </div>
             </div>
         </div>
-        <div class="panel-body">
+        <div class="card-block">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -180,19 +196,23 @@
         </div>
     </div>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="card">
+        <div class="card-header">
             <div class="row">
                 <div class="col-xs-4">
                     <h3 class="panel-title">Mannschaften</h3>
                 </div>
                 <div class="col-xs-8 text-right">
-                    <span class="label label-default">{{ team.count }} Mannschaften</span>
-                    <span class="label label-default">⌀{{ team.squad_market_value.avg|intword }} € Mannschaftswert</span>
+                    <span class="tag tag-default tag-pill float-xs-right">
+                        {{ team.count }} Mannschaften
+                    </span>
+                    <span class="tag tag-default tag-pill float-xs-right">
+                        ⌀{{ team.squad_market_value.avg|intword }} € Mannschaftswert
+                    </span>
                 </div>
             </div>
         </div>
-        <div class="panel-body">
+        <div class="card-block">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>

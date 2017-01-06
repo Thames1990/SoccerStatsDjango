@@ -1,50 +1,51 @@
 {% extends 'SoccerStats/base.html' %}
 
 {% load humanize %}
+{% load static %}
 
 {% block content %}
-    <div class="card">
-        <div class="card-header">
+    <div class="card card-inverse">
+        <div class="card-header bg-primary">
             <div class="row">
-                <div class="col-xs-4">
-                    <h3 class="panel-title">{{ team.name }}</h3>
-                </div>
-                <div class="col-xs-8 text-right">
-                    <span class="tag tag-default tag-pill float-xs-right">
-                        Kadergröße: {{ team.player_set.all|length }}
-                    </span>
+                <div class="col-xs-6">
+                    <h3 class="card-title">{{ team.name }}</h3>
+                    <span class="tag tag-default tag-pill">
+                Kadergröße: {{ team.player_set.all|length }}
+                </span>
                     {% if team.squad_market_value %}
-                        <span class="tag tag-default tag-pill float-xs-right">
-                            Marktwert: {{ team.squad_market_value|intword }} €
-                        </span>
+                        <span class="tag tag-default tag-pill">
+                    Marktwert: {{ team.squad_market_value|intword }} €
+                </span>
+                    {% endif %}
+                </div>
+                <div class="col-xs-6 text-xs-right">
+                    {% if team.crest_url %}
+                        <img
+                                class="img-thumbnail"
+                                src="{{ team.crest_url }}"
+                                alt="{{ team.name }}"
+                                style="max-height:3em"
+                                onerror="this.src='{% static 'SoccerStats/img/soccerball.svg' %}'"
+                        >
                     {% endif %}
                 </div>
             </div>
         </div>
-        {% if team.crest_url %}
-            <img
-                    class="img-thumbnail"
-                    src="{{ team.crest_url }}"
-                    alt="{{ team.name }}"
-                    style="max-height:10em"
-                    onerror="this.style.display='none'"
-            >
-        {% endif %}
-        <div class="table-responsive">
-            <table class="table table-hover">
+        <div class="table-responsive bg-primary">
+            <table class="table table-inverse table-hover">
                 <thead>
                 <tr>
                     <th>Nummer</th>
                     <th>Spieler</th>
-                    <th>Geb./Alter</th>
-                    <th>Nat.</th>
+                    <th>Geburtstag</th>
+                    <th>Nationalität</th>
                     <th>Marktwert</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for player in team.player_set.all %}
                     <tr
-                            onclick="document.location.href = '{% url 'player:detail' player.id %}'"
+                            onclick="document.location = '{% url 'player:detail' player.id %}'"
                             style="cursor: hand"
                     >
                         <td>{{ player.jersey_number }}</td>
@@ -53,8 +54,6 @@
                         <td>{{ player.nationality }}</td>
                         {% if player.market_value %}
                             <td>{{ player.market_value|intword }} €</td>
-                        {% else %}
-                            <td>N/A</td>
                         {% endif %}
                     </tr>
                 {% endfor %}

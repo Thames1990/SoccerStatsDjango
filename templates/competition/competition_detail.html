@@ -1,58 +1,140 @@
 {% extends 'SoccerStats/base.html' %}
 
+{% load list_extras %}
+{% load humanize %}
+{% load static %}
+
 {% block content %}
-    <div class="card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-xs-4">
-                    <h3 class="panel-title">{{ competition.caption }}</h3>
-                </div>
-                {% if competition.is_cup %}
-                    <div class="col-xs-8 text-right">
-                        <span class="label label-default"><i class="fa fa-trophy" aria-hidden="true"></i></span>
-                    </div>
-                {% endif %}
-            </div>
+    <div class="card card-inverse">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">{{ competition.caption }}</h3>
+            {% if competition.is_cup %}
+                <span class="tag tag-default tag-pill"><i class="fa fa-trophy" aria-hidden="true"></i></span>
+            {% endif %}
+            <span class="tag tag-default tag-pill">
+                Spieltag {{ competition.current_matchday }}/{{ competition.number_of_matchdays }}
+            </span>
+            <span class="tag tag-default tag-pill">{{ competition.number_of_teams }} Mannschaften</span>
+            <span class="tag tag-default tag-pill">{{ competition.number_of_games }} Spiele</span>
         </div>
-        <ul class="list-group list-group-flush">
-            <a class="list-group-item">
-                <span class="tag tag-default tag-pill float-xs-right">{{ competition.current_matchday }}</span>
-                Aktueller Spieltag
-            </a>
-            <a class="list-group-item">
-                <span class="tag tag-default tag-pill float-xs-right">{{ competition.number_of_matchdays }}</span>
-                Spieltage
-            </a>
-            <a class="list-group-item">
-                <span class="tag tag-default tag-pill float-xs-right">{{ competition.number_of_teams }}</span>
-                Mannschaften
-            </a>
-            <a class="list-group-item">
-                <span class="tag tag-default tag-pill float-xs-right">{{ competition.number_of_games }}</span>
-                Spiele
-            </a>
-        </ul>
-        <div class="card-block">
-            <h4>Vereine</h4>
-            <ul class="list-group list-group-flush">
+        <div class="table-responsive bg-primary">
+            <table class="table table-inverse table-hover">
+                <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Wettbewerbe</th>
+                    <th>Marktwert</th>
+                </tr>
+                </thead>
+                <tbody>
                 {% for team in competition.team_set.all %}
-                    <a class="list-group-item" href="{% url 'team:detail' team.id %}">
-                        <div class="row">
-                            <div class="col-xs-10">
-                                {{ team.name }}
-                            </div>
-                            <div class="col-xs-2 text-right">
-                                <img
-                                        class="img-thumbnail"
-                                        src="{{ team.crest_url }}"
-                                        alt="{{ team.name }}"
-                                        style="max-height: 2em"
-                                        onerror="this.style.display='none'"
-                                >
-                            </div>
-                        </div>
-                    </a>
+                    <tr
+                            onclick="document.location = '{% url 'team:detail' team.id %}'"
+                            style="cursor: hand"
+                    >
+                        <td>{{ team.name }}</td>
+                        <td>
+                            {% for competition in team.competition.all %}
+                                {{ competition.caption }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>{{ team.squad_market_value|intword }} €</td>
+                    </tr>
                 {% endfor %}
-            </ul>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-responsive bg-primary">
+            <table class="table table-inverse table-hover">
+                {% with table=competition.table_set.last %}
+                    {% if table.competition.is_cup %}
+                        <div class="row">
+                            <ul class="list-group list-group-flush">
+                                {% for group in table.group_set.all %}
+                                    {# TODO Fix overdraw #}
+                                    <li class="list-group-item col-md-6">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <caption>Gruppe {{ group.name }}</caption>
+                                                <thead>
+                                                <tr>
+                                                    <th>Position</th>
+                                                    <th>Verein</th>
+                                                    <th>Sp</th>
+                                                    <th>Tore</th>
+                                                    <th>Pkte.</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for group_standing in group.groupstanding_set.all %}
+                                                    <tr
+                                                            onclick="document.location = '{% url 'team:detail' group_standing.team.id %}'"
+                                                            style="cursor: hand"
+                                                    >
+                                                        <td>{{ group_standing.rank }}</td>
+                                                        <td>{{ group_standing.team.name }}</td>
+                                                        <td>{{ group_standing.played_games }}</td>
+                                                        <td>{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
+                                                        <td>{{ group_standing.points }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-inverse table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Position</th>
+                                    <th>Verein</th>
+                                    <th>Spiele</th>
+                                    <th>g.</th>
+                                    <th>u.</th>
+                                    <th>v.</th>
+                                    <th>Tore</th>
+                                    <th>Diff.</th>
+                                    <th>Pkte.</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for standing in table.standing_set.all %}
+                                    <tr onclick="document.location = '{% url 'team:detail' standing.team.id %}'"
+                                        style="cursor: hand">
+                                        <td>
+                                            {% if table_changes %}
+                                                <span class="badge">
+                                                    {% if table_changes|filter_at_index:forloop.counter0 == True %}
+                                                        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                                                    {% elif table_changes|filter_at_index:forloop.counter0 == False %}
+                                                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                                    {% else %}
+                                                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                                    {% endif %}
+                                                </span>
+                                            {% endif %}
+                                            {{ standing.position }}
+                                        </td>
+                                        <td>{{ standing.team.name }}</td>
+                                        <td>{{ standing.played_games }}</td>
+                                        <td>{{ standing.wins }}</td>
+                                        <td>{{ standing.draws }}</td>
+                                        <td>{{ standing.losses }}</td>
+                                        <td>{{ standing.goals }}:{{ standing.goals_against }}</td>
+                                        <td>{{ standing.goal_difference }}</td>
+                                        <td>{{ standing.points }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                </tbody>
+            </table>
         </div>
 {% endblock %}

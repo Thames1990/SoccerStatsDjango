@@ -20,7 +20,7 @@
         {% for competition in competitions %}
             <tbody>
             <tr
-                    onclick="document.location.href = '{% url 'competition:detail' competition.id %}'"
+                    onclick="document.location = '{% url 'competition:detail' competition.id %}'"
                     style="cursor: hand"
             >
                 <td>{{ competition.is_cup }}</td>

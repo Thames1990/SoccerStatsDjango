@@ -16,10 +16,11 @@
             crossorigin="anonymous"
     >
     <link rel="stylesheet" href="{% static 'SoccerStats/css/style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body>
-<div class="container">
-    <nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
+<body class="bg-inverse">
+<nav class="navbar navbar-fixed-top navbar-dark bg-primary">
+    <div class="container">
         <button
                 class="navbar-toggler hidden-lg-up"
                 type="button"
@@ -129,8 +130,10 @@
                 </li>
             </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
+<div class="container">
     {% block content %}{% endblock %}
 </div>
 

@@ -4,7 +4,7 @@
 {% load math_extras %}
 
 {% block content %}
-    <table class="table table-hover">
+    <table class="table table-inverse table-hover">
         <thead>
         <tr>
             <th>Team</th>
@@ -17,7 +17,7 @@
         {% for team in teams %}
             <tbody>
             <tr
-                    onclick="document.location.href = '{% url 'team:detail' team.id %}'"
+                    onclick="document.location = '{% url 'team:detail' team.id %}'"
                     style="cursor: hand"
             >
                 <td>{{ team.name }}</td>

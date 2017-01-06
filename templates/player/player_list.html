@@ -6,7 +6,7 @@
 {% block content %}
     <div class="card-columns">
         {% for player in players %}
-            <div class="card text-xs-center">
+            <div class="card text-sm-center">
                 <h3 class="card-header">{{ player.name }}</h3>
                 {% if player.image %}
                     <img
@@ -20,10 +20,10 @@
                     {% if player.date_of_birth %}
                         <li class="list-group-item">
                             <div class="row">
-                                <div class="col-xs-6">
+                                <div class="col-sm-6">
                                     <p>Geb./Alter</p>
                                 </div>
-                                <div class="col-xs-6 text-right">
+                                <div class="col-sm-6 text-xs-right">
                                     <p>{{ player.date_of_birth }} ({{ player.age }})</p>
                                 </div>
                             </div>
@@ -31,24 +31,24 @@
                     {% endif %}
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-sm-6">
                                 <p>Nationalität</p>
                             </div>
-                            <div class="col-xs-6 text-right">
+                            <div class="col-sm-6 text-xs-right">
                                 <p>{{ player.nationality }}</p>
                             </div>
                         </div>
                     </li>
                     <li
                             class="list-group-item"
-                            onclick="document.location.href = '{% url 'team:detail' player.team.id %}'"
+                            onclick="document.location = '{% url 'team:detail' player.team.id %}'"
                             style="cursor: hand"
                     >
                         <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-sm-6">
                                 <p>Aktueller Verein</p>
                             </div>
-                            <div class="col-xs-6 text-right">
+                            <div class="col-sm-6 text-xs-right">
                                 <p>{{ player.team.name }}</p>
                             </div>
                         </div>
@@ -56,10 +56,10 @@
                     {% if player.contract_until %}
                         <li class="list-group-item">
                             <div class="row">
-                                <div class="col-xs-6">
+                                <div class="col-sm-6">
                                     <p>Vertrag bis</p>
                                 </div>
-                                <div class="col-xs-6 text-right">
+                                <div class="col-sm-6 text-xs-right">
                                     <p>{{ player.contract_until }}</p>
                                 </div>
                             </div>
@@ -67,10 +67,10 @@
                     {% endif %}
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-sm-6">
                                 <p>Position</p>
                             </div>
-                            <div class="col-xs-6 text-right">
+                            <div class="col-sm-6 text-xs-right">
                                 <p>{{ player.position }}</p>
                             </div>
                         </div>
@@ -78,10 +78,10 @@
                     {% if player.jersey_number %}
                         <li class="list-group-item">
                             <div class="row">
-                                <div class="col-xs-6">
+                                <div class="col-sm-6">
                                     <p>Trikotnummer</p>
                                 </div>
-                                <div class="col-xs-6 text-right">
+                                <div class="col-sm-6 text-xs-right">
                                     <p>{{ player.jersey_number }}</p>
                                 </div>
                             </div>
@@ -90,10 +90,10 @@
                     {% if player.market_value %}
                         <li class="list-group-item">
                             <div class="row">
-                                <div class="col-xs-6">
+                                <div class="col-sm-6">
                                     <p>Marktwert</p>
                                 </div>
-                                <div class="col-xs-6 text-right">
+                                <div class="col-sm-6 text-xs-right">
                                     <p>{{ player.market_value|intword }} €</p>
                                 </div>
                             </div>

@@ -1,237 +1,171 @@
 {% extends 'SoccerStats/base.html' %}
 
 {% load humanize %}
+{% load static %}
 
 {% block content %}
-    <div class="card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-xs-4">
-                    <h3 class="panel-title">Wettbewerbe</h3>
-                </div>
-                <div class="col-xs-8 text-right">
-                    <span class="tag tag-default tag-pill float-xs-right">
-                        {{ competition.count }} Wettbewerbe
-                    </span>
-                    <span class="tag tag-default tag-pill float-xs-right">
-                        {{ competition.team.count }} Mannschaften
-                    </span>
-                </div>
-            </div>
+    <div class="card card-inverse">
+        <div class="card-header bg-primary">
+            <h3 class="card-title>"> Wettbewerbe</h3>
+            <span class="tag tag-default tag-pill">{{ competition.count }} Wettbewerbe</span>
+            <span class="tag tag-default tag-pill">{{ competition.team.count }} Mannschaften</span>
         </div>
-        <div class="card-block">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>Wettbewerb</th>
-                        <th>Aktueller Spieltag</th>
+        <div class="table-responsive bg-primary">
+            <table class="table table-inverse table-hover">
+                <thead>
+                <tr>
+                    <th>Wettbewerb</th>
+                    <th>Spieltag</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for competition in competition.list %}
+                    <tr
+                            onclick="document.location = '{% url 'competition:detail' competition.id %}'"
+                            style="cursor: hand"
+                    >
+                        <td>{{ competition.caption }}</td>
+                        <td>{{ competition.current_matchday }}</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {% for competition in competition.list %}
-                        <tr
-                                onclick="document.location.href = '{% url 'competition:detail' competition.id %}'"
-                                style="cursor: hand"
-                        >
-                            <td>{{ competition.caption }}</td>
-                            <td>{{ competition.current_matchday }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-xs-4">
-                    <h3 class="panel-title">Begegnungen</h3>
-                </div>
-                <div class="col-xs-8 text-right">
-                    <span class="tag tag-default tag-pill float-xs-right">
-                        {{ fixture.count }} Begegnungen
-                    </span>
-                    <span class="tag tag-default tag-pill float-xs-right">
-                        ⌀{{ fixture.result_avg.goals_home_team }} Tore
-                    </span>
-                    <span class="tag tag-default tag-pill float-xs-right">
-                        ⌀{{ fixture.result_avg.goals_away_team }} Gegentore
-                    </span>
-                </div>
-            </div>
+    <div class="card card-inverse">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Begegnungen</h3>
+            <span class="tag tag-default tag-pill">{{ fixture.count }} Begegnungen</span>
+            <span class="tag tag-default tag-pill">⌀{{ fixture.result_avg.goals_home_team }} Tore</span>
+            <span class="tag tag-default tag-pill">⌀{{ fixture.result_avg.goals_away_team }} Gegentore</span>
         </div>
-        <div class="card-block">
+        <div class="card-block bg-inverse">
             {% for last_five in fixture.last_five %}
-                <div
-                        class="row"
-                        onclick="document.location.href = '{% url 'fixture:detail' last_five.id %}'"
-                        style="cursor: hand"
-                >
-                    <div class="col-xs-5 text-center">
+                <div class="row text-xs-center">
+                    <div class="col-md-4">
                         <img
-                                class="img-thumbnail"
+                                class="img-fluid img-thumbnail"
                                 src="{{ last_five.home_team.crest_url }}"
                                 alt="={{ last_five.home_team.name }}"
-                                style="max-height:10em"
-                                onerror="this.style.display='none'"
+                                style="max-height: 7em"
+                                onerror="this.src='{% static 'SoccerStats/img/soccerball.svg' %}'"
                         >
-                        <h4>{{ last_five.home_team.name }}</h4>
                     </div>
-                    <div class="col-xs-2 text-center">
-                        <h5>Resultat</h5>
-                        <span class="label label-default">
+                    <div class="col-md-4">
+                        <h4 class="card-title">{{ last_five.home_team.name }} vs. {{ last_five.away_team.name }}</h4>
+                        <p class="card-text">
                             {{ last_five.result_set.all.0.goals_home_team }}
                             :
                             {{ last_five.result_set.all.0.goals_away_team }}
-                        </span>
-                        {% if last_five.result_set.all.0.halftime_set.all %}
-                            <h5>Halbzeitstand</h5>
-                            <span class="label label-default">
+                            {% if last_five.result_set.all.0.halftime_set.all %}
+                                (
                                 {{ last_five.result_set.all.0.halftime_set.all.0.goals_home_team }}
                                 :
                                 {{ last_five.result_set.all.0.halftime_set.all.0.goals_away_team }}
-                            </span>
-                        {% endif %}
+                                )
+                            {% endif %}
+                        </p>
                     </div>
-                    <div class="col-xs-5 text-center">
+                    <div class="col-md-4">
                         <img
-                                class="img-thumbnail"
+                                class="img-fluid img-thumbnail"
                                 src="{{ last_five.away_team.crest_url }}"
                                 alt="={{ last_five.away_team.name }}"
-                                style="max-height:10em"
-                                onerror="this.style.display='none'"
+                                style="max-height: 7em"
+                                onerror="this.src='{% static 'SoccerStats/img/soccerball.svg' %}'"
                         >
-                        <h4>{{ last_five.away_team.name }}</h4>
                     </div>
                 </div>
                 {% if not forloop.last %}
-                    <hr>
+                    <hr class="bg-primary">
                 {% endif %}
             {% endfor %}
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-xs-4">
-                    <h3 class="panel-title">Spieler</h3>
-                </div>
-                <div class="col-xs-8 text-right">
-                    <span class="tag tag-default tag-pill float-xs-right">
-                        {{ player.count }} Spieler
-                    </span>
-                    <span class="tag tag-default tag-pill float-xs-right">
-                        ⌀{{ player.market_value.avg|intword }} € Marktwert
-                    </span>
-                </div>
-            </div>
+    <div class="card card-inverse">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Spieler</h3>
+            <span class="tag tag-default tag-pill">{{ player.count }} Spieler</span>
+            <span class="tag tag-default tag-pill">⌀{{ player.market_value.avg|intword }} € Marktwert</span>
         </div>
-        <div class="card-block">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>Spieler</th>
-                        <th>Verein</th>
-                        <th>Position</th>
-                        <th>Marktwert</th>
+        <div class="table-responsive bg-primary">
+            <table class="table table-inverse table-hover">
+                <thead>
+                <tr>
+                    <th>Spieler</th>
+                    <th>Verein</th>
+                    <th>Position</th>
+                    <th>Marktwert</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for best_five in player.best_five %}
+                    <tr onclick="document.location = '{% url 'player:detail' best_five.id %}'" style="cursor: hand">
+                        <td>{{ best_five.name }}</td>
+                        <td>{{ best_five.team.name }}</td>
+                        <td>{{ best_five.position }}</td>
+                        <td>{{ best_five.market_value|intword }} €</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {% for best_five in player.best_five %}
-                        <tr onclick="document.location.href = '{% url 'player:detail' best_five.id %}'"
-                            style="cursor: hand">
-                            <td>{{ best_five.name }}</td>
-                            <td>{{ best_five.team.name }}</td>
-                            <td>{{ best_five.position }}</td>
-                            <td>{{ best_five.market_value|intword }} €</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-xs-4">
-                    <h3 class="panel-title">Tabellen</h3>
-                </div>
-                <div class="col-xs-8 text-right">
-                    <span class="tag tag-default tag-pill float-xs-right">
-                        {{ table.count }} Wettbewerbe
-                    </span>
-                </div>
-            </div>
+    <div class="card card-inverse">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Tabellen</h3>
+            <span class="tag tag-default tag-pill">{{ table.count }} Wettbewerbe</span>
         </div>
-        <div class="card-block">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>Wettbewerb</th>
-                        <th>Aktueller Spieltag</th>
+        <div class="table-responsive bg-primary">
+            <table class="table table-inverse table-hover">
+                <thead>
+                <tr>
+                    <th>Wettbewerb</th>
+                    <th>Aktueller Spieltag</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for table in table.list %}
+                    <tr onclick="document.location = '{% url 'table:detail' table.id %}'" style="cursor: hand">
+                        <td>{{ table.competition.caption }}</td>
+                        {% if table.competition.number_of_matchdays == table.matchday %}
+                            <td>{{ table.matchday }} (Beendet)</td>
+                        {% else %}
+                            <td>{{ table.matchday }}</td>
+                        {% endif %}
                     </tr>
-                    </thead>
-                    <tbody>
-                    {% for table in table.list %}
-                        <tr onclick="document.location.href = '{% url 'table:detail' table.id %}'" style="cursor: hand">
-                            <td>{{ table.competition.caption }}</td>
-                            {% if table.competition.number_of_matchdays == table.matchday %}
-                                <td>{{ table.matchday }} (Beendet)</td>
-                            {% else %}
-                                <td>{{ table.matchday }}</td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-xs-4">
-                    <h3 class="panel-title">Mannschaften</h3>
-                </div>
-                <div class="col-xs-8 text-right">
-                    <span class="tag tag-default tag-pill float-xs-right">
-                        {{ team.count }} Mannschaften
-                    </span>
-                    <span class="tag tag-default tag-pill float-xs-right">
-                        ⌀{{ team.squad_market_value.avg|intword }} € Mannschaftswert
-                    </span>
-                </div>
-            </div>
+    <div class="card card-inverse">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Mannschaften</h3>
+            <span class="tag tag-default tag-pill">{{ team.count }} Mannschaften</span>
+            <span class="tag tag-default tag-pill">⌀{{ team.squad_market_value.avg|intword }} € Mannschaftswert</span>
         </div>
-        <div class="card-block">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>Verein</th>
-                        <th>Mannschaftswert</th>
+        <div class="table-responsive bg-primary">
+            <table class="table table-inverse table-hover">
+                <thead>
+                <tr>
+                    <th>Verein</th>
+                    <th>Mannschaftswert</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for best_five in team.best_five %}
+                    <tr onclick="document.location = '{% url 'team:detail' best_five.id %}'" style="cursor: hand">
+                        <td>{{ best_five.name }}</td>
+                        <td>{{ best_five.squad_market_value|intword }} €</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {% for best_five in team.best_five %}
-                        <tr onclick="document.location.href = '{% url 'team:detail' best_five.id %}'"
-                            style="cursor: hand">
-                            <td>{{ best_five.name }}</td>
-                            <td>{{ best_five.squad_market_value|intword }} €</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}

@@ -7,7 +7,7 @@
         {% if table.competition.is_cup %}
             <div class="card">
                 <div class="card-header">
-                    <h3 class="panel-title">{{ table.competition.caption }} Tabelle</h3>
+                    <h3 class="card-title">{{ table.competition.caption }} Tabelle</h3>
                 </div>
                 <div class="row">
                     <ul class="list-group list-group-flush">
@@ -29,7 +29,7 @@
                                         <tbody>
                                         {% for group_standing in group.groupstanding_set.all %}
                                             <tr
-                                                    onclick="document.location.href = '{% url 'team:detail' group_standing.team.id %}'"
+                                                    onclick="document.location = '{% url 'team:detail' group_standing.team.id %}'"
                                                     style="cursor: hand"
                                             >
                                                 <td>{{ group_standing.rank }}</td>
@@ -50,7 +50,7 @@
         {% else %}
             <div class="card">
                 <div class="card-header">
-                    <h3 class="panel-title">{{ table.competition.caption }}</h3>
+                    <h3 class="card-title">{{ table.competition.caption }}</h3>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover">
@@ -70,7 +70,7 @@
                         <tbody>
                         {% for standing in table.standing_set.all %}
                             <tr
-                                    onclick="document.location.href = '{% url 'team:detail' standing.team.id %}'"
+                                    onclick="document.location = '{% url 'team:detail' standing.team.id %}'"
                                     style="cursor: hand"
                             >
                                 <td>{{ standing.position }}</td>

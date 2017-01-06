@@ -17,7 +17,7 @@
         {% for fixture in fixtures %}
             <tbody>
             <tr
-                    onclick="document.location.href = '{% url 'fixture:detail' fixture.id %}'"
+                    onclick="document.location = '{% url 'fixture:detail' fixture.id %}'"
                     style="cursor: hand"
             >
                 <td>{{ fixture.competition.caption }}</td>

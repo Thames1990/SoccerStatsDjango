@@ -15,7 +15,7 @@
                                 src="{{ fixture.home_team.crest_url }}"
                                 alt="{{ fixture.home_team.name }}"
                                 style="max-height:10em"
-                                onerror="this.src='{% static 'SoccerStats/img/soccerball.svg' %}'"
+                                onerror="this.src='{% static 'SoccerStats/assets/team.svg' %}'"
                         >
                         <h3 class="card-title">{{ fixture.home_team.name }}</h3>
                     </a>
@@ -27,7 +27,7 @@
                                 src="{{ fixture.away_team.crest_url }}"
                                 alt="{{ fixture.away_team.name }}"
                                 style="max-height:10em"
-                                onerror="this.src='{% static 'SoccerStats/img/soccerball.svg' %}'"
+                                onerror="this.src='{% static 'SoccerStats/assets/team.svg' %}'"
                         >
                         <h3 class="card-title">{{ fixture.away_team.name }}</h3>
                     </a>

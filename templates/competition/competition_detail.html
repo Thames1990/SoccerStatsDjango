@@ -5,109 +5,146 @@
 {% load static %}
 
 {% block content %}
-    <div class="card card-inverse">
-        <div class="card-header bg-primary">
+    <div class="card">
+        <div class="card-header">
             <h3 class="card-title">{{ competition.caption }}</h3>
             {% if competition.is_cup %}
-                <span class="tag tag-default tag-pill"><i class="fa fa-trophy" aria-hidden="true"></i></span>
+                <span class="badge badge-pill badge-default"><i class="fa fa-trophy" aria-hidden="true"></i></span>
             {% endif %}
-            <span class="tag tag-default tag-pill">
-                Spieltag {{ competition.current_matchday }}/{{ competition.number_of_matchdays }}
-            </span>
-            <span class="tag tag-default tag-pill">{{ competition.number_of_teams }} Mannschaften</span>
-            <span class="tag tag-default tag-pill">{{ competition.number_of_games }} Spiele</span>
+            {% if competition.current_matchday != competition.number_of_matchdays %}
+                <span class="badge badge-pill badge-default">
+                    Spieltag {{ competition.current_matchday }}/{{ competition.number_of_matchdays }}
+                </span>
+            {% else %}
+                <span class="badge badge-pill badge-default">Beendet</span>
+            {% endif %}
+            <span class="badge badge-pill badge-default">{{ competition.number_of_teams }} Mannschaften</span>
+            <span class="badge badge-pill badge-default">{{ competition.number_of_games }} Spiele</span>
         </div>
-        <div class="table-responsive bg-primary">
-            <table class="table table-inverse table-hover">
-                <thead>
-                <tr>
-                    <th>Team</th>
-                    <th>Wettbewerbe</th>
-                    <th>Marktwert</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for team in competition.team_set.all %}
-                    <tr
-                            onclick="document.location = '{% url 'team:detail' team.id %}'"
-                            style="cursor: hand"
-                    >
-                        <td>{{ team.name }}</td>
-                        <td>
-                            {% for competition in team.competition.all %}
-                                {{ competition.caption }}<br>
-                            {% endfor %}
-                        </td>
-                        <td>{{ team.squad_market_value|intword }} €</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="table-responsive bg-primary">
-            <table class="table table-inverse table-hover">
-                {% with table=competition.table_set.last %}
-                    {% if table.competition.is_cup %}
-                        <div class="row">
-                            <ul class="list-group list-group-flush">
-                                {% for group in table.group_set.all %}
-                                    {# TODO Fix overdraw #}
-                                    <li class="list-group-item col-md-6">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover">
-                                                <caption>Gruppe {{ group.name }}</caption>
-                                                <thead>
-                                                <tr>
-                                                    <th>Position</th>
-                                                    <th>Verein</th>
-                                                    <th>Sp</th>
-                                                    <th>Tore</th>
-                                                    <th>Pkte.</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                {% for group_standing in group.groupstanding_set.all %}
-                                                    <tr
-                                                            onclick="document.location = '{% url 'team:detail' group_standing.team.id %}'"
-                                                            style="cursor: hand"
-                                                    >
-                                                        <td>{{ group_standing.rank }}</td>
-                                                        <td>{{ group_standing.team.name }}</td>
-                                                        <td>{{ group_standing.played_games }}</td>
-                                                        <td>{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
-                                                        <td>{{ group_standing.points }}</td>
-                                                    </tr>
-                                                {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% else %}
-                        <div class="table-responsive">
-                            <table class="table table-inverse table-hover">
-                                <thead>
-                                <tr>
-                                    <th>Position</th>
-                                    <th>Verein</th>
-                                    <th>Spiele</th>
-                                    <th>g.</th>
-                                    <th>u.</th>
-                                    <th>v.</th>
-                                    <th>Tore</th>
-                                    <th>Diff.</th>
-                                    <th>Pkte.</th>
+
+        <div id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="card">
+                <div class="card-header" role="tab" id="teams">
+                    <h5 class="mb-0">
+                        <a
+                                data-toggle="collapse"
+                                data-parent="#accordion"
+                                href="#collapseTeams"
+                                aria-expanded="true"
+                                aria-controls="collapseOne"
+                        >
+                            Mannschaften
+                        </a>
+                    </h5>
+                </div>
+
+                <div id="collapseTeams" class="collapse show" role="tabpanel" aria-labelledby="teams">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th>Wettbewerbe</th>
+                                <th>Marktwert</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for team in competition.team_set.all %}
+                                <tr
+                                        onclick="document.location = '{% url 'team:detail' team.id %}'"
+                                        style="cursor: pointer"
+                                >
+                                    <td>{{ team.name }}</td>
+                                    <td>
+                                        {% for competition in team.competition.all %}
+                                            {{ competition.caption }}<br>
+                                        {% endfor %}
+                                    </td>
+                                    {% if team.squad_market_value %}
+                                        <td>{{ team.squad_market_value|intword }} €</td>
+                                    {% else %}
+                                        <td>N/A</td>
+                                    {% endif %}
                                 </tr>
-                                </thead>
-                                <tbody>
-                                {% for standing in table.standing_set.all %}
-                                    <tr onclick="document.location = '{% url 'team:detail' standing.team.id %}'"
-                                        style="cursor: hand">
-                                        <td>
-                                            {% if table_changes %}
-                                                <span class="badge">
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" role="tab" id="tables">
+                    <h5 class="mb-0">
+                        <a
+                                class="collapsed"
+                                data-toggle="collapse"
+                                data-parent="#accordion"
+                                href="#collapseTables"
+                                aria-expanded="false"
+                                aria-controls="collapseTwo"
+                        >
+                            Tabellen
+                        </a>
+                    </h5>
+                </div>
+                <div id="collapseTables" class="collapse" role="tabpanel" aria-labelledby="tables">
+                    {% with table=competition.table_set.last %}
+                        {% if table.competition.is_cup %}
+                            <div class="row">
+                                {% for group in table.group_set.all %}
+                                    <div class="table-responsive col-xl-6">
+                                        <table class="table table  over">
+                                            <h5 class="card-header">Gruppe {{ group.name }}</h5>
+                                            <thead>
+                                            <tr>
+                                                <th>Position</th>
+                                                <th>Verein</th>
+                                                <th>Sp</th>
+                                                <th>Tore</th>
+                                                <th>Pkte.</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for group_standing in group.groupstanding_set.all %}
+                                                <tr
+                                                        onclick="document.location = '{% url 'team:detail' group_standing.team.id %}'"
+                                                        style="cursor: pointer"
+                                                >
+                                                    <td>{{ group_standing.rank }}</td>
+                                                    <td>{{ group_standing.team.name }}</td>
+                                                    <td>{{ group_standing.played_games }}</td>
+                                                    <td>{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
+                                                    <td>{{ group_standing.points }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Position</th>
+                                        <th>Verein</th>
+                                        <th>Spiele</th>
+                                        <th>g.</th>
+                                        <th>u.</th>
+                                        <th>v.</th>
+                                        <th>Tore</th>
+                                        <th>Diff.</th>
+                                        <th>Pkte.</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for standing in table.standing_set.all %}
+                                        <tr onclick="document.location = '{% url 'team:detail' standing.team.id %}'"
+                                            style="cursor: pointer">
+                                            <td>
+                                                {% if table_changes %}
+                                                    <span class="badge">
                                                     {% if table_changes|filter_at_index:forloop.counter0 == True %}
                                                         <i class="fa fa-arrow-up" aria-hidden="true"></i>
                                                     {% elif table_changes|filter_at_index:forloop.counter0 == False %}
@@ -116,25 +153,26 @@
                                                         <i class="fa fa-arrow-right" aria-hidden="true"></i>
                                                     {% endif %}
                                                 </span>
-                                            {% endif %}
-                                            {{ standing.position }}
-                                        </td>
-                                        <td>{{ standing.team.name }}</td>
-                                        <td>{{ standing.played_games }}</td>
-                                        <td>{{ standing.wins }}</td>
-                                        <td>{{ standing.draws }}</td>
-                                        <td>{{ standing.losses }}</td>
-                                        <td>{{ standing.goals }}:{{ standing.goals_against }}</td>
-                                        <td>{{ standing.goal_difference }}</td>
-                                        <td>{{ standing.points }}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% endif %}
-                {% endwith %}
-                </tbody>
-            </table>
+                                                {% endif %}
+                                                {{ standing.position }}
+                                            </td>
+                                            <td>{{ standing.team.name }}</td>
+                                            <td>{{ standing.played_games }}</td>
+                                            <td>{{ standing.wins }}</td>
+                                            <td>{{ standing.draws }}</td>
+                                            <td>{{ standing.losses }}</td>
+                                            <td>{{ standing.goals }}:{{ standing.goals_against }}</td>
+                                            <td>{{ standing.goal_difference }}</td>
+                                            <td>{{ standing.points }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
         </div>
+    </div>
 {% endblock %}

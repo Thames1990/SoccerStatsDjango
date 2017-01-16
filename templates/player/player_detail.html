@@ -3,64 +3,69 @@
 {% load humanize %}
 
 {% block content %}
-    <div class="card card-inverse">
-        <div class="card-header bg-primary">
-            <h3 class="card-title">{{ player.name }}</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title mb-0">{{ player.name }}</h3>
         </div>
         {% if player.image %}
             <img
-                    class="card-img-top img-fluid"
+                    class="card-img-top rounded mx-auto d-block"
                     src="{{ player.image }}"
                     alt="{{ player.name }}"
                     onerror="this.style.display='none'"
             >
         {% endif %}
-        <div class="table-responsive bg-primary">
-            <table class="table table-inverse">
-                <thead>
-                <tr>
-                    {% if player.date_of_birth %}
-                        <th>Geburtstag</th>
-                    {% endif %}
-                    <th>Nationalität</th>
-                    <th
-                            onclick="document.location='{% url 'team:detail' player.team_id %}'"
-                            style="cursor: hand"
-                    >Verein
-                    </th>
-                    {% if player.contract_until %}
-                        <th>Vertrag</th>
-                    {% endif %}
-                    <th>Position</th>
-                    {% if player.jersey_number %}
-                        <th>Trikotnummer</th>
-                    {% endif %}
-                    {% if player.market_value %}
-                        <th>Markwert</th>
-                    {% endif %}
-                </tr>
-                </thead>
-                <tbody>
-                {% if player.date_of_birth %}
-                    <td>{{ player.date_of_birth }}</td>
-                {% endif %}
-                <td>{{ player.nationality }}</td>
-                <td
-                        onclick="document.location='{% url 'team:detail' player.team_id %}'"
-                        style="cursor: hand"
-                >{{ player.team.name }}</td>
-                {% if player.contract_until %}
-                    <td>{{ player.contract_until }}</td>
-                {% endif %}
-                <td>{{ player.position }}</td>
-                {% if player.jersey_number %}
-                    <td>{{ player.jersey_number }}</td>
-                {% endif %}
-                {% if player.market_value %}
-                    <td>{{ player.market_value|intword }} €</td>
-                {% endif %}
-                </tbody>
-            </table>
-        </div>
+        <ul class="list-group list-group-flush">
+            {% if player.date_of_birth %}
+                <li class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <p class="mb-0">Geburtstag</p>
+                        <p class="mb-0">{{ player.date_of_birth }}</p>
+                    </div>
+                </li>
+            {% endif %}
+            <li class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="mb-0">Nationalität</p>
+                    <p class="mb-0">{{ player.nationality }}</p>
+                </div>
+            </li>
+            <a href="{% url 'team:detail' player.team_id %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="mb-0">Verein</p>
+                    <p class="mb-0">{{ player.team.name }}</p>
+                </div>
+            </a>
+            {% if player.contract_until %}
+                <li class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <p class="mb-0">Vertrag</p>
+                        <p class="mb-0">{{ player.contract_until }}</p>
+                    </div>
+                </li>
+            {% endif %}
+            <li class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="mb-0">Position</p>
+                    <p class="mb-0">{{ player.position }}</p>
+                </div>
+            </li>
+            {% if player.jersey_number %}
+                <li class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <p class="mb-0">Trikotnummer</p>
+                        <p class="mb-0">{{ player.jersey_number }}</p>
+                    </div>
+                </li>
+            {% endif %}
+            {% if player.market_value %}
+                <li class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <p class="mb-0">Markwert</p>
+                        <p class="mb-0">{{ player.market_value|intword }} €</p>
+                    </div>
+                </li>
+            {% endif %}
+        </ul>
     </div>
 {% endblock %}

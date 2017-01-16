@@ -5,46 +5,57 @@
 {# TODO Fix table changes #}
 
 {% block content %}
-    <div class="card card-inverse">
-        <h3 class="card-header bg-primary">{{ table.competition.caption }} Tabelle</h3>
+    <div class="card">
+        <h3 class="card-header">{{ table.competition.caption }} Tabelle</h3>
         {% if table.competition.is_cup %}
-            <ul class="list-group list-group-flush">
+            <div class="row">
                 {% for group in table.group_set.all %}
-                    <li class="list-group-item bg-inverse" style="padding: 0">
-                        <div class="table-responsive">
-                            <table class="table table-inverse table-hover">
-                                <h5 class="card-header bg-primary">Gruppe {{ group.name }}</h5>
-                                <thead>
-                                <tr>
-                                    <th width="20%">Position</th>
-                                    <th width="20%">Verein</th>
-                                    <th width="20%">Spiele</th>
-                                    <th width="20%">Tore</th>
-                                    <th width="20%">Punkte</th>
+                    <div class="table-responsive col-xl-6">
+                        <table class="table table-hover">
+                            <h5 class="card-header">Gruppe {{ group.name }}</h5>
+                            <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Verein</th>
+                                <th>Spiele</th>
+                                <th>Tore</th>
+                                <th>Punkte</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for group_standing in group.groupstanding_set.all %}
+                                <tr
+                                        onclick="document.location = '{% url 'team:detail' group_standing.team.id %}'"
+                                        style="cursor: pointer"
+                                >
+                                    <td>
+                                        {% if table_changes %}
+                                            <span class="badge badge-pill badge-default">
+                                                {% if table_changes|filter_at_index:forloop.counter0 == True %}
+                                                    <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                                                {% elif table_changes|filter_at_index:forloop.counter0 == False %}
+                                                    <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                                {% else %}
+                                                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                                {% endif %}
+                                            </span>
+                                        {% endif %}
+                                        {{ group_standing.rank }}
+                                    </td>
+                                    <td>{{ group_standing.team.name }}</td>
+                                    <td>{{ group_standing.played_games }}</td>
+                                    <td>{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
+                                    <td>{{ group_standing.points }}</td>
                                 </tr>
-                                </thead>
-                                <tbody>
-                                {% for group_standing in group.groupstanding_set.all %}
-                                    <tr
-                                            onclick="document.location = '{% url 'team:detail' group_standing.team.id %}'"
-                                            style="cursor: hand"
-                                    >
-                                        <td width="20%">{{ group_standing.rank }}</td>
-                                        <td width="20%">{{ group_standing.team.name }}</td>
-                                        <td width="20%">{{ group_standing.played_games }}</td>
-                                        <td width="20%">{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
-                                        <td width="20%">{{ group_standing.points }}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </li>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
         {% else %}
-            <div class="table-responsive bg-primary">
-                <table class="table table-inverse table-hover">
+            <div class="table-responsive">
+                <table class="table table-hover">
                     <thead>
                     <tr>
                         <th>Position</th>
@@ -61,10 +72,10 @@
                     <tbody>
                     {% for standing in table.standing_set.all %}
                         <tr onclick="document.location = '{% url 'team:detail' standing.team.id %}'"
-                            style="cursor: hand">
+                            style="cursor: pointer">
                             <td>
                                 {% if table_changes %}
-                                    <span class="badge">
+                                    <span class="badge badge-pill badge-default">
                                         {% if table_changes|filter_at_index:forloop.counter0 == True %}
                                             <i class="fa fa-arrow-up" aria-hidden="true"></i>
                                         {% elif table_changes|filter_at_index:forloop.counter0 == False %}

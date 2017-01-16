@@ -19,83 +19,55 @@
                 <ul class="list-group list-group-flush">
                     {% if player.date_of_birth %}
                         <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p>Geb./Alter</p>
-                                </div>
-                                <div class="col-sm-6 text-xs-right">
-                                    <p>{{ player.date_of_birth }} ({{ player.age }})</p>
-                                </div>
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="mb-0">Geb./Alter</p>
+                                <p class="mb-0">{{ player.date_of_birth }} ({{ player.age }})</p>
                             </div>
                         </li>
                     {% endif %}
                     <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <p>Nationalität</p>
-                            </div>
-                            <div class="col-sm-6 text-xs-right">
-                                <p>{{ player.nationality }}</p>
-                            </div>
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-0">Nationalität</p>
+                            <p class="mb-0">{{ player.nationality }}</p>
                         </div>
                     </li>
                     <li
                             class="list-group-item"
                             onclick="document.location = '{% url 'team:detail' player.team.id %}'"
-                            style="cursor: hand"
+                            style="cursor: pointer"
                     >
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <p>Aktueller Verein</p>
-                            </div>
-                            <div class="col-sm-6 text-xs-right">
-                                <p>{{ player.team.name }}</p>
-                            </div>
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-0">Aktueller Verein</p>
+                            <p class="mb-0">{{ player.team.name }}</p>
                         </div>
                     </li>
                     {% if player.contract_until %}
                         <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p>Vertrag bis</p>
-                                </div>
-                                <div class="col-sm-6 text-xs-right">
-                                    <p>{{ player.contract_until }}</p>
-                                </div>
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="mb-0">Vertrag bis</p>
+                                <p class="mb-0">{{ player.contract_until }}</p>
                             </div>
                         </li>
                     {% endif %}
                     <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <p>Position</p>
-                            </div>
-                            <div class="col-sm-6 text-xs-right">
-                                <p>{{ player.position }}</p>
-                            </div>
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-0">Position</p>
+                            <p class="mb-0">{{ player.position }}</p>
                         </div>
                     </li>
                     {% if player.jersey_number %}
                         <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p>Trikotnummer</p>
-                                </div>
-                                <div class="col-sm-6 text-xs-right">
-                                    <p>{{ player.jersey_number }}</p>
-                                </div>
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="mb-0">Trikotnummer</p>
+                                <p class="mb-0">{{ player.jersey_number }}</p>
                             </div>
                         </li>
                     {% endif %}
                     {% if player.market_value %}
                         <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p>Marktwert</p>
-                                </div>
-                                <div class="col-sm-6 text-xs-right">
-                                    <p>{{ player.market_value|intword }} €</p>
-                                </div>
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="mb-0">Marktwert</p>
+                                <p class="mb-0">{{ player.market_value|intword }} €</p>
                             </div>
                         </li>
                     {% endif %}

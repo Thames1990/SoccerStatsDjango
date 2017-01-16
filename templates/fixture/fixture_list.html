@@ -3,34 +3,39 @@
 {% load math_extras %}
 
 {% block content %}
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>Competition</th>
-            <th>Home team</th>
-            <th>Away team</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Matchday</th>
-        </tr>
-        </thead>
-        {% for fixture in fixtures %}
-            <tbody>
-            <tr
-                    onclick="document.location = '{% url 'fixture:detail' fixture.id %}'"
-                    style="cursor: hand"
-            >
-                <td>{{ fixture.competition.caption }}</td>
-                <td>{{ fixture.home_team.name }}</td>
-                <td>{{ fixture.away_team.name }}</td>
-                <td>{{ fixture.date }}</td>
-                <td>{{ fixture.status }}</td>
-                <td>{{ fixture.matchday }}</td>
-            </tr>
-            </tbody>
-        {% endfor %}
-    </table>
-
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title>">Begegnungen</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Wettbewerb</th>
+                    <th>Heimmannschaft</th>
+                    <th>Auswärtsmannschaft</th>
+                    <th>Datum</th>
+                    <th>Spieltag</th>
+                </tr>
+                </thead>
+                {% for fixture in fixtures %}
+                    <tbody>
+                    <tr
+                            onclick="document.location = '{% url 'fixture:detail' fixture.id %}'"
+                            style="cursor: pointer"
+                    >
+                        <td>{{ fixture.competition.caption }}</td>
+                        <td>{{ fixture.home_team.name }}</td>
+                        <td>{{ fixture.away_team.name }}</td>
+                        <td>{{ fixture.date }}</td>
+                        <td>{{ fixture.matchday }}</td>
+                    </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <hr>
     <nav aria-label="Page navigation">
         <ul class="pagination">
             {% if page_obj.has_previous %}

@@ -5,14 +5,15 @@
 {% load static %}
 
 {% block content %}
-    <section id="teams">
+    <section id="team">
         <div class="container">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">{{ competition.caption }}</h3>
                     {% if competition.is_cup %}
-                        <span class="badge badge-pill badge-default"><i class="fa fa-trophy"
-                                                                        aria-hidden="true"></i></span>
+                        <span class="badge badge-pill badge-default">
+                            <i class="ion-trophy"></i>
+                        </span>
                     {% endif %}
                     {% if competition.current_matchday != competition.number_of_matchdays %}
                         <span class="badge badge-pill badge-default">
@@ -86,7 +87,7 @@
                                         aria-expanded="false"
                                         aria-controls="collapseTwo"
                                 >
-                                    Tabellen
+                                    Tabelle
                                 </a>
                             </h5>
                         </div>

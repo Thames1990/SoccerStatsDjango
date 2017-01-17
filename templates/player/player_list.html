@@ -4,139 +4,147 @@
 {% load math_extras %}
 
 {% block content %}
-    <div class="card-columns">
-        {% for player in players %}
-            <div class="card text-sm-center">
-                <h3 class="card-header">{{ player.name }}</h3>
-                {% if player.image %}
-                    <img
-                            class="card-img-top img-fluid"
-                            src="{{ player.image }}"
-                            alt="{{ player.name }}"
-                            onerror="this.style.display='none'"
-                    >
-                {% endif %}
-                <ul class="list-group list-group-flush">
-                    {% if player.date_of_birth %}
-                        <li class="list-group-item">
-                            <div class="d-flex w-100 justify-content-between">
-                                <p class="mb-0">Geb./Alter</p>
-                                <p class="mb-0">{{ player.date_of_birth }} ({{ player.age }})</p>
+    <section id="players">
+        <div class="container">
+            <div class="card-columns">
+                {% for player in players %}
+                    <div class="card text-sm-center">
+                        <a href="{% url 'player:detail' player.id %}">
+                            {% if player.image %}
+                                <img
+                                        class="card-img-top img-fluid"
+                                        src="{{ player.image }}"
+                                        alt="{{ player.name }}"
+                                        onerror="this.style.display='none'"
+                                >
+                            {% endif %}
+                            <div class="card-header">
+                                <h3 class="card-title mb-0">{{ player.name }}</h3>
                             </div>
-                        </li>
-                    {% endif %}
-                    <li class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <p class="mb-0">Nationalität</p>
-                            <p class="mb-0">{{ player.nationality }}</p>
-                        </div>
-                    </li>
-                    <li
-                            class="list-group-item"
-                            onclick="document.location = '{% url 'team:detail' player.team.id %}'"
-                            style="cursor: pointer"
-                    >
-                        <div class="d-flex w-100 justify-content-between">
-                            <p class="mb-0">Aktueller Verein</p>
-                            <p class="mb-0">{{ player.team.name }}</p>
-                        </div>
-                    </li>
-                    {% if player.contract_until %}
-                        <li class="list-group-item">
-                            <div class="d-flex w-100 justify-content-between">
-                                <p class="mb-0">Vertrag bis</p>
-                                <p class="mb-0">{{ player.contract_until }}</p>
-                            </div>
-                        </li>
-                    {% endif %}
-                    <li class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <p class="mb-0">Position</p>
-                            <p class="mb-0">{{ player.position }}</p>
-                        </div>
-                    </li>
-                    {% if player.jersey_number %}
-                        <li class="list-group-item">
-                            <div class="d-flex w-100 justify-content-between">
-                                <p class="mb-0">Trikotnummer</p>
-                                <p class="mb-0">{{ player.jersey_number }}</p>
-                            </div>
-                        </li>
-                    {% endif %}
-                    {% if player.market_value %}
-                        <li class="list-group-item">
-                            <div class="d-flex w-100 justify-content-between">
-                                <p class="mb-0">Marktwert</p>
-                                <p class="mb-0">{{ player.market_value|intword }} €</p>
-                            </div>
-                        </li>
-                    {% endif %}
-                </ul>
+                        </a>
+                        <ul class="list-group list-group-flush">
+                            {% if player.date_of_birth %}
+                                <li class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <p class="mb-0">Geb./Alter</p>
+                                        <p class="mb-0">{{ player.date_of_birth }} ({{ player.age }})</p>
+                                    </div>
+                                </li>
+                            {% endif %}
+                            <li class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <p class="mb-0">Nationalität</p>
+                                    <p class="mb-0">{{ player.nationality }}</p>
+                                </div>
+                            </li>
+                            <li
+                                    class="list-group-item"
+                                    onclick="document.location = '{% url 'team:detail' player.team.id %}'"
+                                    style="cursor: pointer"
+                            >
+                                <div class="d-flex w-100 justify-content-between">
+                                    <p class="mb-0">Aktueller Verein</p>
+                                    <p class="mb-0">{{ player.team.name }}</p>
+                                </div>
+                            </li>
+                            {% if player.contract_until %}
+                                <li class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <p class="mb-0">Vertrag bis</p>
+                                        <p class="mb-0">{{ player.contract_until }}</p>
+                                    </div>
+                                </li>
+                            {% endif %}
+                            <li class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <p class="mb-0">Position</p>
+                                    <p class="mb-0">{{ player.position }}</p>
+                                </div>
+                            </li>
+                            {% if player.jersey_number %}
+                                <li class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <p class="mb-0">Trikotnummer</p>
+                                        <p class="mb-0">{{ player.jersey_number }}</p>
+                                    </div>
+                                </li>
+                            {% endif %}
+                            {% if player.market_value %}
+                                <li class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <p class="mb-0">Marktwert</p>
+                                        <p class="mb-0">{{ player.market_value|intword }} €</p>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
 
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a
-                            class="page-link"
-                            href="?page={{ page_obj.previous_page_number }}"
-                            aria-label="Previous"
-                    >
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a
+                                    class="page-link"
+                                    href="?page={{ page_obj.previous_page_number }}"
+                                    aria-label="Previous"
+                            >
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
                         <span class="page-link" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                             <span class="sr-only">Previous</span>
                         </span>
-                </li>
-            {% endif %}
+                        </li>
+                    {% endif %}
 
-            {% for page in page_obj.paginator.page_range %}
-                {# TODO Fix first/last page bug #}
-                {% if page == page_obj.number %}
-                    <li class="page-item active">
-                        <a class="page-link">
-                            {{ page_obj.number }} <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                {% elif page <= page_obj.next_page_number|add:1 and page >= page_obj.previous_page_number|sub:1 %}
-                    <li class="page-item">
-                        <a
-                                class="page-link"
-                                href="?page={{ page }}"
-                        >
-                            {{ page }} <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                {% endif %}
-            {% endfor %}
+                    {% for page in page_obj.paginator.page_range %}
+                        {# TODO Fix first/last page bug #}
+                        {% if page == page_obj.number %}
+                            <li class="page-item active">
+                                <a class="page-link">
+                                    {{ page_obj.number }} <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                        {% elif page <= page_obj.next_page_number|add:1 and page >= page_obj.previous_page_number|sub:1 %}
+                            <li class="page-item">
+                                <a
+                                        class="page-link"
+                                        href="?page={{ page }}"
+                                >
+                                    {{ page }} <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
 
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a
-                            class="page-link"
-                            href="?page={{ page_obj.next_page_number }}"
-                            aria-label="Next"
-                    >
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a
+                                    class="page-link"
+                                    href="?page={{ page_obj.next_page_number }}"
+                                    aria-label="Next"
+                            >
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
                         <span class="page-link" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                             <span class="sr-only">Next</span>
                         </span>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </section>
 {% endblock %}

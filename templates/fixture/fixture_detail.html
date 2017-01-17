@@ -4,126 +4,129 @@
 {% load static %}
 
 {% block content %}
-
-    <div class="card">
-        <div class="card-header">
-            <div class="row text-center">
-                <div class="col">
-                    <a href="{% url 'team:detail' fixture.home_team.id %}">
-                        <img
-                                class="img-thumbnail"
-                                src="{{ fixture.home_team.crest_url }}"
-                                alt="{{ fixture.home_team.name }}"
-                                style="max-height:10em"
-                                onerror="this.src='{% static 'SoccerStats/assets/team.svg' %}'"
-                        >
-                        <h3 class="card-title">{{ fixture.home_team.name }}</h3>
-                    </a>
+    <section id="fixture">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row text-center">
+                        <div class="col">
+                            <a href="{% url 'team:detail' fixture.home_team.id %}">
+                                <img
+                                        class="img-thumbnail"
+                                        src="{{ fixture.home_team.crest_url }}"
+                                        alt="{{ fixture.home_team.name }}"
+                                        style="max-height:10em"
+                                        onerror="this.src='{% static 'SoccerStats/assets/team.svg' %}'"
+                                >
+                                <h3 class="card-title">{{ fixture.home_team.name }}</h3>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="{% url 'team:detail' fixture.away_team.id %}">
+                                <img
+                                        class="img-thumbnail"
+                                        src="{{ fixture.away_team.crest_url }}"
+                                        alt="{{ fixture.away_team.name }}"
+                                        style="max-height:10em"
+                                        onerror="this.src='{% static 'SoccerStats/assets/team.svg' %}'"
+                                >
+                                <h3 class="card-title">{{ fixture.away_team.name }}</h3>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="col">
-                    <a href="{% url 'team:detail' fixture.away_team.id %}">
-                        <img
-                                class="img-thumbnail"
-                                src="{{ fixture.away_team.crest_url }}"
-                                alt="{{ fixture.away_team.name }}"
-                                style="max-height:10em"
-                                onerror="this.src='{% static 'SoccerStats/assets/team.svg' %}'"
-                        >
-                        <h3 class="card-title">{{ fixture.away_team.name }}</h3>
-                    </a>
-                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="card-text mb-0">Datum</p>
+                            <p class="card-text mb-0">{{ fixture.date.date }}</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="card-text mb-0">Uhrzeit</p>
+                            <p class="card-text mb-0">{{ fixture.date.time }}</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="card-text mb-0">Status</p>
+                            <p class="card-text mb-0">{{ fixture.status }}</p>
+                        </div>
+                    </li>
+                    {% if fixture.result_set.first.goals_home_team and fixture.result_set.first.goals_away_team %}
+                        <li class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="card-text mb-0">Resultat</p>
+                                <p class="card-text mb-0">
+                                    {{ fixture.result_set.first.goals_home_team|default_if_none:"0" }}
+                                    :
+                                    {{ fixture.result_set.first.goals_away_team|default_if_none:"0" }}
+                                </p>
+                            </div>
+                        </li>
+                        {% if fixture.result_set.first.halftime_set.first %}
+                            <li class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <p class="card-text mb-0">Halbzeit</p>
+                                    <p class="card-text mb-0">
+                                        {{ fixture.result_set.first.halftime_set.first.goals_home_team }}
+                                        :
+                                        {{ fixture.result_set.first.halftime_set.first.goals_away_team }}
+                                    </p>
+                                </div>
+                            </li>
+                        {% endif %}
+                        {% if fixture.result_set.first.extratime_set.first %}
+                            <li class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <p class="card-text mb-0">Nachspielzeit</p>
+                                    <p class="card-text mb-0">
+                                        {{ fixture.result_set.first.extratime_set.first.goals_home_team }}
+                                        :
+                                        {{ fixture.result_set.first.extratime_set.first.goals_away_team }}
+                                    </p>
+                                </div>
+                            </li>
+                        {% endif %}
+                        {% if fixture.result_set.first.penaltyshootout_set.first %}
+                            <li class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <p class="card-text mb-0">Elfmeterschießen</p>
+                                    <p class="card-text mb-0">
+                                        {{ fixture.result_set.first.penaltyshootout_set.first.goals_home_team }}
+                                        :
+                                        {{ fixture.result_set.first.penaltyshootout_set.first.goals_away_team }}
+                                    </p>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                    {% if fixture.odds_set.first %}
+                        <li class="list-group-item">
+                            <p class="card-text">Wettchancen</p>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="card-text mb-0">Heimsieg</p>
+                                <p class="card-text mb-0">{{ fixture.odds_set.first.home_win }}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="card-text mb-0">Unentschieden</p>
+                                <p class="card-text mb-0">{{ fixture.odds_set.first.draw }}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="card-text mb-0">Auswärtssieg</p>
+                                <p class="card-text mb-0">{{ fixture.odds_set.first.away_win }}</p>
+                            </div>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-                <div class="d-flex w-100 justify-content-between">
-                    <p class="card-text mb-0">Datum</p>
-                    <p class="card-text mb-0">{{ fixture.date.date }}</p>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="d-flex w-100 justify-content-between">
-                    <p class="card-text mb-0">Uhrzeit</p>
-                    <p class="card-text mb-0">{{ fixture.date.time }}</p>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="d-flex w-100 justify-content-between">
-                    <p class="card-text mb-0">Status</p>
-                    <p class="card-text mb-0">{{ fixture.status }}</p>
-                </div>
-            </li>
-            {% if fixture.result_set.first.goals_home_team and fixture.result_set.first.goals_away_team %}
-                <li class="list-group-item">
-                    <div class="d-flex w-100 justify-content-between">
-                        <p class="card-text mb-0">Resultat</p>
-                        <p class="card-text mb-0">
-                            {{ fixture.result_set.first.goals_home_team|default_if_none:"0" }}
-                            :
-                            {{ fixture.result_set.first.goals_away_team|default_if_none:"0" }}
-                        </p>
-                    </div>
-                </li>
-                {% if fixture.result_set.first.halftime_set.first %}
-                    <li class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <p class="card-text mb-0">Halbzeit</p>
-                            <p class="card-text mb-0">
-                                {{ fixture.result_set.first.halftime_set.first.goals_home_team }}
-                                :
-                                {{ fixture.result_set.first.halftime_set.first.goals_away_team }}
-                            </p>
-                        </div>
-                    </li>
-                {% endif %}
-                {% if fixture.result_set.first.extratime_set.first %}
-                    <li class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <p class="card-text mb-0">Nachspielzeit</p>
-                            <p class="card-text mb-0">
-                                {{ fixture.result_set.first.extratime_set.first.goals_home_team }}
-                                :
-                                {{ fixture.result_set.first.extratime_set.first.goals_away_team }}
-                            </p>
-                        </div>
-                    </li>
-                {% endif %}
-                {% if fixture.result_set.first.penaltyshootout_set.first %}
-                    <li class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <p class="card-text mb-0">Elfmeterschießen</p>
-                            <p class="card-text mb-0">
-                                {{ fixture.result_set.first.penaltyshootout_set.first.goals_home_team }}
-                                :
-                                {{ fixture.result_set.first.penaltyshootout_set.first.goals_away_team }}
-                            </p>
-                        </div>
-                    </li>
-                {% endif %}
-            {% endif %}
-            {% if fixture.odds_set.first %}
-                <li class="list-group-item">
-                    <p class="card-text">Wettchancen</p>
-                </li>
-                <li class="list-group-item">
-                    <div class="d-flex w-100 justify-content-between">
-                        <p class="card-text mb-0">Heimsieg</p>
-                        <p class="card-text mb-0">{{ fixture.odds_set.first.home_win }}</p>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="d-flex w-100 justify-content-between">
-                        <p class="card-text mb-0">Unentschieden</p>
-                        <p class="card-text mb-0">{{ fixture.odds_set.first.draw }}</p>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="d-flex w-100 justify-content-between">
-                        <p class="card-text mb-0">Auswärtssieg</p>
-                        <p class="card-text mb-0">{{ fixture.odds_set.first.away_win }}</p>
-                    </div>
-                </li>
-            {% endif %}
-        </ul>
-    </div>
+    </section>
 {% endblock %}

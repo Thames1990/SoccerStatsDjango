@@ -10,7 +10,12 @@
     <meta name="description" content="SoccerStats ist eine intuitiv zu bedienende Fußballdatenbank"/>
     {# TODO Use custom titles in different templates #}
     <title>{% block title %}SoccerStats{% endblock %}</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"/>
+    <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+            integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+            crossorigin="anonymous"
+    >
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css"/>
     <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
     <link rel="stylesheet" href="{% static 'SoccerStats/css/style.css' %}">
@@ -46,7 +51,7 @@
 <footer id="footer">
     <div class="container">
         <div class="row">
-            <div class="col-6">
+            <div class="col">
                 <h6 class="text-uppercase">Genutzte Projekte</h6>
                 <ul class="list-unstyled">
                     <li><a target="_blank" href="http://api.football-data.org/index">football-data</a></li>
@@ -54,7 +59,7 @@
                     <li><a target="_blank" href="https://v4-alpha.getbootstrap.com/">Bootstrap 4</a></li>
                 </ul>
             </div>
-            <div class="col-6">
+            <div class="col">
                 <h6 class="text-uppercase">Informationen</h6>
                 <ul class="list-unstyled">
                     <li><a target="_blank" href="mailto:ThomasMohr1990@gmail.com">Kontakt</a></li>
@@ -73,7 +78,11 @@
 </footer>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+<script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"
+></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.js"></script>
 <script src="{% static 'SoccerStats/js/scripts.js' %}"></script>

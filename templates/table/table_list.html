@@ -6,30 +6,84 @@
 {# TODO Fix table changes #}
 
 {% block content %}
-    {% for table in tables %}
-        {% if table.competition.is_cup %}
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">{{ table.competition.caption }} Tabelle</h3>
-                </div>
-                <div class="row">
-                    {% for group in table.group_set.all %}
-                        <div class="table-responsive col-xl-6">
+    <section id="tables">
+        <div class="container">
+            {% for table in tables %}
+                {% if table.competition.is_cup %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title mb-0">{{ table.competition.caption }} Tabelle</h3>
+                        </div>
+                        <div class="row">
+                            {% for group in table.group_set.all %}
+                                <div class="table-responsive col-xl-6">
+                                    <table class="table table-hover">
+                                        <h5 class="card-header">Gruppe {{ group.name }}</h5>
+                                        <thead>
+                                        <tr>
+                                            <th>Position</th>
+                                            <th>Verein</th>
+                                            <th>Sp</th>
+                                            <th>Tore</th>
+                                            <th>Pkte.</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for group_standing in group.groupstanding_set.all %}
+                                            <tr
+                                                    onclick="document.location = '{% url 'team:detail' group_standing.team.id %}'"
+                                                    style="cursor: pointer"
+                                            >
+                                                <td>
+                                                    {% if table_changes %}
+                                                        <span class="badge badge-pill badge-default">
+                                                {% if table_changes|filter_at_index:forloop.counter0 == True %}
+                                                    <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                                                {% elif table_changes|filter_at_index:forloop.counter0 == False %}
+                                                    <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                                {% else %}
+                                                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                                {% endif %}
+                                            </span>
+                                                    {% endif %}
+                                                    {{ group_standing.rank }}
+                                                </td>
+                                                <td>{{ group_standing.team.name }}</td>
+                                                <td>{{ group_standing.played_games }}</td>
+                                                <td>{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
+                                                <td>{{ group_standing.points }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title mb-0">{{ table.competition.caption }}</h3>
+                        </div>
+                        <div class="table-responsive">
                             <table class="table table-hover">
-                                <h5 class="card-header">Gruppe {{ group.name }}</h5>
                                 <thead>
                                 <tr>
                                     <th>Position</th>
                                     <th>Verein</th>
-                                    <th>Sp</th>
+                                    <th>Spiele</th>
+                                    <th>g.</th>
+                                    <th>u.</th>
+                                    <th>v.</th>
                                     <th>Tore</th>
+                                    <th>Diff.</th>
                                     <th>Pkte.</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for group_standing in group.groupstanding_set.all %}
+                                {% for standing in table.standing_set.all %}
                                     <tr
-                                            onclick="document.location = '{% url 'team:detail' group_standing.team.id %}'"
+                                            onclick="document.location = '{% url 'team:detail' standing.team.id %}'"
                                             style="cursor: pointer"
                                     >
                                         <td>
@@ -44,138 +98,91 @@
                                                 {% endif %}
                                             </span>
                                             {% endif %}
-                                            {{ group_standing.rank }}
+                                            {{ standing.position }}
                                         </td>
-                                        <td>{{ group_standing.team.name }}</td>
-                                        <td>{{ group_standing.played_games }}</td>
-                                        <td>{{ group_standing.goals }}:{{ group_standing.goals_against }}</td>
-                                        <td>{{ group_standing.points }}</td>
+                                        <td>{{ standing.team.name }}</td>
+                                        <td>{{ standing.played_games }}</td>
+                                        <td>{{ standing.wins }}</td>
+                                        <td>{{ standing.draws }}</td>
+                                        <td>{{ standing.losses }}</td>
+                                        <td>{{ standing.goals }}:{{ standing.goals_against }}</td>
+                                        <td>{{ standing.goal_difference }}</td>
+                                        <td>{{ standing.points }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-                    {% endfor %}
-                </div>
-            </div>
-        {% else %}
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">{{ table.competition.caption }}</h3>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Position</th>
-                            <th>Verein</th>
-                            <th>Spiele</th>
-                            <th>g.</th>
-                            <th>u.</th>
-                            <th>v.</th>
-                            <th>Tore</th>
-                            <th>Diff.</th>
-                            <th>Pkte.</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for standing in table.standing_set.all %}
-                            <tr
-                                    onclick="document.location = '{% url 'team:detail' standing.team.id %}'"
-                                    style="cursor: pointer"
+                    </div>
+                {% endif %}
+                {% if not forloop.last %}
+                    <hr>
+                {% endif %}
+            {% endfor %}
+            <hr>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a
+                                    class="page-link"
+                                    href="?page={{ page_obj.previous_page_number }}"
+                                    aria-label="Previous"
                             >
-                                <td>
-                                    {% if table_changes %}
-                                        <span class="badge badge-pill badge-default">
-                                                {% if table_changes|filter_at_index:forloop.counter0 == True %}
-                                                    <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                                                {% elif table_changes|filter_at_index:forloop.counter0 == False %}
-                                                    <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                                                {% else %}
-                                                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                                                {% endif %}
-                                            </span>
-                                    {% endif %}
-                                    {{ standing.position }}
-                                </td>
-                                <td>{{ standing.team.name }}</td>
-                                <td>{{ standing.played_games }}</td>
-                                <td>{{ standing.wins }}</td>
-                                <td>{{ standing.draws }}</td>
-                                <td>{{ standing.losses }}</td>
-                                <td>{{ standing.goals }}:{{ standing.goals_against }}</td>
-                                <td>{{ standing.goal_difference }}</td>
-                                <td>{{ standing.points }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        {% endif %}
-    {% endfor %}
-    <hr>
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a
-                            class="page-link"
-                            href="?page={{ page_obj.previous_page_number }}"
-                            aria-label="Previous"
-                    >
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
                         <span class="page-link" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                             <span class="sr-only">Previous</span>
                         </span>
-                </li>
-            {% endif %}
+                        </li>
+                    {% endif %}
 
-            {% for page in page_obj.paginator.page_range %}
-                {# TODO Fix first/last page bug #}
-                {% if page == page_obj.number %}
-                    <li class="page-item active">
-                        <a class="page-link">
-                            {{ page_obj.number }} <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                {% elif page <= page_obj.next_page_number|add:1 and page >= page_obj.previous_page_number|sub:1 %}
-                    <li class="page-item">
-                        <a
-                                class="page-link"
-                                href="?page={{ page }}"
-                        >
-                            {{ page }} <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                {% endif %}
-            {% endfor %}
+                    {% for page in page_obj.paginator.page_range %}
+                        {# TODO Fix first/last page bug #}
+                        {% if page == page_obj.number %}
+                            <li class="page-item active">
+                                <a class="page-link">
+                                    {{ page_obj.number }} <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                        {% elif page <= page_obj.next_page_number|add:1 and page >= page_obj.previous_page_number|sub:1 %}
+                            <li class="page-item">
+                                <a
+                                        class="page-link"
+                                        href="?page={{ page }}"
+                                >
+                                    {{ page }} <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
 
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a
-                            class="page-link"
-                            href="?page={{ page_obj.next_page_number }}"
-                            aria-label="Next"
-                    >
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a
+                                    class="page-link"
+                                    href="?page={{ page_obj.next_page_number }}"
+                                    aria-label="Next"
+                            >
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
                         <span class="page-link" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                             <span class="sr-only">Next</span>
                         </span>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </section>
 {% endblock %}

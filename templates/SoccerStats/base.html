@@ -31,11 +31,13 @@
         <a class="navbar-brand page-scroll" href="{% url 'index' %}">SoccerStats</a>
         <div class="collapse navbar-collapse" id="collapsingNavbar">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link page-scroll" href="#competitions">Wettbewerbe</a></li>
-                <li class="nav-item"><a class="nav-link page-scroll" href="#fixtures">Begegnungen</a></li>
-                <li class="nav-item"><a class="nav-link page-scroll" href="#players">Spieler</a></li>
-                <li class="nav-item"><a class="nav-link page-scroll" href="#tables">Tabellen</a></li>
-                <li class="nav-item"><a class="nav-link page-scroll" href="#teams">Mannschaften</a></li>
+                {% block nav %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'competition:list' %}">Wettbewerbe</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'fixture:list' %}">Begegnungen</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'player:list' %}">Spieler</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'table:list' %}">Tabellen</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'team:list' %}">Mannschaften</a></li>
+                {% endblock %}
             </ul>
         </div>
     </div>

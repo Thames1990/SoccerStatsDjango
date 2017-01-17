@@ -69,7 +69,7 @@
         </div>
         <div class="container wow fadeInUp">
             <div class="row">
-                <div class="col-lg-4 col-md-4 text-center">
+                <div class="col-4 col-md-4 text-center">
                     <div class="feature">
                         <i class="icon-lg ion-ios-football wow fadeInUp"></i>
                         <h6 class="text-uppercase">Durchschnittliche Tore</h6>
@@ -107,18 +107,20 @@
                     </div>
                     <div class="card">
                         <div class="card-block">
-                            <p class="card-text">
+                            <h5 class="card-text">
                                 {{ last_five.result_set.all.0.goals_home_team }}
                                 :
                                 {{ last_five.result_set.all.0.goals_away_team }}
-                                {% if last_five.result_set.all.0.halftime_set.all %}
+                            </h5>
+                            {% if last_five.result_set.all.0.halftime_set.all %}
+                                <p class="card-text">
                                     (
                                     {{ last_five.result_set.all.0.halftime_set.all.0.goals_home_team }}
                                     :
                                     {{ last_five.result_set.all.0.halftime_set.all.0.goals_away_team }}
                                     )
-                                {% endif %}
-                            </p>
+                                </p>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="card">

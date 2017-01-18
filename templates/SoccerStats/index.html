@@ -109,27 +109,33 @@
                     <div class="card-header">
                         <div class="row align-items-center">
                             <div class="col">
-                                <img
-                                        class="card-img-top img-thumbnail img-fluid"
-                                        src="{{ last_five.home_team.crest_url }}"
-                                        alt="={{ last_five.home_team.name }}"
-                                        style="max-height: 10em"
-                                        onerror="this.src='{% static 'SoccerStats/assets/team.svg' %}'"
-                                >
+                                <a href="{% url 'team:detail' last_five.home_team.id %}">
+                                    <img
+                                            class="card-img-top img-thumbnail img-fluid"
+                                            src="{{ last_five.home_team.crest_url }}"
+                                            alt="={{ last_five.home_team.name }}"
+                                            style="max-height: 10em"
+                                            onerror="this.src='{% static 'SoccerStats/assets/team.svg' %}'"
+                                    >
+                                </a>
                             </div>
                             <div class="col">
-                                <h5 class="card-title">{{ last_five.home_team.name }}</h5>
-                                <h5 class="card-title">vs</h5>
-                                <h5 class="card-title">{{ last_five.away_team.name }}</h5>
+                                <a href="{% url 'fixture:detail' last_five.id %}">
+                                    <h5 class="card-title">{{ last_five.home_team.name }}</h5>
+                                    <h5 class="card-title">vs</h5>
+                                    <h5 class="card-title">{{ last_five.away_team.name }}</h5>
+                                </a>
                             </div>
                             <div class="col">
-                                <img
-                                        class="card-img-top img-thumbnail img-fluid"
-                                        src="{{ last_five.away_team.crest_url }}"
-                                        alt="={{ last_five.away_team.name }}"
-                                        style="max-height: 10em"
-                                        onerror="this.src='{% static 'SoccerStats/assets/team.svg' %}'"
-                                >
+                                <a href="{% url 'team:detail' last_five.away_team.id %}">
+                                    <img
+                                            class="card-img-top img-thumbnail img-fluid"
+                                            src="{{ last_five.away_team.crest_url }}"
+                                            alt="={{ last_five.away_team.name }}"
+                                            style="max-height: 10em"
+                                            onerror="this.src='{% static 'SoccerStats/assets/team.svg' %}'"
+                                    >
+                                </a>
                             </div>
                         </div>
                     </div>

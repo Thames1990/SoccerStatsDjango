@@ -302,13 +302,14 @@ def get_tables_current_matchday():
     :return: Queryset of Table objects
     """
     # TODO Change league_caption to competition.caption
-    return Table.objects.raw('''
-            SELECT table1.id, table1.league_caption, table1.matchday
-            FROM table_table table1, (
-              SELECT league_caption, MAX(matchday) AS current_matchday
-              FROM table_table
-              GROUP BY league_caption
-            ) AS table2
-            WHERE table1.league_caption = table2.league_caption
-            AND table1.matchday = table2.current_matchday
-            ''')
+    # return Table.objects.raw('''
+    #         SELECT table1.id, table1.league_caption, table1.matchday
+    #         FROM table_table table1, (
+    #           SELECT league_caption, MAX(matchday) AS current_matchday
+    #           FROM table_table
+    #           GROUP BY league_caption
+    #         ) AS table2
+    #         WHERE table1.league_caption = table2.league_caption
+    #         AND table1.matchday = table2.current_matchday
+    #         ''')
+    return Table.objects.all()

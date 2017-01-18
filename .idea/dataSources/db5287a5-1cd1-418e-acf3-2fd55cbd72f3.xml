@@ -1047,26 +1047,21 @@ model</ColNames>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="220" parent="27" name="league_caption">
+    <column id="220" parent="27" name="matchday">
       <Position>1</Position>
-      <DataType>VARCHAR(255)(0,-1)|12</DataType>
+      <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="221" parent="27" name="matchday">
+    <column id="221" parent="27" name="competition_id">
       <Position>2</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="222" parent="27" name="competition_id">
-      <Position>3</Position>
-      <DataType>INTEGER(0,-1)|4</DataType>
-      <NotNull>1</NotNull>
-    </column>
-    <key id="223" parent="27">
+    <key id="222" parent="27">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="224" parent="27" name="#FAKE_table_table_1">
+    <foreign-key id="223" parent="27" name="#FAKE_table_table_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>competition_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -1076,59 +1071,59 @@ model</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <column id="225" parent="28" name="id">
+    <column id="224" parent="28" name="id">
       <DataType>SMALLINT UNSIGNED(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="226" parent="28" name="name">
+    <column id="225" parent="28" name="name">
       <Position>1</Position>
       <DataType>VARCHAR(255)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="227" parent="28" name="code">
+    <column id="226" parent="28" name="code">
       <Position>2</Position>
       <DataType>VARCHAR(255)(0,-1)|12</DataType>
     </column>
-    <column id="228" parent="28" name="short_name">
+    <column id="227" parent="28" name="short_name">
       <Position>3</Position>
       <DataType>VARCHAR(255)(0,-1)|12</DataType>
     </column>
-    <column id="229" parent="28" name="squad_market_value">
+    <column id="228" parent="28" name="squad_market_value">
       <Position>4</Position>
       <DataType>INTEGER UNSIGNED(0,-1)|4</DataType>
     </column>
-    <column id="230" parent="28" name="crest_url">
+    <column id="229" parent="28" name="crest_url">
       <Position>5</Position>
       <DataType>VARCHAR(200)(0,-1)|12</DataType>
     </column>
-    <key id="231" parent="28">
+    <key id="230" parent="28">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="232" parent="29" name="id">
+    <column id="231" parent="29" name="id">
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="233" parent="29" name="team_id">
+    <column id="232" parent="29" name="team_id">
       <Position>1</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="234" parent="29" name="competition_id">
+    <column id="233" parent="29" name="competition_id">
       <Position>2</Position>
       <DataType>INTEGER(0,-1)|4</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="235" parent="29" name="team_team_competition_team_id_caf8daf8_uniq">
+    <index id="234" parent="29" name="team_team_competition_team_id_caf8daf8_uniq">
       <ColNames>team_id
 competition_id</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="236" parent="29">
+    <key id="235" parent="29">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="237" parent="29" name="#FAKE_team_team_competition_2">
+    <foreign-key id="236" parent="29" name="#FAKE_team_team_competition_2">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>team_id</ColNames>
       <Deferrable>1</Deferrable>
@@ -1138,7 +1133,7 @@ competition_id</ColNames>
       <OnDelete>no-action</OnDelete>
       <OnUpdate>no-action</OnUpdate>
     </foreign-key>
-    <foreign-key id="238" parent="29" name="#FAKE_team_team_competition_1">
+    <foreign-key id="237" parent="29" name="#FAKE_team_team_competition_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>competition_id</ColNames>
       <Deferrable>1</Deferrable>

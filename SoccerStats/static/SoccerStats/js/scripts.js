@@ -16,7 +16,7 @@
         event.preventDefault();
     });
 
-    $('#collapsingNavbar li a').click(function () {
+    $('#collapsingNavbar').find('li a').click(function () {
         /* always close responsive nav after click */
         $('.navbar-toggler:visible').click();
     });

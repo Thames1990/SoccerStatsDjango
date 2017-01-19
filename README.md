@@ -11,4 +11,4 @@ This project is still WIP and aims to offer the following features on completion
 ## Used projects
 * [football-data](http://api.football-data.org/index)
 * [Django](https://www.djangoproject.com/)
-* [Bulma CSS](http://bulma.io/)
+* [Bootstrap 4](http://v4-alpha.getbootstrap.com/)

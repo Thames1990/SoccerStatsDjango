@@ -43,7 +43,6 @@ def create_table(table, is_cup):
 
         table_object = Table.objects.create(
             competition=Competition.objects.get(caption=table['leagueCaption']),
-            league_caption=table['leagueCaption'],
             matchday=table['matchday'],
         )
 
@@ -76,7 +75,6 @@ def create_table(table, is_cup):
 
         table_object = Table.objects.create(
             competition=Competition.objects.get(caption=table['leagueCaption']),
-            league_caption=table['leagueCaption'],
             matchday=table['matchday'],
         )
 
@@ -166,7 +164,6 @@ def update_table(table, is_cup):
         if 'error' not in table:
             table_object = Table.objects.get(
                 competition=Competition.objects.get(caption=table['leagueCaption']),
-                league_caption=table['leagueCaption'],
                 matchday=table['matchday'],
             )
 
@@ -194,7 +191,6 @@ def update_table(table, is_cup):
     else:
         table_object = Table.objects.get(
             competition=Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]),
-            league_caption=table['leagueCaption'],
             matchday=table['matchday'],
         )
 
@@ -292,8 +288,8 @@ def get_table_changes(table):
                     position_changes.append(None)
             return position_changes
     else:
-        logger.info(table.competition.caption + ' on matchday ' + str(table.matchday) +
-                    ' can\'t be compared with previous matchdays')
+        logger.info(table.competition.caption + ' on matchday ' + str(
+            table.matchday) + ' can\'t be compared with previous matchdays')
 
 
 def get_tables_current_matchday():
@@ -312,4 +308,13 @@ def get_tables_current_matchday():
     #         WHERE table1.league_caption = table2.league_caption
     #         AND table1.matchday = table2.current_matchday
     #         ''')
-    return Table.objects.all()
+    from django.db.models import Max, Q
+    current_matchday_tables = \
+        Table.objects.values('competition__caption').annotate(current_matchday=Max('matchday'))
+    q_statement = Q()
+    for current_matchday_table in current_matchday_tables:
+        q_statement |= (
+            Q(competition__caption=current_matchday_table['competition__caption']) &
+            Q(matchday=current_matchday_table['current_matchday'])
+        )
+    return Table.objects.filter(q_statement)

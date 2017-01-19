@@ -1,6 +1,7 @@
 import re
 import requests
 
+from SoccerStats.utils import timing, rate_limited
 from player.models import Player
 from team.models import Team
 
@@ -31,6 +32,7 @@ def get_player_image(player_name):
         return None
 
 
+@rate_limited(0.8)
 def fetch_players(team_id):
     """
     Fetches JSON representation of players from football-data.org.
@@ -58,6 +60,7 @@ def create_player(team, player):
     )
 
 
+@timing
 def create_players():
     """
     Creates all players.
@@ -74,6 +77,7 @@ def create_players():
     return Player.objects.bulk_create(player_objects)
 
 
+@timing
 def update_players():
     """Updates all players."""
     for team in Team.objects.all():

@@ -1,10 +1,11 @@
 import re
 
 from competition.models import Competition
-from SoccerStats.utils import timing
+from SoccerStats.utils import timing, rate_limited
 from team.models import Team
 
 
+@rate_limited(0.8)
 def fetch_teams(competition_id):
     """
     Fetches JSON representation of teams from football-data.org.

@@ -4,9 +4,10 @@ from competition.models import Competition
 from fixture.models import Fixture, Result, HalfTime, ExtraTime, PenaltyShootout, Odd
 from team.models import Team
 
-from SoccerStats.utils import timing
+from SoccerStats.utils import timing, rate_limited
 
 
+@rate_limited(0.8)
 def fetch_fixtures(competition_id):
     """
     Fetches JSON representation of fixtures from football-data.org.

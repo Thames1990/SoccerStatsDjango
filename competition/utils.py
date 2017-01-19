@@ -2,12 +2,13 @@ import logging
 
 from competition.models import Competition
 
-from SoccerStats.utils import timing
+from SoccerStats.utils import timing, rate_limited
 from table.utils import fetch_table
 
 logger = logging.getLogger(__name__)
 
 
+@rate_limited(0.8)
 def fetch_competition(competition_id=None, season=None):
     """
     Fetches JSON representation of competitions from football-data.org.

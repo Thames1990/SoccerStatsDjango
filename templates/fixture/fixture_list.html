@@ -3,104 +3,115 @@
 {% load math_extras %}
 
 {% block content %}
-    <section id="fixtures">
-        <div class="container">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title>">Begegnungen</h3>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Wettbewerb</th>
-                            <th>Heimmannschaft</th>
-                            <th>Auswärtsmannschaft</th>
-                            <th>Datum</th>
-                            <th>Spieltag</th>
-                        </tr>
-                        </thead>
-                        {% for fixture in fixtures %}
-                            <tbody>
-                            <tr
-                                    onclick="document.location = '{% url 'fixture:detail' fixture.id %}'"
-                                    style="cursor: pointer"
-                            >
-                                <td>{{ fixture.competition.caption }}</td>
-                                <td>{{ fixture.home_team.name }}</td>
-                                <td>{{ fixture.away_team.name }}</td>
-                                <td>{{ fixture.date }}</td>
-                                <td>{{ fixture.matchday }}</td>
+    {% if fixtures %}
+        <section id="fixtures">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title>">Begegnungen</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Wettbewerb</th>
+                                <th>Heimmannschaft</th>
+                                <th>Auswärtsmannschaft</th>
+                                <th>Datum</th>
+                                <th>Spieltag</th>
                             </tr>
-                            </tbody>
-                        {% endfor %}
-                    </table>
+                            </thead>
+                            {% for fixture in fixtures %}
+                                <tbody>
+                                <tr
+                                        onclick="document.location = '{% url 'fixture:detail' fixture.id %}'"
+                                        style="cursor: pointer"
+                                >
+                                    <td>{{ fixture.competition.caption }}</td>
+                                    <td>{{ fixture.home_team.name }}</td>
+                                    <td>{{ fixture.away_team.name }}</td>
+                                    <td>{{ fixture.date }}</td>
+                                    <td>{{ fixture.matchday }}</td>
+                                </tr>
+                                </tbody>
+                            {% endfor %}
+                        </table>
+                    </div>
                 </div>
-            </div>
-            <hr>
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a
-                                    class="page-link"
-                                    href="?page={{ page_obj.previous_page_number }}"
-                                    aria-label="Previous"
-                            >
-                                <span aria-hidden="true">&laquo;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="page-item disabled">
+                <hr>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a
+                                        class="page-link"
+                                        href="?page={{ page_obj.previous_page_number }}"
+                                        aria-label="Previous"
+                                >
+                                    <span aria-hidden="true">&laquo;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
                         <span class="page-link" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                             <span class="sr-only">Previous</span>
                         </span>
-                        </li>
-                    {% endif %}
-
-                    {% for page in page_obj.paginator.page_range %}
-                        {# TODO Fix first/last page bug #}
-                        {% if page == page_obj.number %}
-                            <li class="page-item active">
-                                <a class="page-link">
-                                    {{ page_obj.number }} <span class="sr-only">(current)</span>
-                                </a>
                             </li>
-                        {% elif page <= page_obj.next_page_number|add:1 and page >= page_obj.previous_page_number|sub:1 %}
+                        {% endif %}
+
+                        {% for page in page_obj.paginator.page_range %}
+                            {# TODO Fix first/last page bug #}
+                            {% if page == page_obj.number %}
+                                <li class="page-item active">
+                                    <a class="page-link">
+                                        {{ page_obj.number }} <span class="sr-only">(current)</span>
+                                    </a>
+                                </li>
+                            {% elif page <= page_obj.next_page_number|add:1 and page >= page_obj.previous_page_number|sub:1 %}
+                                <li class="page-item">
+                                    <a
+                                            class="page-link"
+                                            href="?page={{ page }}"
+                                    >
+                                        {{ page }} <span class="sr-only">(current)</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
                             <li class="page-item">
                                 <a
                                         class="page-link"
-                                        href="?page={{ page }}"
+                                        href="?page={{ page_obj.next_page_number }}"
+                                        aria-label="Next"
                                 >
-                                    {{ page }} <span class="sr-only">(current)</span>
+                                    <span aria-hidden="true">&raquo;</span>
+                                    <span class="sr-only">Next</span>
                                 </a>
                             </li>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a
-                                    class="page-link"
-                                    href="?page={{ page_obj.next_page_number }}"
-                                    aria-label="Next"
-                            >
-                                <span aria-hidden="true">&raquo;</span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="page-item disabled">
+                        {% else %}
+                            <li class="page-item disabled">
                         <span class="page-link" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                             <span class="sr-only">Next</span>
                         </span>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </section>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </section>
+    {% else %}
+        <header id="first">
+            <div class="header-content">
+                <div class="inner">
+                    <h2>Begegnungen</h2>
+                    <h5 class="wow fadeIn text-normal">Keine Begegnungen verfügbar</h5>
+                </div>
+            </div>
+        </header>
+    {% endif %}
 {% endblock %}

@@ -25,38 +25,57 @@
 
     <section id="competitions">
         <div class="container wow fadeInUp">
-            <h2>Wettbewerbe</h2>
-            <p class="lead">
-                SoccerStats enthält Informationen über alle europäischen Topligen und führt Statistiken
-                zu {{ competition.count }} Wettbewerben und {{ competition.team.count }} Mannschaften.
-            </p>
-            <div class="card">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Wettbewerb</th>
-                            <th>Aktueller Spieltag</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for competition in competition.list %}
-                            <tr
-                                    onclick="document.location='{% url 'competition:detail' competition.id %}'"
-                                    style="cursor:pointer;"
-                            >
-                                <td>{{ competition.caption }}</td>
-                                {% if competition.current_matchday == competition.number_of_matchdays %}
-                                    <td>Beendet</td>
-                                {% else %}
-                                    <td>{{ competition.current_matchday }}/{{ competition.number_of_matchdays }}</td>
-                                {% endif %}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="m-t-0 text-primary">Wettbewerbe</h2>
+                    <hr class="accent">
                 </div>
             </div>
+            <div class="row">
+                <div class="col-6 text-center">
+                    <div class="feature">
+                        <i class="icon-lg ion-podium wow fadeInUp"></i>
+                        <h6 class="text-uppercase">Wettbewerbe</h6>
+                        <p class="text-muted m-b-0">{{ competition.count }}</p>
+                    </div>
+                </div>
+                <div class="col-6 text-center">
+                    <div class="feature">
+                        <i class="icon-lg ion-ios-people wow fadeIn" data-wow-delay=".1s"></i>
+                        <h6 class="text-uppercase">Mannschaften</h6>
+                        <p class="text-muted m-b-0">{{ competition.team.count|default_if_none:0 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% if competition.list %}
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Wettbewerb</th>
+                                <th>Aktueller Spieltag</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for competition in competition.list %}
+                                <tr
+                                        onclick="document.location='{% url 'competition:detail' competition.id %}'"
+                                        style="cursor:pointer;"
+                                >
+                                    <td>{{ competition.caption }}</td>
+                                    {% if competition.current_matchday == competition.number_of_matchdays %}
+                                        <td>Beendet</td>
+                                    {% else %}
+                                        <td>{{ competition.current_matchday }}/{{ competition.number_of_matchdays }}</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
         </div>
         <hr>
         <div class="container text-center">
@@ -71,21 +90,19 @@
     </section>
 
     <section id="fixtures" class="bg-alt">
-        <div class="container">
+        <div class="container wow fadeInUp">
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="m-t-0 text-primary">Begegnungen</h2>
                     <hr class="accent">
                 </div>
             </div>
-        </div>
-        <div class="container wow fadeInUp">
             <div class="row">
                 <div class="col-lg-4 col-md-4 text-center">
                     <div class="feature">
                         <i class="icon-lg ion-ios-football wow fadeInUp"></i>
-                        <h6 class="text-uppercase">Durchschnittliche Tore</h6>
-                        <p class="text-muted m-b-0">{{ fixture.result_avg.goals_home_team }}</p>
+                        <h6 class="text-uppercase">&#216; Tore</h6>
+                        <p class="text-muted m-b-0">{{ fixture.result_avg.goals_home_team|default_if_none:0 }}</p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4 text-center">
@@ -98,8 +115,8 @@
                 <div class="col-lg-4 col-md-4 text-center">
                     <div class="feature">
                         <i class="icon-lg ion-ios-football-outline wow fadeIn" data-wow-delay=".1s"></i>
-                        <h6 class="text-uppercase">Durchschnittliche Gegentore</h6>
-                        <p class="text-muted m-b-0">{{ fixture.result_avg.goals_away_team }}</p>
+                        <h6 class="text-uppercase">&#216; Gegentore</h6>
+                        <p class="text-muted m-b-0">{{ fixture.result_avg.goals_away_team|default_if_none:0 }}</p>
                     </div>
                 </div>
             </div>
@@ -158,12 +175,9 @@
                         {% endif %}
                     </div>
                 </div>
-                {% if not forloop.last %}
-                    <hr>
-                {% endif %}
+                <hr>
             {% endfor %}
         </div>
-        <hr>
         <div class="container text-center">
             <a
                     class="btn btn-lg text-normal btn-outline-primary"
@@ -176,113 +190,113 @@
     </section>
 
     <section id="players">
-        <div class="container">
+        <div class="container wow fadeInUp">
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="m-t-0 text-primary">Spieler</h2>
                     <hr class="accent">
                 </div>
             </div>
-        </div>
-        <div class="container-fluid wow fadeInUp">
             <div class="row">
-                <div class="col-lg-6 col-md-6 text-center">
+                <div class="col text-center">
                     <div class="feature">
                         <i class="icon-lg ion-ios-body wow fadeInUp"></i>
                         <h6 class="text-uppercase">Spieler</h6>
                         <p class="text-muted m-b-0">{{ player.count }}</p>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-6 text-center">
+                <div class="col text-center">
                     <div class="feature">
                         <i class="icon-lg ion-social-euro wow fadeIn" data-wow-delay=".1s"></i>
-                        <h6 class="text-uppercase">Durchschnittlicher Marktwert</h6>
-                        <p class="text-muted m-b-0">{{ player.market_value.avg|intword }}</p>
+                        <h6 class="text-uppercase">&#216; Marktwert</h6>
+                        <p class="text-muted m-b-0">{{ player.market_value.avg|intword|default_if_none:0 }}</p>
                     </div>
                 </div>
             </div>
             <hr>
-            <div class="row">
-                <div class="col-sm-10 offset-sm-1 col-12 offset-0">
-                    <div class="card-group">
-                        <div class="row">
-                            {% for best_five in player.best_five %}
-                                <div class="card">
-                                    <img class="card-img-top img-fluid"
-                                         src="{{ best_five.image }}"
-                                         alt="{{ best_five.name }}"
-                                    >
-                                    <div class="card-header">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h4 class="card-title mb-0">{{ best_five.name }}</h4>
-                                            {% if best_five.jersey_number %}
-                                                <h4 class="card-title mb-0">{{ best_five.jersey_number }}</h4>
-                                            {% endif %}
+            {% if player.best_five %}
+                <div class="row">
+                    <div class="col-sm-10 offset-sm-1 col-12 offset-0">
+                        <div class="card-group">
+                            <div class="row">
+                                {% for best_five in player.best_five %}
+                                    <div class="card">
+                                        <img class="card-img-top img-fluid"
+                                             src="{{ best_five.image }}"
+                                             alt="{{ best_five.name }}"
+                                        >
+                                        <div class="card-header">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h4 class="card-title mb-0">{{ best_five.name }}</h4>
+                                                {% if best_five.jersey_number %}
+                                                    <h4 class="card-title mb-0">{{ best_five.jersey_number }}</h4>
+                                                {% endif %}
+                                            </div>
                                         </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <p class="mb-0">Mannschaft</p>
+                                                    <p class="mb-0">{{ best_five.team.name }}</p>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <p class="mb-0">Position</p>
+                                                    <p class="mb-0">{{ best_five.position }}</p>
+                                                </div>
+                                            </li>
+                                            {% if best_five.date_of_birth %}
+                                                <li class="list-group-item">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <p class="mb-0">Geburtsdatum</p>
+                                                        <p class="mb-0">
+                                                            {{ best_five.date_of_birth }}
+                                                            ({{ best_five.age }})
+                                                        </p>
+                                                    </div>
+                                                </li>
+                                            {% endif %}
+                                            <li class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <p class="mb-0">Nationalität</p>
+                                                    <p class="mb-0">{{ best_five.nationality }}</p>
+                                                </div>
+                                            </li>
+                                            {% if best_five.contract_until %}
+                                                <li class="list-group-item">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <p class="mb-0">Vertrag bis</p>
+                                                        <p class="mb-0">{{ best_five.contract_until }}</p>
+                                                    </div>
+                                                </li>
+                                            {% endif %}
+                                            {% if best_five.market_value %}
+                                                <li class="list-group-item">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <p class="mb-0">Marktwert</p>
+                                                        <p class="mb-0">{{ best_five.market_value|intword }} €</p>
+                                                    </div>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                        <hr>
+                                        <a
+                                                href="{% url 'player:detail' best_five.id %}"
+                                                class="btn text-normal btn-primary"
+                                                role="button"
+                                        >
+                                            Zum Spieler
+                                        </a>
                                     </div>
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">
-                                            <div class="d-flex w-100 justify-content-between">
-                                                <p class="mb-0">Mannschaft</p>
-                                                <p class="mb-0">{{ best_five.team.name }}</p>
-                                            </div>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <div class="d-flex w-100 justify-content-between">
-                                                <p class="mb-0">Position</p>
-                                                <p class="mb-0">{{ best_five.position }}</p>
-                                            </div>
-                                        </li>
-                                        {% if best_five.date_of_birth %}
-                                            <li class="list-group-item">
-                                                <div class="d-flex w-100 justify-content-between">
-                                                    <p class="mb-0">Geburtsdatum</p>
-                                                    <p class="mb-0">
-                                                        {{ best_five.date_of_birth }}
-                                                        ({{ best_five.age }})
-                                                    </p>
-                                                </div>
-                                            </li>
-                                        {% endif %}
-                                        <li class="list-group-item">
-                                            <div class="d-flex w-100 justify-content-between">
-                                                <p class="mb-0">Nationalität</p>
-                                                <p class="mb-0">{{ best_five.nationality }}</p>
-                                            </div>
-                                        </li>
-                                        {% if best_five.contract_until %}
-                                            <li class="list-group-item">
-                                                <div class="d-flex w-100 justify-content-between">
-                                                    <p class="mb-0">Vertrag bis</p>
-                                                    <p class="mb-0">{{ best_five.contract_until }}</p>
-                                                </div>
-                                            </li>
-                                        {% endif %}
-                                        {% if best_five.market_value %}
-                                            <li class="list-group-item">
-                                                <div class="d-flex w-100 justify-content-between">
-                                                    <p class="mb-0">Marktwert</p>
-                                                    <p class="mb-0">{{ best_five.market_value|intword }} €</p>
-                                                </div>
-                                            </li>
-                                        {% endif %}
-                                    </ul>
-                                    <hr>
-                                    <a
-                                            href="{% url 'player:detail' best_five.id %}"
-                                            class="btn text-normal btn-primary"
-                                            role="button"
-                                    >
-                                        Zum Spieler
-                                    </a>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <hr>
+                </div>
+                <hr>
+            {% endif %}
         <div class="container text-center">
             <a
                     class="btn btn-lg text-normal btn-outline-primary"
@@ -294,61 +308,63 @@
         </div>
     </section>
 
-    <aside id="tables" class="bg-alt">
-        <div class="container text-center">
-            <h2 class="text-primary text-center">Tabellen</h2>
-            <hr class="accent">
-            <br>
-            <div class="row wow fadeInUpy">
+    <section id="tables" class="bg-alt">
+        <div class="container wow fadeInUp">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="m-t-0 text-primary">Tabellen</h2>
+                    <hr class="accent">
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-4 col-sm-6 col-12 text-center">
                     <h3>Torrekord</h3>
                     <i class="icon-lg ion-ios-speedometer-outline wow pulse"></i>
-                    <h1 class="text-primary">100</h1>
+                    <h1 class="text-primary">80</h1>
                 </div>
                 <div class="col-md-4 col-sm-6 col-12 text-center">
                     <h3>Gegentorrekord</h3>
                     <i class="icon-lg ion-ios-location-outline wow pulse"></i>
-                    <h1 class="text-primary">3421</h1>
+                    <h1 class="text-primary">75</h1>
                 </div>
                 <div class="col-md-4 col-sm-6 col-12 text-center">
                     <h3>Punkterekord</h3>
                     <i class="icon-lg ion-ios-pulse wow pulse"></i>
-                    <h1 class="text-primary">4%</h1>
+                    <h1 class="text-primary">92</h1>
                 </div>
             </div>
             <hr>
-            <br>
-        </div>
-        <div class="container">
-            <div class="card">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Wettbewerb</th>
-                            <th>Aktueller Spieltag</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for table in table.list %}
-                            <tr
-                                    onclick="document.location = '{% url 'table:detail' table.id %}'"
-                                    style="cursor: pointer"
-                            >
-                                <td>{{ table.competition.caption }}</td>
-                                {% if table.competition.number_of_matchdays == table.matchday %}
-                                    <td>{{ table.matchday }} (Beendet)</td>
-                                {% else %}
-                                    <td>{{ table.matchday }}</td>
-                                {% endif %}
+            {% if table.list %}
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Wettbewerb</th>
+                                <th>Aktueller Spieltag</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% for table in table.list %}
+                                <tr
+                                        onclick="document.location = '{% url 'table:detail' table.id %}'"
+                                        style="cursor: pointer"
+                                >
+                                    <td>{{ table.competition.caption }}</td>
+                                    {% if table.competition.number_of_matchdays == table.matchday %}
+                                        <td>{{ table.matchday }} (Beendet)</td>
+                                    {% else %}
+                                        <td>{{ table.matchday }}</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+                <hr>
+            {% endif %}
         </div>
-        <hr>
         <div class="container text-center">
             <a
                     class="btn btn-lg text-normal btn-outline-primary"
@@ -358,18 +374,16 @@
                 Zu den Tabellen
             </a>
         </div>
-    </aside>
+    </section>
 
     <section id="teams">
-        <div class="container">
+        <div class="container wow fadeInUp">
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="m-t-0 text-primary">Mannschaften</h2>
                     <hr class="accent">
                 </div>
             </div>
-        </div>
-        <div class="container">
             <div class="row">
                 <div class="col-lg-6 col-md-6 text-center">
                     <div class="feature">
@@ -382,34 +396,36 @@
                     <div class="feature">
                         <i class="icon-lg ion-social-euro wow fadeIn" data-wow-delay=".1s"></i>
                         <h6 class="text-uppercase">Durschnittlicher Marktwert</h6>
-                        <p class="text-muted m-b-0">{{ team.squad_market_value.avg|intword }}</p>
+                        <p class="text-muted m-b-0">{{ team.squad_market_value.avg|intword|default_if_none:0 }}</p>
                     </div>
                 </div>
             </div>
-            <hr>
-            <div class="card">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Verein</th>
-                            <th>Mannschaftswert</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for best_five in team.best_five %}
-                            <tr
-                                    onclick="document.location = '{% url 'team:detail' best_five.id %}'"
-                                    style="cursor: pointer"
-                            >
-                                <td>{{ best_five.name }}</td>
-                                <td>{{ best_five.squad_market_value|intword }} €</td>
+            {% if team.best_five %}
+                <hr>
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Verein</th>
+                                <th>Mannschaftswert</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% for best_five in team.best_five %}
+                                <tr
+                                        onclick="document.location = '{% url 'team:detail' best_five.id %}'"
+                                        style="cursor: pointer"
+                                >
+                                    <td>{{ best_five.name }}</td>
+                                    <td>{{ best_five.squad_market_value|intword }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
         <hr>
         <div class="container text-center">

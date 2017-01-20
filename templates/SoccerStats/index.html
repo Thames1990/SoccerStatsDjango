@@ -218,7 +218,7 @@
                 <div class="card-deck">
                     {% for player in player.best_three %}
                         <div class="card">
-                            <img class="card-img-top"
+                            <img class="card-img-top img-fluid"
                                  src="{{ player.image }}"
                                  alt="{{ player.name }}"
                             >
@@ -230,8 +230,13 @@
                                     {% endif %}
                                 </div>
                             </div>
+                            {# TODO Fix text wrapping #}
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
+                                <li
+                                        class="list-group-item list-group-item-action"
+                                        onclick="document.location='{% url 'team:detail' player.team.id %}'"
+                                        style="cursor: pointer;"
+                                >
                                     <div class="d-flex w-100 justify-content-between">
                                         <p class="mb-0">Mannschaft</p>
                                         <p class="mb-0">{{ player.team.name }}</p>

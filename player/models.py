@@ -33,5 +33,8 @@ class Player(models.Model):
                )
 
     def age(self):
-        import datetime
-        return int((datetime.date.today() - self.date_of_birth).days / 365.25)
+        if self.date_of_birth:
+            import datetime
+            return int((datetime.date.today() - self.date_of_birth).days / 365.25)
+        else:
+            return None

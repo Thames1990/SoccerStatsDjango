@@ -2,6 +2,7 @@
 
 {% load humanize %}
 {% load math_extras %}
+{% load static %}
 
 {% block content %}
     {% if players %}
@@ -16,7 +17,12 @@
                                             class="card-img-top img-fluid"
                                             src="{{ player.image }}"
                                             alt="{{ player.name }}"
-                                            onerror="this.style.display='none'"
+                                    >
+                                {% else %}
+                                    <img
+                                            class="card-img-top img-fluid"
+                                            src="{% static 'SoccerStats/img/player.svg' %}"
+                                            alt="{{ player.name }}"
                                     >
                                 {% endif %}
                                 <div class="card-header">

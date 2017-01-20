@@ -1,6 +1,7 @@
 {% extends 'SoccerStats/base.html' %}
 
 {% load humanize %}
+{% load static %}
 
 {% block content %}
     <section id="player">
@@ -11,10 +12,15 @@
                 </div>
                 {% if player.image %}
                     <img
-                            class="card-img-top rounded mx-auto d-block"
+                            class="card-img-top mx-auto"
                             src="{{ player.image }}"
                             alt="{{ player.name }}"
-                            onerror="this.style.display='none'"
+                    >
+                {% else %}
+                    <img
+                            class="card-img-top img-fluid"
+                            src="{% static 'SoccerStats/img/player.svg' %}"
+                            alt="{{ player.name }}"
                     >
                 {% endif %}
                 <ul class="list-group list-group-flush">

@@ -40,7 +40,7 @@ def index(request):
                     output_field=DecimalField(decimal_places=2),
                 ),
             ),
-            'best_five': Player.objects.order_by('-market_value')[:5],
+            'best_three': Player.objects.order_by('-market_value')[:3],
         },
         'table': {
             'list': tables_current_matchday,

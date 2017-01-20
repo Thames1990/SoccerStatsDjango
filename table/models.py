@@ -52,25 +52,27 @@ class Standing(models.Model):
                    self.losses,
                )
 
-    def has_position_changed(self, other_matchday_standing):
+    def has_position_changed(self, previous_matchday_standing):
         """
-        Checks position difference. Is normally used to compare matchday point differences.
-        :param other_matchday_standing: The standing of a another matchday
+        Checks position difference to the previous matchday.
+        :param previous_matchday_standing: The standing of the previous matchday
         :return: True, if the position has changed; False otherwise.
         """
-        if isinstance(other_matchday_standing, Standing):
-            return self.position != other_matchday_standing.position
-        raise ValueError(other_matchday_standing + ' is no valid Standing')
+        if isinstance(previous_matchday_standing, Standing):
+            return self.position != previous_matchday_standing.position and \
+                   self.played_games > previous_matchday_standing.played_games
+        raise ValueError(previous_matchday_standing + ' is no valid Standing')
 
-    def has_position_improved(self, other_matchday_standing):
+    def has_position_improved(self, previous_matchday_standing):
         """
-        Checks position improvement. Is normally used to compare matchday point improvements.
-        :param other_matchday_standing: The standing of a another matchday
+        Checks position improvement from previous matchday.
+        :param previous_matchday_standing: The standing of the previous matchday
         :return: True, if the position has improved; False otherwise.
         """
-        if isinstance(other_matchday_standing, Standing):
-            return self.position < other_matchday_standing.position
-        raise ValueError(other_matchday_standing + ' is no valid Standing')
+        if isinstance(previous_matchday_standing, Standing):
+            return self.position < previous_matchday_standing.position and \
+                   self.played_games > previous_matchday_standing.played_games
+        raise ValueError(previous_matchday_standing + ' is no valid Standing')
 
 
 class HomeStanding(models.Model):
@@ -163,22 +165,24 @@ class GroupStanding(models.Model):
             self.goal_difference,
         )
 
-    def has_rank_changed(self, other_matchday_group_standing):
+    def has_rank_changed(self, previous_matchday_group_standing):
         """
-        Checks rank difference. Is normally used to compare matchday point differences.
-        :param other_matchday_group_standing: The group standing of a another matchday
+        Checks rank difference to the previous matchday.
+        :param previous_matchday_group_standing: The group standing of the previous matchday
         :return: True, if the rank has changed; False otherwise.
         """
-        if isinstance(other_matchday_group_standing, GroupStanding):
-            return self.rank != other_matchday_group_standing.rank
-        raise ValueError(other_matchday_group_standing + ' is no valid GroupStanding')
+        if isinstance(previous_matchday_group_standing, GroupStanding):
+            return self.rank != previous_matchday_group_standing.rank and \
+                   self.played_games > previous_matchday_group_standing.played_games
+        raise ValueError(previous_matchday_group_standing + ' is no valid GroupStanding')
 
-    def has_rank_improved(self, other_matchday_group_standing):
+    def has_rank_improved(self, previous_matchday_group_standing):
         """
-        Checks rank improvement. Is normally used to compare matchday point improvements.
-        :param other_matchday_group_standing: The group standing of a another matchday
+        Checks rank improvement from previous matchday.
+        :param previous_matchday_group_standing: The group standing of the previous matchday
         :return: True, if the rank has improved; False otherwise.
         """
-        if isinstance(other_matchday_group_standing, GroupStanding):
-            return self.rank < other_matchday_group_standing.rank
-        raise ValueError(other_matchday_group_standing + ' is no valid GroupStanding')
+        if isinstance(previous_matchday_group_standing, GroupStanding):
+            return self.rank < previous_matchday_group_standing.rank and \
+                   self.played_games > previous_matchday_group_standing.played_games
+        raise ValueError(previous_matchday_group_standing + ' is no valid GroupStanding')

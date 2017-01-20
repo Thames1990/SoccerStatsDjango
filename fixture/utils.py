@@ -24,7 +24,7 @@ def fetch_fixtures(competition_id):
 
 def create_fixture(fixture):
     """
-    Create a Fixture object.
+    Creates a Fixture object.
     :param fixture: JSON representation of a fixture
     :return: Fixture database object created from *fixture* JSON representation
     """
@@ -41,7 +41,7 @@ def create_fixture(fixture):
 
 def create_result(fixture_object, fixture):
     """
-    Create a Result object.
+    Creates a Result object.
     :param fixture_object: Fixture object already created from *fixture* JSON representation
     :param fixture: JSON representation of a result
     :return: Result database object created from *fixture* JSON representation
@@ -55,7 +55,7 @@ def create_result(fixture_object, fixture):
 
 def create_half_time(result, fixture):
     """
-    Create a HalfTime object.
+    Creates a HalfTime object.
     :param result: Result object
     :param fixture: JSON representation of a fixture
     :return: HalfTime object created from *result* and *fixture* JSON representation
@@ -69,7 +69,7 @@ def create_half_time(result, fixture):
 
 def create_extra_time(result, fixture):
     """
-    Create a ExtraTime object.
+    Creates a ExtraTime object.
     :param result: Result object
     :param fixture: JSON representation of a fixture
     :return: ExtraTime object created from *result* and *fixture* JSON representation
@@ -83,7 +83,7 @@ def create_extra_time(result, fixture):
 
 def create_penalty_shootouts(result, fixture):
     """
-    Create a PenaltyShootout object.
+    Creates a PenaltyShootout object.
     :param result: Result object
     :param fixture: JSON representation of a fixture
     :return: PenaltyShootout object created from *result* and *fixture* JSON representation
@@ -97,7 +97,7 @@ def create_penalty_shootouts(result, fixture):
 
 def create_odds(fixture_object, fixture):
     """
-    Create a Odds object.
+    Creates a Odds object.
     :param fixture_object: Fixture object already created from *fixture* JSON representation
     :param fixture: JSON representation of a result
     :return: Odds object created from *fixture* JSON representation
@@ -112,7 +112,7 @@ def create_odds(fixture_object, fixture):
 
 @timing
 def create_fixtures():
-    """Create all fixtures."""
+    """Creates all fixtures."""
     half_times = []
     extra_times = []
     penalty_shootouts = []

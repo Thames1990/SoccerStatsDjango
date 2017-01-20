@@ -277,9 +277,8 @@ header .header-content .inner p {
     }
 
     section {
-        /* TODO Why doesn't it change? */
-        /*min-height: 600px;*/
-        /*padding: 100px 0;*/
+        min-height: 600px;
+        padding: 100px 0;
     }
 
 }

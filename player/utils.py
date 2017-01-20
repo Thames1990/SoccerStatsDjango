@@ -47,6 +47,12 @@ def fetch_players(team_id):
 
 
 def create_player(team, player):
+    """
+    Creates a player.
+    :param team: JSON representation of the player's team
+    :param player: JSON representation of the player
+    :return:
+    """
     return Player(
         team=team,
         name=player['name'],

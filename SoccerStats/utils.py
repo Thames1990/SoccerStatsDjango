@@ -48,7 +48,7 @@ def rate_limited(max_per_second):
 
 def create_database():
     """
-    Create whole database.
+    Creates whole database.
     :return:
     """
     from competition.utils import create_competitions
@@ -66,7 +66,7 @@ def create_database():
 
 def update_database():
     """
-    Update whole database.
+    Updates whole database.
     :return:
     """
     from competition.utils import update_competitions

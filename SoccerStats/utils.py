@@ -84,7 +84,3 @@ def update_database():
     update_players()
     update_fixtures()
     update_tables()
-
-
-def test():
-    logger.debug('test')

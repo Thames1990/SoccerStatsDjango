@@ -33,14 +33,14 @@
                                             <td>
                                                 {% if table_changes %}
                                                     <span class="badge badge-pill badge-default">
-                                                {% if table_changes|filter_at_index:forloop.counter0 == True %}
-                                                    <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                                                {% elif table_changes|filter_at_index:forloop.counter0 == False %}
-                                                    <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                                                {% else %}
-                                                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                                                {% endif %}
-                                            </span>
+                                                        {% if table_changes|filter_at_index:forloop.counter0 == True %}
+                                                            <i class="ion-arrow-up-a" aria-hidden="true"></i>
+                                                        {% elif table_changes|filter_at_index:forloop.counter0 == False %}
+                                                            <i class="ion-arrow-down-a" aria-hidden="true"></i>
+                                                        {% else %}
+                                                            <i class="ion-arrow-right-a" aria-hidden="true"></i>
+                                                        {% endif %}
+                                                    </span>
                                                 {% endif %}
                                                 {{ group_standing.rank }}
                                             </td>
@@ -78,14 +78,14 @@
                                     <td>
                                         {% if table_changes %}
                                             <span class="badge badge-pill badge-default">
-                                        {% if table_changes|filter_at_index:forloop.counter0 == True %}
-                                            <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                                        {% elif table_changes|filter_at_index:forloop.counter0 == False %}
-                                            <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                                        {% else %}
-                                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                                        {% endif %}
-                                    </span>
+                                                {% if table_changes|filter_at_index:forloop.counter0 == True %}
+                                                    <i class="ion-arrow-up-a" aria-hidden="true"></i>
+                                                {% elif table_changes|filter_at_index:forloop.counter0 == False %}
+                                                    <i class="ion-arrow-down-a" aria-hidden="true"></i>
+                                                {% else %}
+                                                    <i class="ion-arrow-right-a" aria-hidden="true"></i>
+                                                {% endif %}
+                                            </span>
                                         {% endif %}
                                         {{ standing.position }}
                                     </td>

@@ -8,7 +8,7 @@ def index(request):
     from team.models import Team
     from django.db.models import Avg, Sum, DecimalField
 
-    from table.utils import get_tables_current_matchday
+    from table.utils import get_tables_current_matchday, get_goals_record, get_goals_against_record, get_points_record
 
     tables_current_matchday = get_tables_current_matchday()
 
@@ -45,6 +45,9 @@ def index(request):
         'table': {
             'list': tables_current_matchday,
             'count': len(list(tables_current_matchday)),
+            'goals_record': get_goals_record(),
+            'goals_against_record': get_goals_against_record(),
+            'points_record': get_points_record(),
         },
         'team': {
             'count': Team.objects.count(),

@@ -24,7 +24,6 @@ INSTALLED_APPS = [
     'team',
     'debug_toolbar',
     'django_extensions',
-    'django_spaghetti',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -106,17 +105,6 @@ SHELL_PLUS_PRE_IMPORTS = (
     'team.utils',
     'SoccerStats.utils',
 )
-
-SPAGHETTI_SAUCE = {
-    'apps': [
-        'competition',
-        'fixture',
-        'player',
-        'table',
-        'team',
-    ],
-    'show_fields': False,
-}
 
 LOGGING = {
     'version': 1,

@@ -21,10 +21,6 @@ if settings.DEBUG:
         url(r'^__debug__/', include(debug_toolbar.urls)),
     ]
 
-    urlpatterns += [
-        url(r'^erm/', include('django_spaghetti.urls')),
-    ]
-
 handler403 = views.error403
 handler404 = views.error404
 handler500 = views.error500

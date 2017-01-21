@@ -13,7 +13,7 @@ def get_player_image(player_name):
     :return: URL to the Wikimedia player image if it exists; None otherwise
     """
     json = requests.get(
-        url='https://en.wikipedia.org/w/api.php',
+        url='http://en.wikipedia.org/w/api.php',
         params={
             'action': 'query',
             'format': 'json',

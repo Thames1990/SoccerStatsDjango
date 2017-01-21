@@ -8,7 +8,7 @@ class Competition(models.Model):
     """
     id = models.PositiveSmallIntegerField(primary_key=True)
     is_cup = models.BooleanField()
-    caption = models.CharField(max_length=255)
+    caption = models.CharField(max_length=255, db_index=True)
     league = models.CharField(max_length=255)
     year = models.PositiveSmallIntegerField()
     current_matchday = models.PositiveSmallIntegerField()
@@ -22,17 +22,9 @@ class Competition(models.Model):
         get_latest_by = 'last_updated'
 
     def __str__(self):
-        return 'id: %s, cup: %s | %s | %s | %s, matchday %s of %s | %s teams | %s games | %s' % (
-            self.id,
-            self.is_cup,
+        return '%s on matchday %s' % (
             self.caption,
-            self.league,
-            self.year,
             self.current_matchday,
-            self.number_of_matchdays,
-            self.number_of_teams,
-            self.number_of_games,
-            self.last_updated,
         )
 
     def is_last_matchday(self):

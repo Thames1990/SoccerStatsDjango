@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 def timing(f):
     """
-    Decorator to time functions in milliseconds.
+    Decorator to time functions in seconds.
     :param f: Function
     :return: Decorator
     """
@@ -15,7 +15,7 @@ def timing(f):
         start_time = time.time()
         ret = f(*args)
         end_time = time.time()
-        logger.info('%s function took %0.3f ms' % (f.__name__, (end_time - start_time) * 1000.0))
+        logger.info('%s function took %2.2f seconds' % (f.__name__, end_time - start_time))
         return ret
 
     return wrap

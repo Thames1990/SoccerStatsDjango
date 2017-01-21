@@ -20,9 +20,4 @@
         /* always close responsive nav after click */
         $('.navbar-toggler:visible').click();
     });
-
-    $('#galleryModal').on('show.bs.modal', function (e) {
-        $('#galleryImage').attr("src", $(e.relatedTarget).data("src"));
-    });
-
 })(jQuery);

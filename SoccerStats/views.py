@@ -9,6 +9,7 @@ def index(request):
     from django.db.models import Avg, Sum, DecimalField
 
     from table.utils import get_tables_current_matchday, get_goals_record, get_goals_against_record, get_points_record
+    from team.utils import get_squad_market_value_average
 
     tables_current_matchday = get_tables_current_matchday()
 
@@ -16,7 +17,6 @@ def index(request):
         'competition': {
             'list': Competition.objects.only('id', 'caption', 'current_matchday'),
             'count': Competition.objects.count(),
-            'team': Competition.objects.aggregate(count=Sum('number_of_teams')),
         },
         'fixture': {
             'count': Fixture.objects.count(),
@@ -51,13 +51,12 @@ def index(request):
         },
         'team': {
             'count': Team.objects.count(),
-            'squad_market_value': Team.objects.aggregate(
-                avg=Avg(
-                    'squad_market_value',
-                    output_field=DecimalField(decimal_places=2),
-                )
-            ),
-            'best_five': Team.objects.order_by('-squad_market_value')[:5],
+            'squad_market_value': get_squad_market_value_average(),
+            'best_ten': sorted(
+                Team.objects.all(),
+                key=lambda team: team.get_squad_market_value(),
+                reverse=True
+            )[:10],
         }
     })
 

@@ -5,12 +5,11 @@ from competition.models import Competition
 from table.models import Table, HomeStanding, AwayStanding, GroupStanding
 from team.models import Team
 
-from SoccerStats.utils import timing, rate_limited
+from SoccerStats.utils import timing
 
 logger = logging.getLogger(__name__)
 
 
-@rate_limited(0.8)
 def fetch_table(competiton_id, matchday=None):
     """
     Fetches football-data.org JSON representation of a table from a competition with *competition_id* on a specific

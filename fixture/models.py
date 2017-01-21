@@ -29,6 +29,7 @@ class Fixture(models.Model):
         )
 
 
+# TODO Think about moving models below into Fixture
 class Result(models.Model):
     fixture = models.ForeignKey(Fixture, on_delete=models.CASCADE)
     goals_home_team = models.PositiveSmallIntegerField()

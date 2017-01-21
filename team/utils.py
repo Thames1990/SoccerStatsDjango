@@ -62,3 +62,19 @@ def update_teams():
                 # TODO Add image check and fallback download from wikipedia
                 crest_url=team['crestUrl'],
             )
+
+
+def get_squad_market_value_average():
+    """
+    Calculates the average squad market value.
+    :return: Average squad market value
+    """
+    squad_market_value_average = 0
+    teams = 0
+    for team in Team.objects.all():
+        squad_market_value_average += team.get_squad_market_value()
+        teams += 1
+    if squad_market_value_average and teams:
+        return squad_market_value_average / teams
+    else:
+        return None

@@ -1,14 +1,15 @@
 import logging
 
+from django.utils.dateparse import parse_datetime
+
 from competition.models import Competition
 
-from SoccerStats.utils import timing, rate_limited
+from SoccerStats.utils import timing
 from table.utils import fetch_table
 
 logger = logging.getLogger(__name__)
 
 
-@rate_limited(0.8)
 def fetch_competition(competition_id=None, season=None):
     """
     Fetches JSON representation of competitions from football-data.org.
@@ -70,7 +71,7 @@ def create_competitions():
                 number_of_matchdays=competition['numberOfMatchdays'],
                 number_of_teams=competition['numberOfTeams'],
                 number_of_games=competition['numberOfGames'],
-                last_updated=competition['lastUpdated'],
+                last_updated=parse_datetime(competition['lastUpdated']),
             )
         )
 

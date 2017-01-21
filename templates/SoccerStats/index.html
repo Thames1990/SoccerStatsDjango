@@ -31,20 +31,11 @@
                     <hr class="accent">
                 </div>
             </div>
-            <div class="row">
-                <div class="col-6 text-center">
-                    <div class="feature">
-                        <i class="icon-lg ion-podium wow fadeInUp"></i>
-                        <h6 class="text-uppercase">Wettbewerbe</h6>
-                        <p class="text-muted m-b-0">{{ competition.count }}</p>
-                    </div>
-                </div>
-                <div class="col-6 text-center">
-                    <div class="feature">
-                        <i class="icon-lg ion-ios-people wow fadeIn" data-wow-delay=".1s"></i>
-                        <h6 class="text-uppercase">Mannschaften</h6>
-                        <p class="text-muted m-b-0">{{ competition.team.count|default_if_none:0 }}</p>
-                    </div>
+            <div class="text-center">
+                <div class="feature">
+                    <i class="icon-lg ion-podium"></i>
+                    <h6 class="text-uppercase">Wettbewerbe</h6>
+                    <p class="text-muted m-b-0">{{ competition.count }}</p>
                 </div>
             </div>
             {% if competition.list %}
@@ -90,7 +81,7 @@
     </section>
 
     <section id="fixtures" class="bg-alt">
-        <div class="container wow fadeInUp">
+        <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="m-t-0 text-primary">Begegnungen</h2>
@@ -100,21 +91,21 @@
             <div class="row">
                 <div class="col-lg-4 col-md-4 text-center">
                     <div class="feature">
-                        <i class="icon-lg ion-ios-football wow fadeInUp"></i>
+                        <i class="icon-lg ion-ios-football"></i>
                         <h6 class="text-uppercase">&#216; Tore</h6>
                         <p class="text-muted m-b-0">{{ fixture.result_avg.goals_home_team|default_if_none:0 }}</p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4 text-center">
                     <div class="feature">
-                        <i class="icon-lg ion-ios-grid-view-outline wow fadeIn" data-wow-delay=".1s"></i>
+                        <i class="icon-lg ion-ios-grid-view-outline"></i>
                         <h6 class="text-uppercase">Begegnungen</h6>
                         <p class="text-muted m-b-0">{{ fixture.count }}</p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4 text-center">
                     <div class="feature">
-                        <i class="icon-lg ion-ios-football-outline wow fadeIn" data-wow-delay=".1s"></i>
+                        <i class="icon-lg ion-ios-football-outline"></i>
                         <h6 class="text-uppercase">&#216; Gegentore</h6>
                         <p class="text-muted m-b-0">{{ fixture.result_avg.goals_away_team|default_if_none:0 }}</p>
                     </div>
@@ -190,7 +181,7 @@
     </section>
 
     <section id="players">
-        <div class="container wow fadeInUp">
+        <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="m-t-0 text-primary">Spieler</h2>
@@ -200,14 +191,14 @@
             <div class="row">
                 <div class="col text-center">
                     <div class="feature">
-                        <i class="icon-lg ion-ios-body wow fadeInUp"></i>
+                        <i class="icon-lg ion-ios-body"></i>
                         <h6 class="text-uppercase">Spieler</h6>
                         <p class="text-muted m-b-0">{{ player.count }}</p>
                     </div>
                 </div>
                 <div class="col text-center">
                     <div class="feature">
-                        <i class="icon-lg ion-social-euro wow fadeIn" data-wow-delay=".1s"></i>
+                        <i class="icon-lg ion-social-euro"></i>
                         <h6 class="text-uppercase">&#216; Marktwert</h6>
                         <p class="text-muted m-b-0">{{ player.market_value.avg|intword|default_if_none:0 }}</p>
                     </div>
@@ -308,7 +299,7 @@
     </section>
 
     <section id="tables" class="bg-alt">
-        <div class="container wow fadeInUp">
+        <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="m-t-0 text-primary">Tabellen</h2>
@@ -318,23 +309,23 @@
             <div class="row">
                 <div class="col-md-4 col-sm-6 col-12 text-center">
                     <div class="feature">
-                        <i class="icon-lg ion-ios-football wow fadeInUp"></i>
+                        <i class="icon-lg ion-ios-football"></i>
                         <h6 class="text-uppercase">Torrekord</h6>
-                        <p class="text-muted m-b-0">{{ table.goals_record }}</p>
+                        <p class="text-muted m-b-0">{{ table.goals_record|default_if_none:0 }}</p>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-6 col-12 text-center">
                     <div class="feature">
-                        <i class="icon-lg ion-ios-football-outline wow fadeInUp"></i>
-                        <h6 class="text-uppercase">Gegentorrekord</h6>
-                        <p class="text-muted m-b-0">{{ table.goals_against_record }}</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-12 text-center">
-                    <div class="feature">
-                        <i class="icon-lg ion-ios-pulse wow fadeInUp"></i>
+                        <i class="icon-lg ion-ios-pulse"></i>
                         <h6 class="text-uppercase">Punkterekord</h6>
-                        <p class="text-muted m-b-0">{{ table.points_record }}</p>
+                        <p class="text-muted m-b-0">{{ table.points_record|default_if_none:0 }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12 text-center">
+                    <div class="feature">
+                        <i class="icon-lg ion-ios-football-outline"></i>
+                        <h6 class="text-uppercase">Gegentorrekord</h6>
+                        <p class="text-muted m-b-0">{{ table.goals_against_record|default_if_none:0 }}</p>
                     </div>
                 </div>
             </div>
@@ -382,7 +373,7 @@
     </section>
 
     <section id="teams">
-        <div class="container wow fadeInUp">
+        <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="m-t-0 text-primary">Mannschaften</h2>
@@ -392,20 +383,20 @@
             <div class="row">
                 <div class="col-lg-6 col-md-6 text-center">
                     <div class="feature">
-                        <i class="icon-lg ion-ios-people wow fadeInUp"></i>
+                        <i class="icon-lg ion-ios-people"></i>
                         <h6 class="text-uppercase">Mannschaften</h6>
                         <p class="text-muted m-b-0">{{ team.count }}</p>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 text-center">
                     <div class="feature">
-                        <i class="icon-lg ion-social-euro wow fadeIn" data-wow-delay=".1s"></i>
-                        <h6 class="text-uppercase">Durschnittlicher Marktwert</h6>
-                        <p class="text-muted m-b-0">{{ team.squad_market_value.avg|intword|default_if_none:0 }}</p>
+                        <i class="icon-lg ion-social-euro"></i>
+                        <h6 class="text-uppercase">&#216; Marktwert</h6>
+                        <p class="text-muted m-b-0">{{ team.squad_market_value|intword|default_if_none:0 }}</p>
                     </div>
                 </div>
             </div>
-            {% if team.best_five %}
+            {% if team.best_ten %}
                 <hr>
                 <div class="card">
                     <div class="table-responsive">
@@ -417,13 +408,13 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for best_five in team.best_five %}
+                            {% for team in team.best_ten %}
                                 <tr
-                                        onclick="document.location = '{% url 'team:detail' best_five.id %}'"
+                                        onclick="document.location = '{% url 'team:detail' team.id %}'"
                                         style="cursor: pointer"
                                 >
-                                    <td>{{ best_five.name }}</td>
-                                    <td>{{ best_five.squad_market_value|intword }}</td>
+                                    <td>{{ team.name }}</td>
+                                    <td>{{ team.squad_market_value|intword }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>

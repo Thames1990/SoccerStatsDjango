@@ -1,5 +1,7 @@
 import re
 
+from django.utils.dateparse import parse_datetime
+
 from competition.models import Competition
 from fixture.models import Fixture, Result, HalfTime, ExtraTime, PenaltyShootout, Odd
 from team.models import Team
@@ -33,7 +35,7 @@ def create_fixture(fixture):
         competition=Competition.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]),
         home_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
         away_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
-        date=fixture['date'],
+        date=parse_datetime(fixture['date']),
         status=fixture['status'] or None,
         matchday=int(fixture['matchday']),
     )

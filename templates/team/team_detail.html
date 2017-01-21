@@ -12,12 +12,12 @@
                         <div class="col">
                             <h3 class="card-title">{{ team.name }}</h3>
                             <span class="badge badge-pill badge-default">
-                Kadergröße: {{ team.player_set.all|length }}
-                </span>
+                                Kadergröße: {{ team.player_set.all|length }}
+                            </span>
                             {% if team.squad_market_value %}
                                 <span class="badge badge-pill badge-default">
-                    Marktwert: {{ team.squad_market_value|intword }} €
-                </span>
+                                    Marktwert: {{ team.get_squad_market_value|intword }} €
+                                </span>
                             {% endif %}
                         </div>
                         <div class="col text-right">

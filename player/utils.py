@@ -1,7 +1,9 @@
 import re
 import requests
 
-from SoccerStats.utils import timing, rate_limited
+from django.utils.dateparse import parse_date
+
+from SoccerStats.utils import timing
 from player.models import Player
 from team.models import Team
 
@@ -32,7 +34,6 @@ def get_player_image(player_name):
         return None
 
 
-@rate_limited(0.8)
 def fetch_players(team_id):
     """
     Fetches JSON representation of players from football-data.org.
@@ -58,9 +59,9 @@ def create_player(team, player):
         name=player['name'],
         position=player['position'],
         jersey_number=player['jerseyNumber'],
-        date_of_birth=player['dateOfBirth'] if player['dateOfBirth'] else None,
+        date_of_birth=parse_date(player['dateOfBirth'] if player['dateOfBirth'] else None),
         nationality=player['nationality'],
-        contract_until=player['contractUntil'],
+        contract_until=parse_date(player['contractUntil']),
         market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
         image=get_player_image(player['name']),
     )

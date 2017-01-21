@@ -12,7 +12,7 @@ class Player(models.Model):
     nationality = models.CharField(max_length=255)
     contract_until = models.DateField(null=True)
     market_value = models.PositiveIntegerField(null=True)
-    image = models.URLField(null=True)
+    image = models.URLField(null=True, max_length=255)
 
     class Meta:
         ordering = ['jersey_number']

@@ -740,7 +740,7 @@ model</ColNames>
     </column>
     <column id="163" parent="20" name="nationality">
       <Position>9</Position>
-      <DataType>VARCHAR(2)(0,-1)|12</DataType>
+      <DataType>VARCHAR(255)(0,-1)|12</DataType>
       <NotNull>1</NotNull>
     </column>
     <key id="164" parent="20">

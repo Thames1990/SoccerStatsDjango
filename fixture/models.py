@@ -14,7 +14,18 @@ class Fixture(models.Model):
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_team')
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_team')
     date = models.DateTimeField()
-    status = models.CharField(max_length=255, null=True)
+    STATUS = (
+        ('SCHEDULED', 'Geplant'),
+        ('TIMED', 'Festgelegt'),
+        ('POSTPONED', 'Verschoben'),
+        ('IN_PLAY', 'Im Spiel'),
+        ('CANCELED', 'Abgebrochen'),
+        ('CANCELLED', 'Abgebrochen'),
+        ('FINISHED', 'Beendet'),
+        # TODO Ask author what FT should be
+        ('FT', 'FT'),
+    )
+    status = models.CharField(max_length=255, choices=STATUS, null=True)
     matchday = models.PositiveSmallIntegerField()
 
     def __str__(self):

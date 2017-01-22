@@ -39,32 +39,28 @@
                 </div>
             </div>
             {% if competition.list %}
-                <div class="card">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th>Wettbewerb</th>
-                                <th>Aktueller Spieltag</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for competition in competition.list %}
-                                <tr
-                                        onclick="document.location='{% url 'competition:detail' competition.id %}'"
-                                        style="cursor:pointer;"
+                <div class="card-columns">
+                    {% for competition in competition.list %}
+                        <div class="card">
+                            <img
+                                    class="card-img-top img-fluid img-thumbnail"
+                                    src="{% static 'SoccerStats/img/state_diagram_fixturestatus.png' %}"
+                            >
+                            <div class="card-block">
+                                <h4 class="card-title">{{ competition.caption }}</h4>
+                                <p class="card-text">TODO</p>
+                                <a
+                                        href="{% url 'competition:detail' competition.id %}"
+                                        class="btn btn-primary"
                                 >
-                                    <td>{{ competition.caption }}</td>
-                                    {% if competition.current_matchday == competition.number_of_matchdays %}
-                                        <td>Beendet</td>
-                                    {% else %}
-                                        <td>{{ competition.current_matchday }}/{{ competition.number_of_matchdays }}</td>
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                    Zum Wettbewerb
+                                </a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Aktualisiert vor {{ competition.last_updated|timesince }}
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             {% endif %}
         </div>
@@ -397,29 +393,27 @@
                 </div>
             </div>
             {% if team.best_ten %}
-                <hr>
-                <div class="card">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th>Verein</th>
-                                <th>Mannschaftswert</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for team in team.best_ten %}
-                                <tr
-                                        onclick="document.location = '{% url 'team:detail' team.id %}'"
-                                        style="cursor: pointer"
+                <div class="card-columns">
+                    {% for team in team.best_ten %}
+                        <div class="card">
+                            <img
+                                    class="card-img-top img-fluid img-thumbnail"
+                                    src="{{ team.crest_url }}"
+                                    alt="{{ team.name }}"
+                                    onerror="this.src='{% static 'SoccerStats/img/team.svg' %}'"
+                            >
+                            <div class="card-block">
+                                <h4 class="card-title">{{ team.name }}</h4>
+                                <p class="card-text">TODO</p>
+                                <a
+                                        href="{% url 'team:detail' team.id %}"
+                                        class="btn btn-primary"
                                 >
-                                    <td>{{ team.name }}</td>
-                                    <td>{{ team.squad_market_value|intword }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                    Zum Team
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             {% endif %}
         </div>

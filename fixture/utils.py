@@ -36,7 +36,7 @@ def create_fixture(fixture):
         home_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
         away_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
         date=parse_datetime(fixture['date']),
-        status=fixture['status'] or None,
+        status=dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None,
         matchday=int(fixture['matchday']),
     )
 
@@ -153,7 +153,7 @@ def update_fixtures():
         for fixture in fetch_fixtures(competition.id):
             fixture_object = Fixture.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:])
             fixture_object.date = fixture['date']
-            fixture_object.status = fixture['status'] or None
+            fixture_object.status = dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None
             fixture_object.save()
 
             result = fixture['result']

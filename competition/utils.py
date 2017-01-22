@@ -2,9 +2,8 @@ import logging
 
 from django.utils.dateparse import parse_datetime
 
-from competition.models import Competition
-
 from SoccerStats.utils import timing
+from competition.models import Competition
 from table.utils import fetch_table
 
 logger = logging.getLogger(__name__)
@@ -75,17 +74,48 @@ def create_competitions():
             )
         )
 
+    logger.info('Created ' + str(len(competitions)) + ' competitions.')
+
     return Competition.objects.bulk_create(competitions)
 
 
 @timing
 def update_competitions():
-    """Updates all competitions."""
+    """
+    Updates all competitions. Updates the fields, if a matching competition already exists
+    ; creates a new competition otherwise.
+    :return: List of updated competitions
+    """
+    competition_objects = []
+    created_competitions = 0
+    updated_competitions = 0
+
     for competition in fetch_competitions():
-        Competition.objects.filter(
-            id=competition['id']
-        ).update(
-            is_cup='standings' in fetch_table(competiton_id=competition['id']),
-            current_matchday=competition['currentMatchday'],
-            last_updated=competition['lastUpdated'],
+        competition_object, created = Competition.objects.update_or_create(
+            id=competition['id'],
+            defaults={
+                'id': competition['id'],
+                'is_cup': 'standings' in fetch_table(competiton_id=competition['id']),
+                'caption': competition['caption'],
+                'league': competition['league'],
+                'year': competition['year'],
+                'current_matchday': competition['currentMatchday'],
+                'number_of_matchdays': competition['numberOfMatchdays'],
+                'number_of_teams': competition['numberOfTeams'],
+                'number_of_games': competition['numberOfGames'],
+                'last_updated': parse_datetime(competition['lastUpdated']),
+            }
         )
+
+        if created:
+            created_competitions += 1
+        else:
+            competition_objects.append(competition_object)
+            updated_competitions += 1
+
+    logger.info(
+        'Updated ' + str(updated_competitions) + ' competitions. ' +
+        'Created ' + str(created_competitions) + ' competitions.'
+    )
+
+    return competition_objects

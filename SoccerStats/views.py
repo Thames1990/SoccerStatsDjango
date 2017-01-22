@@ -6,13 +6,12 @@ def index(request):
     from fixture.models import Fixture
     from player.models import Player
     from team.models import Team
-    from django.db.models import Avg, Sum, DecimalField
+    from django.db.models import Avg, DecimalField
 
     from table.utils import get_tables_current_matchday, get_goals_record, get_goals_against_record, get_points_record
     from team.utils import get_squad_market_value_average
 
     tables_current_matchday = get_tables_current_matchday()
-
     return render(request, 'SoccerStats/index.html', {
         'competition': {
             'list': Competition.objects.only('id', 'caption', 'current_matchday'),
@@ -40,7 +39,7 @@ def index(request):
                     output_field=DecimalField(decimal_places=2),
                 ),
             ),
-            'best_three': Player.objects.order_by('-market_value')[:3],
+            'best_three': Player.objects.filter(market_value__isnull=False).order_by('-market_value')[:3],
         },
         'table': {
             'list': tables_current_matchday,
@@ -57,7 +56,7 @@ def index(request):
                 key=lambda team: team.get_squad_market_value(),
                 reverse=True
             )[:10],
-        }
+        },
     })
 
 

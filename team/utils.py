@@ -1,8 +1,11 @@
+import logging
 import re
 
 from competition.models import Competition
 from SoccerStats.utils import timing, rate_limited
 from team.models import Team
+
+logger = logging.getLogger(__name__)
 
 
 @rate_limited(0.8)
@@ -20,48 +23,72 @@ def fetch_teams(competition_id):
     ).json()['teams']
 
 
-def create_team(team):
-    """
-    Creates a Team object.
-    :param team: JSON representation of a team
-    :return: Created Team object
-    """
-    return Team(
-        id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
-        name=team['name'],
-        code=team['code'] or None,
-        short_name=team['shortName'],
-        squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
-        # TODO Add image check and fallback download from wikipedia
-        crest_url=team['crestUrl'],
-    )
-
-
 @timing
 def create_teams():
-    """Creates all teams."""
+    """
+    Creates all team.
+    :return: List of created teams
+    """
+    team_objects = []
+    created_teams = 0
+
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
-            team_object = create_team(team)
-            team_object.save()
-            team_object.competition.add(competition)
-
-
-@timing
-def update_teams():
-    """Updates all teams."""
-    for competition in Competition.objects.all():
-        for team in fetch_teams(competition['id']):
-            Team.objects.filter(
-                id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]
-            ).update(
+            team_object, created = Team.objects.get_or_create(
+                id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
                 name=team['name'],
-                code=team['code'] if team['code'] else None,
+                code=team['code'] or None,
                 short_name=team['shortName'],
                 squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
                 # TODO Add image check and fallback download from wikipedia
                 crest_url=team['crestUrl'],
             )
+            # TODO Optimize with bulk_create and ThroughModel
+            team_object.competition.add(competition)
+
+            if created:
+                team_objects.append(team_object)
+                created_teams += 1
+
+    logger.info('Created ' + str(created_teams) + ' teams.')
+    return team_objects
+
+
+@timing
+def update_teams():
+    """
+    Updates all teams. Updates the fields, if a matching team already exists; creates a new team otherwise.
+    :return: List of updated teams
+    """
+    teams_objects = []
+    created_teams = 0
+    updated_teams = 0
+
+    for competition in Competition.objects.all():
+        for team in fetch_teams(competition.id):
+            team_object, created = Team.objects.update_or_create(
+                id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]
+                , defaults={
+                    'id': re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
+                    'name': team['name'],
+                    'code': team['code'] or None,
+                    'short_name': team['shortName'],
+                    'squad_market_value': re.sub('[^0-9]', '', team['squadMarketValue']) if team[
+                        'squadMarketValue'] else None,
+                    # TODO Add image check and fallback download from wikipedia
+                    'crest_url': team['crestUrl'],
+                }
+            )
+
+            if created:
+                created_teams += 1
+            else:
+                teams_objects.append(team_object)
+                updated_teams += 1
+
+    logger.info('Updated ' + str(updated_teams) + ' teams. ' + 'Created ' + str(created_teams) + ' teams.')
+
+    return teams_objects
 
 
 def get_squad_market_value_average():

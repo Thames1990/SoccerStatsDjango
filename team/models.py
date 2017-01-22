@@ -27,10 +27,4 @@ class Team(models.Model):
             return squad_market_value
 
     def __str__(self):
-        return '%s | %s | code: %s | short name: %s | squad market value: %s €' % (
-            self.id,
-            self.name,
-            self.code,
-            self.short_name,
-            self.squad_market_value,
-        )
+        return self.name

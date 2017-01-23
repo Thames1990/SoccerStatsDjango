@@ -1,41 +1,14 @@
 import logging
 import re
-import requests
 
+import requests
 from django.utils.dateparse import parse_date
 
-from SoccerStats.utils import timing
+from SoccerStats.utils import timing, get_wikipedia_image
 from player.models import Player
 from team.models import Team
 
 logger = logging.getLogger(__name__)
-
-
-# TODO Move to SoccerStats?
-def get_wikipedia_image(query):
-    """
-    Gets the Wikipedia page image for a site with name *query*
-    :param query: Search term
-    :return: URL to the Wikimedia page image if it exists; None otherwise
-    """
-    json = requests.get(
-        url='http://en.wikipedia.org/w/api.php',
-        params={
-            'action': 'query',
-            'format': 'json',
-            'generator': 'search',
-            'gsrsearch': query,
-            'gsrlimit': 1,
-            'prop': 'pageimages',
-            'piprop': 'thumbnail',
-            'pilimit': 'max',
-            'pithumbsize': 400
-        }).json()
-    try:
-        return list(json['query']['pages'].values())[0]['thumbnail']['source']
-    except KeyError:
-        # TODO Implement different image provider
-        return None
 
 
 def fetch_players(team_id):
@@ -79,7 +52,6 @@ def create_players():
 
     created_players = Player.objects.bulk_create(player_objects)
     logger.info('Created ' + str(len(created_players)) + ' players.')
-
     return created_players
 
 
@@ -89,9 +61,8 @@ def update_players():
     Updates all players. Updates the fields, if a matching player already exists; creates a new player otherwise.
     :return: List of updated players
     """
-    player_objects = []
+    updated_players = []
     created_players = 0
-    updated_players = 0
 
     for team in Team.objects.all():
         players = fetch_players(team.id)
@@ -117,11 +88,10 @@ def update_players():
                 if created:
                     created_players += 1
                 else:
-                    player_objects.append(player_object)
-                    updated_players += 1
+                    updated_players.append(player_object)
 
-    logger.info('Updated ' + str(updated_players) + ' players. Created ' + str(created_players) + ' players.')
-    return player_objects
+    logger.info('Updated ' + str(len(updated_players)) + ' players. Created ' + str(created_players) + ' players.')
+    return updated_players
 
 
 def get_positions():

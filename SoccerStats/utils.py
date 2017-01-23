@@ -1,6 +1,8 @@
 import logging
 import time
 
+import requests
+
 logger = logging.getLogger(__name__)
 
 
@@ -44,6 +46,32 @@ def rate_limited(max_per_second):
         return rate_limited_function
 
     return decorate
+
+
+def get_wikipedia_image(query):
+    """
+    Gets the Wikipedia page image for a site with name *query*
+    :param query: Search term
+    :return: URL to the Wikimedia page image if it exists; None otherwise
+    """
+    json = requests.get(
+        url='http://en.wikipedia.org/w/api.php',
+        params={
+            'action': 'query',
+            'format': 'json',
+            'generator': 'search',
+            'gsrsearch': query,
+            'gsrlimit': 1,
+            'prop': 'pageimages',
+            'piprop': 'thumbnail',
+            'pilimit': 'max',
+            'pithumbsize': 400
+        }).json()
+    try:
+        return list(json['query']['pages'].values())[0]['thumbnail']['source']
+    except KeyError:
+        # TODO Implement different image provider
+        return None
 
 
 def create_database():

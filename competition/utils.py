@@ -74,9 +74,9 @@ def create_competitions():
             )
         )
 
-    logger.info('Created ' + str(len(competitions)) + ' competitions.')
-
-    return Competition.objects.bulk_create(competitions)
+    created_competitions = Competition.objects.bulk_create(competitions)
+    logger.info('Created ' + str(len(created_competitions)) + ' competitions.')
+    return created_competitions
 
 
 @timing
@@ -86,9 +86,8 @@ def update_competitions():
     ; creates a new competition otherwise.
     :return: List of updated competitions
     """
-    competition_objects = []
+    updated_competitions = []
     created_competitions = 0
-    updated_competitions = 0
 
     for competition in fetch_competitions():
         competition_object, created = Competition.objects.update_or_create(
@@ -110,12 +109,10 @@ def update_competitions():
         if created:
             created_competitions += 1
         else:
-            competition_objects.append(competition_object)
-            updated_competitions += 1
+            updated_competitions.append(competition_object)
 
     logger.info(
-        'Updated ' + str(updated_competitions) + ' competitions. ' +
+        'Updated ' + str(len(updated_competitions)) + ' competitions. ' +
         'Created ' + str(created_competitions) + ' competitions.'
     )
-
-    return competition_objects
+    return updated_competitions

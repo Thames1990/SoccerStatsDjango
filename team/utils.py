@@ -29,8 +29,7 @@ def create_teams():
     Creates all team.
     :return: List of created teams
     """
-    team_objects = []
-    created_teams = 0
+    created_teams = []
 
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
@@ -47,11 +46,10 @@ def create_teams():
             team_object.competition.add(competition)
 
             if created:
-                team_objects.append(team_object)
-                created_teams += 1
+                created_teams.append(team_object)
 
-    logger.info('Created ' + str(created_teams) + ' teams.')
-    return team_objects
+    logger.info('Created ' + str(len(created_teams)) + ' teams.')
+    return created_teams
 
 
 @timing
@@ -60,9 +58,8 @@ def update_teams():
     Updates all teams. Updates the fields, if a matching team already exists; creates a new team otherwise.
     :return: List of updated teams
     """
-    teams_objects = []
+    updated_teams = []
     created_teams = 0
-    updated_teams = 0
 
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
@@ -73,8 +70,9 @@ def update_teams():
                     'name': team['name'],
                     'code': team['code'] or None,
                     'short_name': team['shortName'],
-                    'squad_market_value': re.sub('[^0-9]', '', team['squadMarketValue']) if team[
-                        'squadMarketValue'] else None,
+                    'squad_market_value': re.sub(
+                        '[^0-9]', '', team['squadMarketValue']
+                    ) if team['squadMarketValue'] else None,
                     # TODO Add image check and fallback download from wikipedia
                     'crest_url': team['crestUrl'],
                 }
@@ -83,12 +81,10 @@ def update_teams():
             if created:
                 created_teams += 1
             else:
-                teams_objects.append(team_object)
-                updated_teams += 1
+                updated_teams.append(team_object)
 
-    logger.info('Updated ' + str(updated_teams) + ' teams. ' + 'Created ' + str(created_teams) + ' teams.')
-
-    return teams_objects
+    logger.info('Updated ' + str(len(updated_teams)) + ' teams. ' + 'Created ' + str(created_teams) + ' teams.')
+    return updated_teams
 
 
 def get_squad_market_value_average():

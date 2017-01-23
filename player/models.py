@@ -204,5 +204,5 @@ class Player(models.Model):
             return None
 
     def get_nationality_flag(self):
-        from player.utils import get_wikipedia_image
+        from SoccerStats.utils import get_wikipedia_image
         return get_wikipedia_image('Flagge von ' + self.nationality)

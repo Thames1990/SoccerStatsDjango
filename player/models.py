@@ -7,43 +7,38 @@ class Player(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, db_index=True)
     POSITION = (
-        # Goalkeeper
-        ('Keeper', 'Torwart'),
-        ('Torwart', 'Torwart'),
-        # Defender
         ('Abwehr', 'Abwehr'),
-        ('Left-Back', 'Linker Außenverteidiger'),
-        ('Linker Verteidiger', 'Linker Verteidiger'),
+        ('Attacking Midfield', 'Offensives Mittelfeld'),
+        ('Central Midfield', 'Zentrales Mittelfeld'),
         ('Centre Back', 'Innenverteidiger'),
-        ('Innenverteidiger', 'Innenverteidiger'),
-        ('Right-Back', 'Rechter Außenverteidiger'),
-        ('Rechter Verteidiger', 'Rechter Verteidiger'),
-        # Midfielder
-        ('Midfield', 'Mittelfeld'),
-        ('Mittelfeld', 'Mittelfeld'),
+        ('Centre Forward', 'Stürmer'),
         ('Defensive Midfield', 'Defensives Mittelfeld'),
         ('Defensives Mittelfeld', 'Defensives Mittelfeld'),
-        ('Left Midfield', 'Linkes Mittelfeld'),
-        ('Central Midfield', 'Zentrales Mittelfeld'),
-        ('Zentrales Mittelfeld', 'Zentrales Mittelfeld'),
-        ('Right Midfield', 'Rechtes Mittelfeld'),
-        ('Attacking Midfield', 'Offensives Mittelfeld'),
-        ('Offensives Mittelfeld', 'Offensives Mittelfeld'),
-        # Forward
-        ('Linksau&szlig;en', 'Linksaußen'),
-        ('Left Wing', 'Linker Flügel'),
-        ('Secondary Striker', 'Hängende Spitze'),
         ('H&auml;ngende Spitze', 'Hängende Spitze'),
-        ('Centre Forward', 'Stürmer'),
+        ('Innenverteidiger', 'Innenverteidiger'),
+        ('Keeper', 'Torwart'),
+        ('Left Midfield', 'Linkes Mittelfeld'),
+        ('Left Wing', 'Linker Flügel'),
+        ('Left-Back', 'Linker Außenverteidiger'),
+        ('Linker Verteidiger', 'Linker Verteidiger'),
+        ('Linksau&szlig;en', 'Linksaußen'),
+        ('Midfield', 'Mittelfeld'),
+        ('Mittelfeld', 'Mittelfeld'),
         ('Mittelst&uuml;rmer', 'Mittelstürmer'),
-        ('Right Wing', 'Rechter Flügel'),
+        ('Offensives Mittelfeld', 'Offensives Mittelfeld'),
+        ('Rechter Verteidiger', 'Rechter Verteidiger'),
         ('Rechtsau&szlig;en', 'Rechtsaußen'),
+        ('Right Midfield', 'Rechtes Mittelfeld'),
+        ('Right Wing', 'Rechtsaußen'),
+        ('Right-Back', 'Rechter Außenverteidiger'),
+        ('Secondary Striker', 'Hängende Spitze'),
+        ('Torwart', 'Torwart'),
+        ('Zentrales Mittelfeld', 'Zentrales Mittelfeld'),
     )
     position = models.CharField(max_length=255, choices=POSITION)
     jersey_number = models.PositiveSmallIntegerField(null=True)
     date_of_birth = models.DateField(null=True)
     NATIONALITY = (
-        # A
         ('Albania', 'Albanien'),
         ('Albanien', 'Albanien'),
         ('Algeria', 'Algerien'),
@@ -54,7 +49,7 @@ class Player(models.Model):
         ('Armenia', 'Armenien'),
         ('Australia', 'Australien'),
         ('Austria', 'Österreich'),
-        # B
+        ('Azerbaijan', 'Aserbaidschan'),
         ('Belarus', 'Weißrussland'),
         ('Belgium', 'Belgien'),
         ('Benin', 'Benin'),
@@ -63,13 +58,15 @@ class Player(models.Model):
         ('Brazil', 'Brasilien'),
         ('Bulgaria', 'Bulgarien'),
         ('Burkina Faso', 'Burkina Faso'),
-        # C
         ('Cameroon', 'Kamerun'),
         ('Canada', 'Kanada'),
         ('Cape Verde', 'Kap Verde'),
         ('Central African Republic', 'Zentralafrikanische Republik'),
+        ('Chad', 'Chad'),
         ('Chile', 'Chile'),
+        ('China', 'China'),
         ('Colombia', 'Kolumbien'),
+        ('Comoros', 'Komoren'),
         ('Congo', 'Kongo'),
         ('Congo DR', 'Demokratische Republik Kongo'),
         ('Costa Rica', 'Costa Rica'),
@@ -77,21 +74,18 @@ class Player(models.Model):
         ('Croatia', 'Kroatien'),
         ('Curacao', 'Curaçao'),
         ('Czech Republic', 'Tschechien'),
-        # D
         ('Denmark', 'Dänemark'),
         ('Dominican Republic', 'Dominikanische Republik'),
-        # E
         ('Ecuador', 'Ecuador'),
         ('Egypt', 'Ägypten'),
+        ('El Salvador', 'El Salvador'),
         ('England', 'England'),
-        ('Estonia', 'Estland'),
         ('Equatorial Guinea', 'Äquatorialguinea'),
-        # F
+        ('Estonia', 'Estland'),
         ('Finland', 'Finnland'),
         ('France', 'Frankreich'),
         ('Frankreich', 'Frankreich'),
         ('French-Guiana', 'Französisch-Guayana'),
-        # G
         ('Gabon', 'Gabun'),
         ('Georgia', 'Georgien'),
         ('Germany', 'Deutschland'),
@@ -102,57 +96,55 @@ class Player(models.Model):
         ('Guine', 'Guinea'),
         ('Guinea', 'Guinea'),
         ('Guinea-Bissau', 'Guinea-Bissau'),
-        # H
         ('Haiti', 'Haiti'),
         ('Honduras', 'Honduras'),
         ('Hungary', 'Ungarn'),
-        # I
         ('Iceland', 'Island'),
         ('Iran', 'Iran'),
         ('Iraq', 'Irak'),
         ('Ireland', 'Irland'),
         ('Israel', 'Israel'),
         ('Italy', 'Italien'),
-        # J
         ('Jamaica', 'Jamaika'),
         ('Japan', 'Japan'),
-        # K
         ('Kazakhstan', 'Kasachstan'),
         ('Kenya', 'Kenia'),
         ('Kongo', 'Kongo'),
         ('Korea, South', 'Südkorea'),
         ('Kosovo', 'Kosovo'),
-        # L
         ('Latvia', 'Lettland'),
         ('Libya', 'Lybien'),
         ('Liechtenstein', 'Liechtenstein'),
         ('Lithuania', 'Lettland'),
         ('Luxembourg', 'Luxemburg'),
-        # M
         ('Macedonia', 'Mazedonien'),
         ('Madagascar', 'Madagaskar'),
         ('Mali', 'Mali'),
+        ('Malta', 'Malta'),
         ('Martinique', 'Martinique'),
+        ('Mauritania', 'Mauretanien'),
         ('Mexico', 'Mexiko'),
+        ('Moldova', 'Moldawien'),
         ('Montenegro', 'Montenegro'),
         ('Morocco', 'Marokko'),
-        # N
+        ('Mozambique', 'Mosambik'),
         ('Netherlands', 'Niederlande'),
+        ('Neukaledonien', 'Neukaledonien'),
         ('New Zealand', 'Neuseeland'),
         ('Nigeria', 'Nigeria'),
         ('Northern Ireland', 'Nordirland'),
         ('Norway', 'Norwegen'),
         ('Norwegen', 'Norwegen'),
-        # P
         ('Palästina', 'Palästina'),
         ('Paraguay', 'Paraguay'),
         ('Peru', 'Peru'),
         ('Poland', 'Polen'),
         ('Portugal', 'Portugal'),
-        # R
+        ('Qatar', 'Katar'),
         ('Romania', 'Rumänien'),
         ('Russia', 'Russland'),
-        # S
+        ('Réunion', 'Réunion'),
+        ('Saudi Arabia', 'Saudi-Arabien'),
         ('Schweiz', 'Schweiz'),
         ('Scotland', 'Schottland'),
         ('Senegal', 'Senegal'),
@@ -166,21 +158,18 @@ class Player(models.Model):
         ('Spanien', 'Spanien'),
         ('Sweden', 'Schweden'),
         ('Switzerland', 'Schweiz'),
-        # T
         ('Thailand', 'Thailand'),
         ('The Gambia', 'Gambia'),
         ('Togo', 'Togo'),
         ('Tunisia', 'Tunesien'),
         ('Turkey', 'Turkey'),
-        # U
         ('Uganda', 'Uganda'),
         ('Ukraine', 'Ukraine'),
         ('United States', 'Vereinigte Staaten'),
         ('Uruguay', 'Uruguay'),
-        # V
         ('Venezuela', 'Venezuela'),
-        # W
         ('Wales', 'Wales'),
+        ('Zambia', 'Sambia'),
     )
     nationality = models.CharField(max_length=255, choices=NATIONALITY)
     contract_until = models.DateField(null=True)

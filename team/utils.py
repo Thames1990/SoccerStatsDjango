@@ -8,7 +8,7 @@ from team.models import Team
 logger = logging.getLogger(__name__)
 
 
-@rate_limited(0.5)
+@rate_limited(0.8)
 def fetch_teams(competition_id):
     """
     Fetches JSON representation of teams from football-data.org.

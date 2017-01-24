@@ -1,7 +1,7 @@
 import logging
 import re
 
-from SoccerStats.utils import timing
+from SoccerStats.utils import timing, rate_limited
 from competition.models import Competition
 from table.models import Table, Group, GroupStanding, Standing, HomeStanding, AwayStanding
 from team.models import Team
@@ -9,6 +9,7 @@ from team.models import Team
 logger = logging.getLogger(__name__)
 
 
+@rate_limited(0.8)
 def fetch_table(competiton_id, matchday=None):
     """
     Fetches football-data.org JSON representation of a table from a competition with *competition_id* on a specific
@@ -165,20 +166,15 @@ def create_tables():
         for matchday in range(1, competition.current_matchday + 1):
             table = fetch_table(competition.id, matchday)
             if 'error' not in table:
+                table_object = create_table(
+                    table=table,
+                    is_cup=competition.is_cup,
+                )
                 if competition.is_cup:
-                    table_object = create_table(
-                        table=table,
-                        is_cup=True,
-                    )
-
                     created_tables.append(table_object['table_object'])
                     created_groups.extend(table_object['groups'])
                     group_standings.extend(table_object['group_standings'])
                 else:
-                    table_object = create_table(
-                        table=table,
-                        is_cup=False,
-                    )
                     created_tables.append(table_object['table_object'])
                     created_standings.append(table_object['standings'])
                     home_standings.extend(table_object['home_standings'])
@@ -187,6 +183,9 @@ def create_tables():
     created_group_standings = GroupStanding.objects.bulk_create(group_standings)
     created_home_standings = HomeStanding.objects.bulk_create(home_standings)
     created_away_standings = AwayStanding.objects.bulk_create(away_standings)
+
+    logger.debug(created_groups)
+    logger.debug(group_standings)
 
     logger.info('Created ' + str(len(created_tables)) + ' tables')
     logger.info('Created ' + str(len(created_groups)) + ' groups')

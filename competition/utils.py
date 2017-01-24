@@ -2,13 +2,14 @@ import logging
 
 from django.utils.dateparse import parse_datetime
 
-from SoccerStats.utils import timing
+from SoccerStats.utils import timing, rate_limited
 from competition.models import Competition
 from table.utils import fetch_table
 
 logger = logging.getLogger(__name__)
 
 
+@rate_limited(0.8)
 def fetch_competition(competition_id=None, season=None):
     """
     Fetches JSON representation of competitions from football-data.org.
@@ -109,6 +110,8 @@ def update_competitions():
                 'last_updated': parse_datetime(competition['lastUpdated']),
             }
         )
+
+        # TODO Use *last_updated* to update tables
 
         if created:
             created_competitions += 1

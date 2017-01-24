@@ -1,16 +1,20 @@
 import logging
 import re
-
 import requests
+
 from django.utils.dateparse import parse_date
 
-from SoccerStats.utils import timing, get_wikipedia_image
+from SoccerStats.utils import timing, get_wikipedia_image, rate_limited
+from competition.utils import fetch_competitions
+
 from player.models import Player
 from team.models import Team
+from team.utils import fetch_teams
 
 logger = logging.getLogger(__name__)
 
 
+@rate_limited(0.8)
 def fetch_players(team_id):
     """
     Fetches JSON representation of players from football-data.org.
@@ -106,11 +110,12 @@ def get_positions():
     from pprint import pprint
 
     positions = set()
-    for team in Team.objects.all():
-        players = fetch_players(team.id)
-        if players:
-            for player in players:
-                positions.add(player['position'])
+    for competition in fetch_competitions():
+        for team in fetch_teams(competition['id']):
+            players = fetch_players(re.sub('[^0-9]', '', team['_links']['self']['href'])[1:])
+            if players:
+                for player in players:
+                    positions.add(player['position'])
     return pprint(positions)
 
 
@@ -122,9 +127,10 @@ def get_nationalities():
     from pprint import pprint
 
     nationalities = set()
-    for team in Team.objects.all():
-        players = fetch_players(team.id)
-        if players:
-            for player in players:
-                nationalities.add(player['nationality'])
+    for competition in fetch_competitions():
+        for team in fetch_teams(competition['id']):
+            players = fetch_players(re.sub('[^0-9]', '', team['_links']['self']['href'])[1:])
+            if players:
+                for player in players:
+                    nationalities.add(player['nationality'])
     return pprint(nationalities)

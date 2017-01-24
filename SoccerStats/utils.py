@@ -78,7 +78,7 @@ def get_wikipedia_image(query):
 def create_database():
     """
     Creates whole database.
-    :return:
+    :return: Dictionary of created database
     """
     from competition.utils import create_competitions
     from fixture.utils import create_fixtures
@@ -86,18 +86,32 @@ def create_database():
     from table.utils import create_tables
     from team.utils import create_teams
 
-    create_competitions()
-    create_teams()
-    create_players()
-    create_tables()
-    create_fixtures()
+    logger.info('Creating database...')
+
+    competitions = create_competitions()
+    time.sleep(60)
+    teams = create_teams()
+    time.sleep(60)
+    players = create_players()
+    time.sleep(60)
+    tables = create_tables()
+    time.sleep(60)
+    fixtures = create_fixtures()
+
+    return {
+        'competitions': competitions,
+        'teams': teams,
+        'players': players,
+        'tables': tables,
+        'fixtures': fixtures,
+    }
 
 
 @timing
 def update_database():
     """
     Updates whole database.
-    :return:
+    :return: Dictionary of updated database
     """
     from competition.utils import update_competitions
     from fixture.utils import update_fixtures
@@ -105,8 +119,22 @@ def update_database():
     from table.utils import update_tables
     from team.utils import update_teams
 
-    update_competitions()
-    update_teams()
-    update_players()
-    update_tables()
-    update_fixtures()
+    logger.info('Updating database...')
+
+    competitions = update_competitions()
+    time.sleep(60)
+    teams = update_teams()
+    time.sleep(60)
+    players = update_players()
+    time.sleep(60)
+    tables = update_tables()
+    time.sleep(60)
+    fixtures = update_fixtures()
+
+    return {
+        'competitions': competitions,
+        'teams': teams,
+        'players': players,
+        'tables': tables,
+        'fixtures': fixtures,
+    }

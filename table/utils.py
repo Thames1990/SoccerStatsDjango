@@ -1,11 +1,10 @@
 import logging
 import re
 
-from competition.models import Competition
-from table.models import Table, HomeStanding, AwayStanding, GroupStanding
-from team.models import Team
-
 from SoccerStats.utils import timing
+from competition.models import Competition
+from table.models import Table, Group, GroupStanding, Standing, HomeStanding, AwayStanding
+from team.models import Team
 
 logger = logging.getLogger(__name__)
 
@@ -35,18 +34,20 @@ def create_cup_table(table):
     :param table: JSON representation of a table
     :return: List of GroupStanding objects
     """
+    groups = []
+    group_standings = []
+
     table_object = Table.objects.create(
         competition=Competition.objects.get(caption=table['leagueCaption']),
         matchday=table['matchday'],
     )
-    group_standings = []
 
     for cup_group in table['standings']:
-        from table.models import Group
         group = Group.objects.create(
             table=table_object,
             name=cup_group,
         )
+        groups.append(group)
 
         for group_standing in table['standings'][cup_group]:
             group_standings.append(
@@ -63,7 +64,11 @@ def create_cup_table(table):
                 )
             )
 
-    return group_standings
+    return {
+        'table_object': table_object,
+        'groups': groups,
+        'group_standings': group_standings,
+    }
 
 
 def create_league_table(table):
@@ -77,11 +82,11 @@ def create_league_table(table):
         matchday=table['matchday'],
     )
 
+    standings = []
     home_standings = []
     away_standings = []
 
     for team in table['standing']:
-        from table.models import Standing
         standing = Standing.objects.create(
             table=table_object,
             position=team['position'],
@@ -95,6 +100,7 @@ def create_league_table(table):
             draws=team['draws'],
             losses=team['losses'],
         )
+        standings.append(standing)
 
         home_standings.append(
             HomeStanding(
@@ -119,6 +125,8 @@ def create_league_table(table):
         )
 
     return {
+        'table': table_object,
+        'standings': standings,
         'home_standings': home_standings,
         'away_standings': away_standings,
     }
@@ -140,7 +148,10 @@ def create_table(table, is_cup):
 
 @timing
 def create_tables():
-    """Creates all tables."""
+    """
+    Creates all tables.
+    :return: Dictionary of created group standings, home standings and away standings
+    """
     group_standings = []
     home_standings = []
     away_standings = []
@@ -164,9 +175,43 @@ def create_tables():
                     home_standings.extend(standings['home_standings'])
                     away_standings.extend(standings['away_standings'])
 
-    GroupStanding.objects.bulk_create(group_standings)
-    HomeStanding.objects.bulk_create(home_standings)
-    AwayStanding.objects.bulk_create(away_standings)
+    created_group_standings = GroupStanding.objects.bulk_create(group_standings)
+    created_home_standings = HomeStanding.objects.bulk_create(home_standings)
+    created_away_standings = AwayStanding.objects.bulk_create(away_standings)
+
+    logger.info('Created ' + str(len(created_group_standings)) + ' group standings')
+    logger.info('Created ' + str(len(created_home_standings)) + ' home standings')
+    logger.info('Created ' + str(len(created_away_standings)) + ' away standings')
+
+    return {
+        'created_group_standings': created_group_standings,
+        'created_home_standings': created_home_standings,
+        'created_away_standings': created_away_standings,
+    }
+
+
+def update_or_create_group_standing(group, group_standing):
+    """
+    Updates or created a group standing.
+    :param group: Linked group
+    :param group_standing: JSON representing the group standing
+    :return: Updated or created group standing and *True*, if the group standing was created; *False* otherwise
+    """
+    return GroupStanding.objects.update_or_create(
+        group=group,
+        team=Team.objects.get(id=int(group_standing['teamId'])),
+        defaults={
+            'group': group,
+            'team': Team.objects.get(id=int(group_standing['teamId'])),
+            'rank': group_standing['rank'],
+            'played_games': group_standing['playedGames'],
+            'crest_uri': group_standing['crestURI'],
+            'points': group_standing['points'],
+            'goals': group_standing['goals'],
+            'goals_against': group_standing['goalsAgainst'],
+            'goal_difference': group_standing['goalDifference'],
+        }
+    )
 
 
 def update_cup_table(table):
@@ -174,6 +219,8 @@ def update_cup_table(table):
     Updates a cup table.
     :param table: JSON representation of a table
     """
+    updated_group_standings = []
+    created_group_standings = 0
 
     # DFB-Pokal doesn't have a table yet
     if 'error' not in table:
@@ -183,26 +230,92 @@ def update_cup_table(table):
         )
 
         for group in table['standings']:
-            from table.models import Group
             group_object = Group.objects.get(
                 table=table_object,
                 name=group,
             )
 
             for group_standing in table['standings'][group]:
-                from table.models import GroupStanding
-                GroupStanding.objects.filter(
+                group_standing_object, created = update_or_create_group_standing(
                     group=group_object,
-                    team=Team.objects.get(id=int(group_standing['teamId']))
-                ).update(
-                    rank=group_standing['rank'],
-                    played_games=group_standing['playedGames'],
-                    crest_uri=group_standing['crestURI'],
-                    points=group_standing['points'],
-                    goals=group_standing['goals'],
-                    goals_against=group_standing['goalsAgainst'],
-                    goal_difference=group_standing['goalDifference'],
+                    group_standing=group_standing,
                 )
+
+                if created:
+                    created_group_standings += 1
+                else:
+                    updated_group_standings.append(group_standing_object)
+
+        return {
+            'updated_group_standings': updated_group_standings,
+            'created_group_standings': created_group_standings,
+        }
+
+
+def update_or_create_standing(table, team):
+    """
+    Updates or creates a standing.
+    :param table: Linked table
+    :param team: Linked team
+    :return: Updated or created standing and *True*, if the standing was created; *False* otherwise
+    """
+    return Standing.objects.update_or_create(
+        table=table,
+        team=Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
+        defaults={
+            'table': table,
+            'team': Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
+            'position': team['position'],
+            'played_games': team['played_games'],
+            'points': team['points'],
+            'goals': team['goals'],
+            'goals_against': team['goals_against'],
+            'goal_difference': team['goal_difference'],
+            'wins': team['wins'],
+            'draws': team['draws'],
+            'losses': team['losses'],
+        }
+    )
+
+
+def update_or_create_home_standing(standing, team):
+    """
+    Updates or creates an home standing.
+    :param standing: Linked standing
+    :param team: Linked team
+    :return: Updated or created home standing and *True*, if the home standing was created; *False* otherwise
+    """
+    return HomeStanding.objects.update_or_create(
+        standing=standing,
+        defaults={
+            'standing': standing,
+            'goals': team['home']['goals'],
+            'goals_against': team['home']['goalsAgainst'],
+            'wins': team['home']['wins'],
+            'draws': team['home']['draws'],
+            'losses': team['home']['losses'],
+        }
+    )
+
+
+def update_or_create_away_standing(standing, team):
+    """
+    Updates or creates an away standing.
+    :param standing: Linked standing
+    :param team: Linked team
+    :return: Updated or created away standing and *True*, if the away standing was created; *False* otherwise
+    """
+    return AwayStanding.objects.update_or_create(
+        standing=standing,
+        defaults={
+            'standing': standing,
+            'goals': team['away']['goals'],
+            'goals_against': team['home']['goalsAgainst'],
+            'wins': team['away']['wins'],
+            'draws': team['away']['draws'],
+            'losses': team['away']['losses'],
+        }
+    )
 
 
 def update_league_table(table):
@@ -210,48 +323,36 @@ def update_league_table(table):
     Updates a league table.
     :param table: JSON representation of a table
     """
+    updated_standings = []
+    created_standings = 0
+    updated_home_standings = []
+    created_home_standings = 0
+    updated_away_standings = []
+    created_away_standings = 0
+
     table_object = Table.objects.get(
         competition=Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]),
         matchday=table['matchday'],
     )
 
     for team in table['standing']:
-        from table.models import Standing
+        standing, created = update_or_create_standing(table=table_object, team=team)
+        created_standings += 1 if created else updated_standings.append(standing)
 
-        standing = Standing.objects.get(
-            table=table_object,
-            team=Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:])
-        )
-        standing.position = team['position']
-        standing.played_games = team['playedGames']
-        standing.points = team['points']
-        standing.goals = team['goals']
-        standing.goals_against = team['goalsAgainst']
-        standing.goal_difference = team['goalDifference']
-        standing.wins = team['wins']
-        standing.draws = team['draws']
-        standing.losses = team['losses']
-        standing.save()
+        home_standing, created = update_or_create_home_standing(standing=standing, team=team)
+        created_home_standings += 1 if created else updated_home_standings.append(home_standing)
 
-        HomeStanding.objects.filter(
-            standing=standing
-        ).update(
-            goals=team['home']['goals'],
-            goals_against=team['home']['goalsAgainst'],
-            wins=team['home']['wins'],
-            draws=team['home']['draws'],
-            losses=team['home']['losses'],
-        )
+        away_standing, created = update_or_create_away_standing(standing=standing, team=team)
+        created_away_standings += 1 if created else updated_away_standings.append(away_standing)
 
-        AwayStanding.objects.filter(
-            standing=standing
-        ).update(
-            goals=team['away']['goals'],
-            goals_against=team['home']['goalsAgainst'],
-            wins=team['away']['wins'],
-            draws=team['away']['draws'],
-            losses=team['away']['losses'],
-        )
+    return {
+        'updated_standings': updated_standings,
+        'created_standings': created_standings,
+        'updated_home_standings': updated_home_standings,
+        'created_home_standings': created_home_standings,
+        'updated_away_standings': updated_away_standings,
+        'created_away_standings': created_away_standings,
+    }
 
 
 def update_table(table, is_cup):
@@ -261,27 +362,89 @@ def update_table(table, is_cup):
     :param is_cup: *True*, if *table* is a cup; *False* otherwise
     """
     if is_cup:
-        update_cup_table(table)
+        return update_cup_table(table)
     else:
-        update_league_table(table)
+        return update_league_table(table)
 
 
 @timing
 def update_tables():
-    """Updates all tables."""
+    """
+    Updates all tables.
+    :return: Dictionary of updated group standings, standings, home standings and away standings
+    """
+    created_tables = 0
+    created_groups = 0
+    updated_group_standings = []
+    created_group_standings = 0
+    updated_standings = []
+    created_standings = 0
+    updated_home_standings = []
+    created_home_standings = 0
+    updated_away_standings = []
+    created_away_standings = 0
+
     for competition in Competition.objects.all():
         current_matchday = Table.objects.filter(competition=competition).latest().matchday
         for matchday in range(current_matchday, competition.current_matchday + 1):
             table = fetch_table(competition.id, matchday)
             if matchday == competition.current_matchday:
-                update_table(
+                table_object = update_table(
                     table=table,
                     is_cup=competition.is_cup,
                 )
-            create_table(
-                table=table,
-                is_cup=competition.is_cup,
-            )
+
+                # cup table
+                if len(table_object) == 2:
+                    updated_group_standings.extend(table_object['updated_group_standings'])
+                    created_group_standings.extend(table_object['created_group_standings'])
+                # league table
+                else:
+                    updated_standings.extend(table_object['updated_standings'])
+                    created_standings += table_object['created_standings']
+                    updated_home_standings.extend(table_object['updated_home_standings'])
+                    created_home_standings += table_object['created_home_standings']
+                    updated_away_standings.extend(table_object['updated_away_standings'])
+                    created_away_standings += table_object['created_away_standings']
+            else:
+                table_object = create_table(
+                    table=table,
+                    is_cup=competition.is_cup,
+                )
+
+                # cup table
+                if len(table_object) == 3:
+                    created_tables += 1
+                    created_groups += len(table_object['groups'])
+                    created_group_standings += len(table_object['group_standings'])
+                # league table
+                else:
+                    created_tables += 1
+                    created_standings += len(table_object['standings'])
+                    created_home_standings += len(table_object['home_standings'])
+                    created_away_standings += len(table_object['away_standings'])
+
+    logger.info('Created ' + str(len(created_tables)) + ' tables')
+    logger.info('Created ' + str(len(created_groups)) + ' groups')
+    logger.info(
+        'Updated ' + str(len(updated_group_standings)) + ' group standings, created ' + str(created_group_standings)
+    )
+    logger.info(
+        'Updated ' + str(len(updated_standings)) + ' group standings, created ' + str(created_standings)
+    )
+    logger.info(
+        'Updated ' + str(len(updated_home_standings)) + ' group standings, created ' + str(created_home_standings)
+    )
+    logger.info(
+        'Updated ' + str(len(updated_away_standings)) + ' group standings, created ' + str(created_away_standings)
+    )
+
+    return {
+        'updated_group_standings': updated_group_standings,
+        'updated_standings': updated_standings,
+        'updated_home_standings': updated_home_standings,
+        'updated_away_standings': updated_away_standings,
+    }
 
 
 def get_table_changes(table):
@@ -321,7 +484,7 @@ def get_table_changes(table):
                     position_changes.append(None)
             return position_changes
     else:
-        logger.info(
+        logger.warning(
             table.competition.caption + ' on matchday ' +
             str(table.matchday) + ' can\'t be compared with previous matchdays'
         )

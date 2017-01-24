@@ -119,9 +119,10 @@ def create_odds(fixture_object, fixture):
 def create_fixtures():
     """
     Creates all fixtures.
-    :return: Created fixtures, half times, extra times, penalty shootouts and odds
+    :return: Dictionary of created fixtures, half times, extra times, penalty shootouts and odds
     """
     fixtures = []
+    results = []
     half_times = []
     extra_times = []
     penalty_shootouts = []
@@ -135,6 +136,7 @@ def create_fixtures():
             if (fixture['result']['goalsHomeTeam'] or fixture['result']['goalsHomeTeam'] == 0) and \
                     (fixture['result']['goalsAwayTeam'] or fixture['result']['goalsAwayTeam'] == 0):
                 result = create_result(fixture_object, fixture)
+                results.append(result)
 
             if 'halfTime' in fixture['result']:
                 half_times.append(create_half_time(result, fixture))
@@ -152,15 +154,17 @@ def create_fixtures():
     created_extra_times = ExtraTime.objects.bulk_create(extra_times)
     created_penalty_shootouts = PenaltyShootout.objects.bulk_create(penalty_shootouts)
     created_odds = Odd.objects.bulk_create(odds)
-    logger.info(
-        'Created ' + str(len(fixtures)) + ' fixtures, ' +
-        str(len(created_half_times)) + ' half times, ' +
-        str(len(created_extra_times)) + ' extra times, ' +
-        str(len(created_penalty_shootouts)) + ' penalty shootouts and ' +
-        str(len(created_odds)) + ' odds.'
-    )
+
+    logger.info('Created ' + str(len(fixtures)) + ' fixtures')
+    logger.info('Created ' + str(len(results)) + ' results')
+    logger.info('Created ' + str(len(created_half_times)) + ' half times')
+    logger.info('Created ' + str(len(created_extra_times)) + ' extra times')
+    logger.info('Created ' + str(len(created_penalty_shootouts)) + ' penalty shootouts')
+    logger.info('Created ' + str(len(created_odds)) + ' odds')
+
     return {
         'fixtures': fixtures,
+        'results': results,
         'created_half_times': created_half_times,
         'created_extra_times': created_extra_times,
         'created_penalty_shootouts': created_penalty_shootouts,
@@ -170,8 +174,10 @@ def create_fixtures():
 
 @timing
 def update_fixtures():
-    """Updates all fixtures."""
-    # TODO Stuff
+    """
+    Updates all fixtures
+    :return: Dictionary of updated fixtures, results, half times, extra times, penalty shootouts and odds
+    """
     updated_fixtures = []
     created_fixtures = 0
     updated_results = []
@@ -200,11 +206,7 @@ def update_fixtures():
                     'matchday': int(fixture['matchday']),
                 }
             )
-
-            if created:
-                created_fixtures += 1
-            else:
-                updated_fixtures.append(fixture_object)
+            created_fixtures += 1 if created else updated_fixtures.append(fixture_object)
 
             result = fixture['result']
             if (result['goalsHomeTeam'] or result['goalsHomeTeam'] == 0) and \
@@ -229,10 +231,7 @@ def update_fixtures():
                                 'goals_away_team': int(fixture['result']['halfTime']['goalsAwayTeam']),
                             }
                         )
-                        if created:
-                            created_half_times += 1
-                        else:
-                            updated_half_times.append(half_time)
+                        created_half_times += 1 if created else updated_half_times.append(half_time)
 
                     if 'extraTime' in result:
                         extra_time, created = ExtraTime.objects.update_or_create(
@@ -243,10 +242,7 @@ def update_fixtures():
                                 'goals_away_team': int(fixture['result']['extraTime']['goalsAwayTeam']),
                             }
                         )
-                        if created:
-                            created_extra_times += 1
-                        else:
-                            updated_extra_times.append(extra_time)
+                        created_extra_times += 1 if created else updated_extra_times.append(extra_time)
 
                     if 'penaltyShootout' in result:
                         penalty_shootout, created = PenaltyShootout.objects.update_or_create(
@@ -273,7 +269,20 @@ def update_fixtures():
                         'away_win': fixture['odds']['awayWin'],
                     }
                 )
-                if created:
-                    created_odds += 1
-                else:
-                    updated_odds.append(odd)
+                created_odds += 1 if created else updated_odds.append(odd)
+
+    logger.info('Updated ' + str(len(updated_fixtures)) + ', created ' + str(created_fixtures))
+    logger.info('Updated ' + str(len(updated_results)) + ', created ' + str(created_results))
+    logger.info('Updated ' + str(len(updated_half_times)) + ', created ' + str(created_half_times))
+    logger.info('Updated ' + str(len(updated_extra_times)) + ', created ' + str(created_extra_times))
+    logger.info('Updated ' + str(len(updated_penalty_shootouts)) + ', created ' + str(created_penalty_shootouts))
+    logger.info('Updated ' + str(len(updated_odds)) + ', created ' + str(created_odds))
+
+    return {
+        'updated_fixtures': updated_fixtures,
+        'updated_results': updated_results,
+        'updated_half_times': updated_half_times,
+        'updated_extra_times': updated_extra_times,
+        'updated_penalty_shootouts': updated_penalty_shootouts,
+        'updated_odds': updated_odds,
+    }

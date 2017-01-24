@@ -111,8 +111,5 @@ def update_competitions():
         else:
             updated_competitions.append(competition_object)
 
-    logger.info(
-        'Updated ' + str(len(updated_competitions)) + ' competitions. ' +
-        'Created ' + str(created_competitions) + ' competitions.'
-    )
+    logger.info('Updated ' + str(len(updated_competitions)) + ' competitions, created ' + str(created_competitions))
     return updated_competitions

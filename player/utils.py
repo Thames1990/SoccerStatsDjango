@@ -90,7 +90,7 @@ def update_players():
                 else:
                     updated_players.append(player_object)
 
-    logger.info('Updated ' + str(len(updated_players)) + ' players. Created ' + str(created_players) + ' players.')
+    logger.info('Updated ' + str(len(updated_players)) + ' players, created ' + str(created_players))
     return updated_players
 
 

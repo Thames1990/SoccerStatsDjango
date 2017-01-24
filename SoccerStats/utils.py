@@ -86,6 +86,7 @@ def create_database():
     from table.utils import create_tables
 
     create_competitions()
+    # TODO Might need to wait. Optimize flow.
     create_teams()
     create_players()
     create_fixtures()

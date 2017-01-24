@@ -152,6 +152,8 @@ def create_tables():
     Creates all tables.
     :return: Dictionary of created tables, groups, group standings, standings, home standings and away standings
     """
+    logger.info('Creating tables...')
+
     created_tables = []
     created_groups = []
     group_standings = []
@@ -386,6 +388,8 @@ def update_tables():
     Updates all tables.
     :return: Dictionary of updated group standings, standings, home standings and away standings
     """
+    logger.info('Updating tables...')
+
     created_tables = 0
     created_groups = 0
     updated_group_standings = []

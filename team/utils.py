@@ -8,7 +8,7 @@ from team.models import Team
 logger = logging.getLogger(__name__)
 
 
-@rate_limited(0.8)
+@rate_limited(0.5)
 def fetch_teams(competition_id):
     """
     Fetches JSON representation of teams from football-data.org.
@@ -29,6 +29,8 @@ def create_teams():
     Creates all team.
     :return: List of created teams
     """
+    logger.info('Creating teams...')
+
     created_teams = []
 
     for competition in Competition.objects.all():
@@ -48,7 +50,7 @@ def create_teams():
             if created:
                 created_teams.append(team_object)
 
-    logger.info('Created ' + str(len(created_teams)) + ' teams.')
+    logger.info('Created ' + str(len(created_teams)) + ' teams')
     return created_teams
 
 
@@ -58,6 +60,8 @@ def update_teams():
     Updates all teams. Updates the fields, if a matching team already exists; creates a new team otherwise.
     :return: List of updated teams
     """
+    logger.info('Updating teams...')
+
     updated_teams = []
     created_teams = 0
 

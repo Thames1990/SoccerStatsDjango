@@ -30,6 +30,8 @@ def create_players():
     Creates all players.
     :return: List of created players
     """
+    logger.info('Creating players...')
+
     player_objects = []
 
     for team in Team.objects.all():
@@ -51,7 +53,7 @@ def create_players():
                 )
 
     created_players = Player.objects.bulk_create(player_objects)
-    logger.info('Created ' + str(len(created_players)) + ' players.')
+    logger.info('Created ' + str(len(created_players)) + ' players')
     return created_players
 
 
@@ -61,6 +63,8 @@ def update_players():
     Updates all players. Updates the fields, if a matching player already exists; creates a new player otherwise.
     :return: List of updated players
     """
+    logger.info('Updating players...')
+
     updated_players = []
     created_players = 0
 

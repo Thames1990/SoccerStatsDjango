@@ -121,6 +121,8 @@ def create_fixtures():
     Creates all fixtures.
     :return: Dictionary of created fixtures, half times, extra times, penalty shootouts and odds
     """
+    logger.info('Creating fixtures...')
+
     fixtures = []
     results = []
     half_times = []
@@ -178,6 +180,8 @@ def update_fixtures():
     Updates all fixtures
     :return: Dictionary of updated fixtures, results, half times, extra times, penalty shootouts and odds
     """
+    logger.info('Updating fixtures...')
+
     updated_fixtures = []
     created_fixtures = 0
     updated_results = []

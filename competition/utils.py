@@ -56,6 +56,8 @@ def create_competitions():
     Creates all competitions.
     :return: Created Competition objects
     """
+    logger.info('Creating competitions...')
+
     competitions = []
 
     for competition in fetch_competitions():
@@ -75,7 +77,7 @@ def create_competitions():
         )
 
     created_competitions = Competition.objects.bulk_create(competitions)
-    logger.info('Created ' + str(len(created_competitions)) + ' competitions.')
+    logger.info('Created ' + str(len(created_competitions)) + ' competitions')
     return created_competitions
 
 
@@ -86,6 +88,8 @@ def update_competitions():
     ; creates a new competition otherwise.
     :return: List of updated competitions
     """
+    logger.info('Updating competitions...')
+
     updated_competitions = []
     created_competitions = 0
 

@@ -1,3 +1,4 @@
+import logging
 import re
 
 from django.utils.dateparse import parse_datetime
@@ -7,6 +8,8 @@ from fixture.models import Fixture, Result, HalfTime, ExtraTime, PenaltyShootout
 from team.models import Team
 
 from SoccerStats.utils import timing, rate_limited
+
+logger = logging.getLogger(__name__)
 
 
 @rate_limited(0.8)
@@ -114,7 +117,11 @@ def create_odds(fixture_object, fixture):
 
 @timing
 def create_fixtures():
-    """Creates all fixtures."""
+    """
+    Creates all fixtures.
+    :return: Created fixtures, half times, extra times, penalty shootouts and odds
+    """
+    fixtures = []
     half_times = []
     extra_times = []
     penalty_shootouts = []
@@ -123,6 +130,7 @@ def create_fixtures():
     for competition in Competition.objects.all():
         for fixture in fetch_fixtures(competition.id):
             fixture_object = create_fixture(fixture)
+            fixtures.append(fixture_object)
 
             if (fixture['result']['goalsHomeTeam'] or fixture['result']['goalsHomeTeam'] == 0) and \
                     (fixture['result']['goalsAwayTeam'] or fixture['result']['goalsAwayTeam'] == 0):
@@ -140,56 +148,132 @@ def create_fixtures():
             if fixture['odds']:
                 odds.append(create_odds(fixture_object, fixture))
 
-    HalfTime.objects.bulk_create(half_times)
-    ExtraTime.objects.bulk_create(extra_times)
-    PenaltyShootout.objects.bulk_create(penalty_shootouts)
-    Odd.objects.bulk_create(odds)
+    created_half_times = HalfTime.objects.bulk_create(half_times)
+    created_extra_times = ExtraTime.objects.bulk_create(extra_times)
+    created_penalty_shootouts = PenaltyShootout.objects.bulk_create(penalty_shootouts)
+    created_odds = Odd.objects.bulk_create(odds)
+    logger.info(
+        'Created ' + str(len(fixtures)) + ' fixtures, ' +
+        str(len(created_half_times)) + ' half times, ' +
+        str(len(created_extra_times)) + ' extra times, ' +
+        str(len(created_penalty_shootouts)) + ' penalty shootouts and ' +
+        str(len(created_odds)) + ' odds.'
+    )
+    return {
+        'fixtures': fixtures,
+        'created_half_times': created_half_times,
+        'created_extra_times': created_extra_times,
+        'created_penalty_shootouts': created_penalty_shootouts,
+        'created_odds': created_odds,
+    }
 
 
 @timing
 def update_fixtures():
     """Updates all fixtures."""
+    # TODO Stuff
+    updated_fixtures = []
+    created_fixtures = 0
+    updated_results = []
+    created_results = 0
+    updated_half_times = []
+    created_half_times = 0
+    updated_extra_times = []
+    created_extra_times = 0
+    updated_penalty_shootouts = []
+    created_penalty_shootouts = 0
+    updated_odds = []
+    created_odds = 0
+
     for competition in Competition.objects.all():
         for fixture in fetch_fixtures(competition.id):
-            fixture_object = Fixture.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:])
-            fixture_object.date = fixture['date']
-            fixture_object.status = dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None
-            fixture_object.save()
+            fixture_object, created = Fixture.objects.update_or_create(
+                id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
+                defaults={
+                    'id': re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
+                    'competition': Competition.objects.get(
+                        id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]),
+                    'home_team': Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
+                    'away_team': Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
+                    'date': parse_datetime(fixture['date']),
+                    'status': dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None,
+                    'matchday': int(fixture['matchday']),
+                }
+            )
+
+            if created:
+                created_fixtures += 1
+            else:
+                updated_fixtures.append(fixture_object)
 
             result = fixture['result']
             if (result['goalsHomeTeam'] or result['goalsHomeTeam'] == 0) and \
                     (result['goalsAwayTeam'] or result['goalsAwayTeam'] == 0):
-                result_object, created = Result.objects.get_or_create(id=fixture_object.id)
+                result_object, created = Result.objects.update_or_create(
+                    id=fixture_object.id,
+                    defaults={
+                        'fixture': fixture_object,
+                        'goals_home_team': int(fixture['result']['goalsHomeTeam']),
+                        'goals_away_team': int(fixture['result']['goalsAwayTeam']),
+                    }
+                )
                 if created:
-                    result_object.goals_home_team = int(result['goalsHomeTeam'])
-                    result_object.goals_away_team = int(result['goalsAwayTeam'])
-                    result_object.save()
+                    created_results += 1
 
                     if 'halfTime' in result:
-                        half_time, created = HalfTime.objects.get_or_create(result=result_object)
+                        half_time, created = HalfTime.objects.update_or_create(
+                            result=result_object,
+                            defaults={
+                                'result': result,
+                                'goals_home_team': int(fixture['result']['halfTime']['goalsHomeTeam']),
+                                'goals_away_team': int(fixture['result']['halfTime']['goalsAwayTeam']),
+                            }
+                        )
                         if created:
-                            half_time.goals_home_team = int(result['halfTime']['goalsHomeTeam'])
-                            half_time.goals_away_team = int(result['halfTime']['goalsAwayTeam'])
-                            half_time.save()
+                            created_half_times += 1
+                        else:
+                            updated_half_times.append(half_time)
 
                     if 'extraTime' in result:
-                        extra_time, created = ExtraTime.objects.get_or_create(result=result_object)
+                        extra_time, created = ExtraTime.objects.update_or_create(
+                            result=result_object,
+                            defaults={
+                                'result': result,
+                                'goals_home_team': int(fixture['result']['extraTime']['goalsHomeTeam']),
+                                'goals_away_team': int(fixture['result']['extraTime']['goalsAwayTeam']),
+                            }
+                        )
                         if created:
-                            extra_time.goals_home_team = int(result['extraTime']['goalsHomeTeam'])
-                            extra_time.goals_away_team = int(result['extraTime']['goalsAwayTeam'])
-                            extra_time.save()
+                            created_extra_times += 1
+                        else:
+                            updated_extra_times.append(extra_time)
 
                     if 'penaltyShootout' in result:
-                        penalty_shootout, created = PenaltyShootout.objects.get_or_create(result=result_object)
+                        penalty_shootout, created = PenaltyShootout.objects.update_or_create(
+                            result=result_object,
+                            defaults={
+                                'result': result,
+                                'goals_home_team': int(fixture['result']['penaltyShootout']['goalsHomeTeam']),
+                                'goals_away_team': int(fixture['result']['penaltyShootout']['goalsAwayTeam']),
+                            }
+                        )
                         if created:
-                            penalty_shootout.goals_home_team = int(result['penaltyShootout']['goalsHomeTeam'])
-                            penalty_shootout.goals_away_team = int(result['penaltyShootout']['goalsAwayTeam'])
-                            penalty_shootout.save()
-
+                            created_penalty_shootouts += 1
+                        else:
+                            updated_penalty_shootouts.append(penalty_shootout)
+                else:
+                    updated_results.append(result_object)
             if fixture['odds']:
-                odd, created = Odd.objects.get_or_create(fixture=fixture_object)
+                odd, created = Odd.objects.update_or_create(
+                    fixture=fixture_object,
+                    defaults={
+                        'fixture': fixture_object,
+                        'home_win': fixture['odds']['homeWin'],
+                        'draw': fixture['odds']['draw'],
+                        'away_win': fixture['odds']['awayWin'],
+                    }
+                )
                 if created:
-                    odd.home_win = fixture['odds']['homeWin']
-                    odd.draw = fixture['odds']['draw']
-                    odd.away_win = fixture['odds']['awayWin']
-                    odd.save()
+                    created_odds += 1
+                else:
+                    updated_odds.append(odd)

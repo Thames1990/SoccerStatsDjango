@@ -125,7 +125,7 @@ def create_league_table(table):
         )
 
     return {
-        'table': table_object,
+        'table_object': table_object,
         'standings': standings,
         'home_standings': home_standings,
         'away_standings': away_standings,
@@ -150,9 +150,12 @@ def create_table(table, is_cup):
 def create_tables():
     """
     Creates all tables.
-    :return: Dictionary of created group standings, home standings and away standings
+    :return: Dictionary of created tables, groups, group standings, standings, home standings and away standings
     """
+    created_tables = []
+    created_groups = []
     group_standings = []
+    created_standings = []
     home_standings = []
     away_standings = []
 
@@ -161,30 +164,40 @@ def create_tables():
             table = fetch_table(competition.id, matchday)
             if 'error' not in table:
                 if competition.is_cup:
-                    group_standings.extend(
-                        create_table(
-                            table=table,
-                            is_cup=True,
-                        )
+                    table_object = create_table(
+                        table=table,
+                        is_cup=True,
                     )
+
+                    created_tables.append(table_object['table_object'])
+                    created_groups.extend(table_object['groups'])
+                    group_standings.extend(table_object['group_standings'])
                 else:
-                    standings = create_table(
+                    table_object = create_table(
                         table=table,
                         is_cup=False,
                     )
-                    home_standings.extend(standings['home_standings'])
-                    away_standings.extend(standings['away_standings'])
+                    created_tables.append(table_object['table_object'])
+                    created_standings.append(table_object['standings'])
+                    home_standings.extend(table_object['home_standings'])
+                    away_standings.extend(table_object['away_standings'])
 
     created_group_standings = GroupStanding.objects.bulk_create(group_standings)
     created_home_standings = HomeStanding.objects.bulk_create(home_standings)
     created_away_standings = AwayStanding.objects.bulk_create(away_standings)
 
+    logger.info('Created ' + str(len(created_tables)) + ' tables')
+    logger.info('Created ' + str(len(created_groups)) + ' groups')
     logger.info('Created ' + str(len(created_group_standings)) + ' group standings')
+    logger.info('Created ' + str(len(created_standings)) + ' standings')
     logger.info('Created ' + str(len(created_home_standings)) + ' home standings')
     logger.info('Created ' + str(len(created_away_standings)) + ' away standings')
 
     return {
+        'tables': created_tables,
+        'groups': created_groups,
         'created_group_standings': created_group_standings,
+        'standings': created_standings,
         'created_home_standings': created_home_standings,
         'created_away_standings': created_away_standings,
     }

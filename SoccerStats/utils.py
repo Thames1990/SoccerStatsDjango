@@ -80,17 +80,17 @@ def create_database():
     :return:
     """
     from competition.utils import create_competitions
-    from team.utils import create_teams
-    from player.utils import create_players
     from fixture.utils import create_fixtures
+    from player.utils import create_players
     from table.utils import create_tables
+    from team.utils import create_teams
 
     create_competitions()
     # TODO Might need to wait. Optimize flow.
     create_teams()
     create_players()
-    create_fixtures()
     create_tables()
+    create_fixtures()
 
 
 def update_database():
@@ -99,13 +99,13 @@ def update_database():
     :return:
     """
     from competition.utils import update_competitions
-    from team.utils import update_teams
-    from player.utils import update_players
     from fixture.utils import update_fixtures
+    from player.utils import update_players
     from table.utils import update_tables
+    from team.utils import update_teams
 
     update_competitions()
     update_teams()
     update_players()
-    update_fixtures()
     update_tables()
+    update_fixtures()

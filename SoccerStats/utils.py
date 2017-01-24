@@ -74,6 +74,7 @@ def get_wikipedia_image(query):
         return None
 
 
+@timing
 def create_database():
     """
     Creates whole database.
@@ -92,6 +93,7 @@ def create_database():
     create_fixtures()
 
 
+@timing
 def update_database():
     """
     Updates whole database.

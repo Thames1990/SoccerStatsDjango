@@ -85,6 +85,7 @@ class Player(models.Model):
         ('Finland', 'Finnland'),
         ('France', 'Frankreich'),
         ('Frankreich', 'Frankreich'),
+        ('French Guiana', 'Französisch-Guayana'),
         ('French-Guiana', 'Französisch-Guayana'),
         ('Gabon', 'Gabun'),
         ('Georgia', 'Georgien'),

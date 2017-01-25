@@ -35,22 +35,25 @@ def create_teams():
 
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
-            team_object, created = Team.objects.create(
-                id=int(re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]),
-                name=team['name'],
-                code=team['code'] or None,
-                short_name=team['shortName'],
-                squad_market_value=int(
-                    re.sub('[^0-9]', '', team['squadMarketValue'])
-                ) if team['squadMarketValue'] else None,
-                # TODO Add image check and fallback download from wikipedia
-                crest_url=team['crestUrl'],
-            )
-            # TODO Optimize with bulk_create and ThroughModel
-            team_object.competition.add(competition)
+            try:
+                team_object, created = Team.objects.create(
+                    id=int(re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]),
+                    name=team['name'],
+                    code=team['code'] or None,
+                    short_name=team['shortName'],
+                    squad_market_value=int(
+                        re.sub('[^0-9]', '', team['squadMarketValue'])
+                    ) if team['squadMarketValue'] else None,
+                    # TODO Add image check and fallback download from wikipedia
+                    crest_url=team['crestUrl'],
+                )
+                # TODO Optimize with bulk_create and ThroughModel
+                team_object.competition.add(competition)
 
-            if created:
-                created_teams.append(team_object)
+                if created:
+                    created_teams.append(team_object)
+            except TypeError:
+                logger.error(team)
 
     logger.info('Created ' + str(len(created_teams)) + ' teams')
     return created_teams

@@ -1,6 +1,11 @@
 from django.contrib import admin
 
 from .models import Team
+from competition.models import Competition
+
+
+class CompetitionInline(admin.StackedInline):
+    model = Competition
 
 
 class TeamAdmin(admin.ModelAdmin):
@@ -8,7 +13,6 @@ class TeamAdmin(admin.ModelAdmin):
         (None, {
             'fields': [
                 'id',
-                'competition',
                 'name',
                 'code',
                 'short_name',
@@ -17,6 +21,7 @@ class TeamAdmin(admin.ModelAdmin):
             ]
         }),
     ]
+    inlines = [CompetitionInline]
     list_display = (
         'id',
         'competition',

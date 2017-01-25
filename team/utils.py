@@ -19,7 +19,7 @@ def fetch_teams(competition_id):
 
     return requests.get(
         url='http://api.football-data.org/v1/competitions/' + str(competition_id) + '/teams',
-        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
+        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'},
     ).json()['teams']
 
 
@@ -35,6 +35,7 @@ def create_teams():
 
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
+            # TODO Delte try block on fix
             try:
                 team_object, created = Team.objects.create(
                     id=int(re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]),
@@ -53,7 +54,7 @@ def create_teams():
                 if created:
                     created_teams.append(team_object)
             except TypeError:
-                logger.error(team)
+                logger.error(type(team))
 
     logger.info('Created ' + str(len(created_teams)) + ' teams')
     return created_teams

@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import Team
 
 
-class CompetitionInline(admin.TabularInline):
+class CompetitionInline(admin.StackedInline):
     model = Team.competition.through
 
 

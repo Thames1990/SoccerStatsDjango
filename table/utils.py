@@ -25,7 +25,7 @@ def fetch_table(competiton_id, matchday=None):
         base_url += '?matchday=' + str(matchday)
     return requests.get(
         url=base_url,
-        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
+        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'},
     ).json()
 
 
@@ -552,6 +552,7 @@ def get_points_record():
     return Table.objects.all().aggregate(Max('standing__points'))['standing__points__max']
 
 
+# TODO Optimize work flow
 def get_group_standing_goal_difference_violations():
     from competition.utils import fetch_competitions
 

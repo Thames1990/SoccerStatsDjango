@@ -23,7 +23,7 @@ def fetch_players(team_id):
     """
     json = requests.get(
         url='http://api.football-data.org/v1/teams/' + str(team_id) + '/players',
-        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
+        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'},
     ).json()
     return json['players'] if 'players' in json else None
 

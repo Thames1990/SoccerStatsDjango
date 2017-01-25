@@ -133,8 +133,10 @@ def create_fixtures():
             fixture_object = create_fixture(fixture)
             fixtures.append(fixture_object)
 
-            if (fixture['result']['goalsHomeTeam'] or fixture['result']['goalsHomeTeam'] == 0) and \
-                    (fixture['result']['goalsAwayTeam'] or fixture['result']['goalsAwayTeam'] == 0):
+            if (
+                        (fixture['result']['goalsHomeTeam'] or fixture['result']['goalsHomeTeam'] == 0) and
+                        (fixture['result']['goalsAwayTeam'] or fixture['result']['goalsAwayTeam'] == 0)
+            ):
                 result = create_result(fixture_object, fixture)
                 results.append(result)
 
@@ -172,6 +174,114 @@ def create_fixtures():
     }
 
 
+def update_or_create_fixture(fixture):
+    """
+    Updates or creates a fixture.
+    :param fixture: JSON representation of the fixture
+    :return: Updated or created fixture and *True*, if the fixture was created; *False* otherwise
+    """
+    return Fixture.objects.update_or_create(
+        id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
+        defaults={
+            'id': re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
+            'competition': Competition.objects.get(
+                id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]
+            ),
+            'home_team': Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
+            'away_team': Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
+            'date': fixture['date'],
+            'status': dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None,
+            'matchday': fixture['matchday'],
+        }
+    )
+
+
+def update_or_create_result(fixture_object, fixture):
+    """
+    Updates or creates a result.
+    :param fixture_object: Linked fixture
+    :param fixture: JSON representation of the fixture
+    :return: Updated or created result and *True*, if the result was created; *False* otherwise
+    """
+    return Result.objects.update_or_create(
+        id=fixture_object.id,
+        defaults={
+            'fixture': fixture_object,
+            'goals_home_team': fixture['result']['goalsHomeTeam'],
+            'goals_away_team': fixture['result']['goalsAwayTeam'],
+        }
+    )
+
+
+def update_or_create_half_time(result_object, fixture):
+    """
+    Updates or creates a half time.
+    :param result_object: Linked result
+    :param fixture: JSON represantation of the fixture
+    :return: Updated or created half time and *True*, if the half time was created; *False* otherwise
+    """
+    return HalfTime.objects.update_or_create(
+        result=result_object,
+        defaults={
+            'result': result_object,
+            'goals_home_team': fixture['result']['halfTime']['goalsHomeTeam'],
+            'goals_away_team': fixture['result']['halfTime']['goalsAwayTeam'],
+        }
+    )
+
+
+def update_or_create_extra_time(result_object, fixture):
+    """
+    Updates or creates an extra time.
+    :param result_object: Linked result
+    :param fixture: JSON representation of the fixture
+    :return: Updated or created extra time and *True*, if the extra was created; *False* otherwise
+    """
+    return ExtraTime.objects.update_or_create(
+        result=result_object,
+        defaults={
+            'result': result_object,
+            'goals_home_team': fixture['result']['extraTime']['goalsHomeTeam'],
+            'goals_away_team': fixture['result']['extraTime']['goalsAwayTeam'],
+        }
+    )
+
+
+def update_or_create_penalty_shootout(result_object, fixture):
+    """
+    Updates or creates a penalty shootout.
+    :param result_object: Linked result
+    :param fixture: JSON representation of the fixture
+    :return: Updated or created penalty shootout and *True*, if the penalty shootout was created; *False* otherwise
+    """
+    return PenaltyShootout.objects.update_or_create(
+        result=result_object,
+        defaults={
+            'result': result_object,
+            'goals_home_team': fixture['result']['penaltyShootout']['goalsHomeTeam'],
+            'goals_away_team': fixture['result']['penaltyShootout']['goalsAwayTeam'],
+        }
+    )
+
+
+def update_or_create_odd(fixture_object, fixture):
+    """
+    Updates or creates an odd.
+    :param fixture_object: Linked fixture
+    :param fixture: JSON representation of the fixture
+    :return: Updated or created odd and *True*, if the odd was created; *False* otherwise
+    """
+    return Odd.objects.update_or_create(
+        fixture=fixture_object,
+        defaults={
+            'fixture': fixture_object,
+            'home_win': fixture['odds']['homeWin'],
+            'draw': fixture['odds']['draw'],
+            'away_win': fixture['odds']['awayWin'],
+        }
+    )
+
+
 @timing
 def update_fixtures():
     """
@@ -195,66 +305,30 @@ def update_fixtures():
 
     for competition in Competition.objects.all():
         for fixture in fetch_fixtures(competition.id):
-            fixture_object, created = Fixture.objects.update_or_create(
-                id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
-                defaults={
-                    'id': re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
-                    'competition': Competition.objects.get(
-                        id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]
-                    ),
-                    'home_team': Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
-                    'away_team': Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
-                    'date': fixture['date'],
-                    'status': dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None,
-                    'matchday': fixture['matchday'],
-                }
-            )
+            fixture_object, created = update_or_create_fixture(fixture=fixture)
             created_fixtures += 1 if created else updated_fixtures.append(fixture_object)
 
             result = fixture['result']
-            if (result['goalsHomeTeam'] or result['goalsHomeTeam'] == 0) and \
-                    (result['goalsAwayTeam'] or result['goalsAwayTeam'] == 0):
-                result_object, created = Result.objects.update_or_create(
-                    id=fixture_object.id,
-                    defaults={
-                        'fixture': fixture_object,
-                        'goals_home_team': fixture['result']['goalsHomeTeam'],
-                        'goals_away_team': fixture['result']['goalsAwayTeam'],
-                    }
-                )
+            if (
+                        (result['goalsHomeTeam'] or result['goalsHomeTeam'] == 0) and
+                        (result['goalsAwayTeam'] or result['goalsAwayTeam'] == 0)
+            ):
+                result_object, created = update_or_create_result(fixture_object=fixture_object, fixture=fixture)
                 if created:
                     created_results += 1
 
                     if 'halfTime' in result:
-                        half_time, created = HalfTime.objects.update_or_create(
-                            result=result_object,
-                            defaults={
-                                'result': result,
-                                'goals_home_team': fixture['result']['halfTime']['goalsHomeTeam'],
-                                'goals_away_team': fixture['result']['halfTime']['goalsAwayTeam'],
-                            }
-                        )
+                        half_time, created = update_or_create_half_time(result_object=result_object, fixture=fixture)
                         created_half_times += 1 if created else updated_half_times.append(half_time)
 
                     if 'extraTime' in result:
-                        extra_time, created = ExtraTime.objects.update_or_create(
-                            result=result_object,
-                            defaults={
-                                'result': result,
-                                'goals_home_team': fixture['result']['extraTime']['goalsHomeTeam'],
-                                'goals_away_team': fixture['result']['extraTime']['goalsAwayTeam'],
-                            }
-                        )
+                        extra_time, created = update_or_create_extra_time(result_object=result_object, fixture=fixture)
                         created_extra_times += 1 if created else updated_extra_times.append(extra_time)
 
                     if 'penaltyShootout' in result:
-                        penalty_shootout, created = PenaltyShootout.objects.update_or_create(
-                            result=result_object,
-                            defaults={
-                                'result': result,
-                                'goals_home_team': fixture['result']['penaltyShootout']['goalsHomeTeam'],
-                                'goals_away_team': fixture['result']['penaltyShootout']['goalsAwayTeam'],
-                            }
+                        penalty_shootout, created = update_or_create_penalty_shootout(
+                            result_object=result_object,
+                            fixture=fixture
                         )
                         if created:
                             created_penalty_shootouts += 1
@@ -263,15 +337,7 @@ def update_fixtures():
                 else:
                     updated_results.append(result_object)
             if fixture['odds']:
-                odd, created = Odd.objects.update_or_create(
-                    fixture=fixture_object,
-                    defaults={
-                        'fixture': fixture_object,
-                        'home_win': fixture['odds']['homeWin'],
-                        'draw': fixture['odds']['draw'],
-                        'away_win': fixture['odds']['awayWin'],
-                    }
-                )
+                odd, created = update_or_create_odd(fixture_object=fixture_object, fixture=fixture)
                 created_odds += 1 if created else updated_odds.append(odd)
 
     logger.info('Updated ' + str(len(updated_fixtures)) + ', created ' + str(created_fixtures))

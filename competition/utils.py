@@ -41,10 +41,8 @@ def fetch_competitions():
 
     for season in range(2015, datetime.today().year + 1):
         for competition in fetch_competition(season=season):
-            if 'error' in competition:
-                logger.warning('Competitions for season ' + str(season) + ' aren\'t available')
-                break
-            competitions.append(competition)
+            if 'error' not in competition:
+                competitions.append(competition)
 
     return competitions
 
@@ -109,12 +107,7 @@ def update_competitions():
             }
         )
 
-        # TODO Use *last_updated* to update tables
-
-        if created:
-            created_competitions += 1
-        else:
-            updated_competitions.append(competition_object)
+        created_competitions += 1 if created else updated_competitions.append(competition_object)
 
     logger.info('Updated ' + str(len(updated_competitions)) + ' competitions, created ' + str(created_competitions))
     return updated_competitions

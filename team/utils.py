@@ -35,7 +35,7 @@ def create_teams():
 
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
-            team_object, created = Team.objects.create(
+            team_object = Team.objects.create(
                 id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
                 name=team['name'],
                 code=team['code'] or None,
@@ -46,9 +46,7 @@ def create_teams():
             )
             # TODO Optimize with bulk_create and ThroughModel
             team_object.competition.add(competition)
-
-            if created:
-                created_teams.append(team_object)
+            created_teams.append(team_object)
 
     logger.info('Created ' + str(len(created_teams)) + ' teams')
     return created_teams
@@ -82,10 +80,7 @@ def update_teams():
                 }
             )
 
-            if created:
-                created_teams += 1
-            else:
-                updated_teams.append(team_object)
+            created_teams += 1 if created else updated_teams.append(team_object)
 
     logger.info('Updated ' + str(len(updated_teams)) + ' teams, created ' + str(created_teams))
     return updated_teams
@@ -101,7 +96,8 @@ def get_squad_market_value_average():
     for team in Team.objects.all():
         squad_market_value_average += team.get_squad_market_value()
         teams += 1
-    if squad_market_value_average and teams:
+    # Division by zero
+    if teams:
         return squad_market_value_average / teams
     else:
-        return None
+        return 0

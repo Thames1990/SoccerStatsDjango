@@ -35,7 +35,7 @@ class Player(models.Model):
         ('Torwart', 'Torwart'),
         ('Zentrales Mittelfeld', 'Zentrales Mittelfeld'),
     )
-    position = models.CharField(max_length=255, choices=POSITION)
+    position = models.CharField(max_length=255, choices=POSITION, db_index=True)
     jersey_number = models.PositiveSmallIntegerField(null=True)
     date_of_birth = models.DateField(null=True)
     NATIONALITY = (
@@ -172,7 +172,7 @@ class Player(models.Model):
         ('Wales', 'Wales'),
         ('Zambia', 'Sambia'),
     )
-    nationality = models.CharField(max_length=255, choices=NATIONALITY)
+    nationality = models.CharField(max_length=255, choices=NATIONALITY, db_index=True)
     contract_until = models.DateField(null=True)
     market_value = models.PositiveIntegerField(null=True)
     image = models.URLField(null=True, max_length=2000)

@@ -2,8 +2,6 @@ import logging
 import re
 import requests
 
-from django.utils.dateparse import parse_date
-
 from SoccerStats.utils import timing, get_wikipedia_image, rate_limited
 from competition.utils import fetch_competitions
 
@@ -50,7 +48,7 @@ def create_players():
                         jersey_number=player['jerseyNumber'] or None,
                         date_of_birth=player['dateOfBirth'] or None,
                         nationality=dict(Player.NATIONALITY)[player['nationality']],
-                        contract_until=parse_date(player['contractUntil']) if player['contractUntil'] else None,
+                        contract_until=player['contractUntil'] or None,
                         market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
                         image=get_wikipedia_image(player['name']),
                     )
@@ -93,10 +91,7 @@ def update_players():
                     }
                 )
 
-                if created:
-                    created_players += 1
-                else:
-                    updated_players.append(player_object)
+                created_players += 1 if created else updated_players.append(player_object)
 
     logger.info('Updated ' + str(len(updated_players)) + ' players, created ' + str(created_players))
     return updated_players

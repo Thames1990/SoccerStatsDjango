@@ -35,7 +35,7 @@ def create_teams():
 
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
-            team_object = Team.objects.create(
+            team_object, created = Team.objects.get_or_create(
                 id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
                 name=team['name'],
                 code=team['code'] or None,
@@ -46,7 +46,8 @@ def create_teams():
             )
             # TODO Optimize with bulk_create and ThroughModel
             team_object.competition.add(competition)
-            created_teams.append(team_object)
+            if created:
+                created_teams.append(team_object)
 
     logger.info('Created ' + str(len(created_teams)) + ' teams')
     return created_teams

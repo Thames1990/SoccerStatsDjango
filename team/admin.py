@@ -1,11 +1,10 @@
 from django.contrib import admin
 
 from .models import Team
-from competition.models import Competition
 
 
 class CompetitionInline(admin.TabularInline):
-    model = Competition
+    model = Team.competition.through
 
 
 class TeamAdmin(admin.ModelAdmin):

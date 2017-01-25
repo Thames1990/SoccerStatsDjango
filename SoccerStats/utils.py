@@ -53,7 +53,9 @@ def get_wikipedia_image(query):
     :param query: Search term
     :return: URL to the Wikimedia page image if it exists; None otherwise
     """
-    json = requests.get(
+    from json.decoder import JSONDecodeError
+
+    response = requests.get(
         url='http://en.wikipedia.org/w/api.php',
         params={
             'action': 'query',
@@ -65,11 +67,18 @@ def get_wikipedia_image(query):
             'piprop': 'thumbnail',
             'pilimit': 'max',
             'pithumbsize': 400
-        }).json()
+        }
+    )
     try:
-        return list(json['query']['pages'].values())[0]['thumbnail']['source']
-    except KeyError:
-        # TODO Implement different image provider
+        json = response.json()
+        try:
+            return list(json['query']['pages'].values())[0]['thumbnail']['source']
+        except KeyError:
+            # TODO Implement different image provider
+            return None
+    except JSONDecodeError:
+        logger.error('Couldn\'t get Wikipedia image for query: ' + query)
+        logger.error('Response: ' + response.text)
         return None
 
 

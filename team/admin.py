@@ -24,7 +24,6 @@ class TeamAdmin(admin.ModelAdmin):
     inlines = [CompetitionInline]
     list_display = (
         'id',
-        'competition',
         'name',
         'code',
         'short_name',

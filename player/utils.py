@@ -47,13 +47,11 @@ def create_players():
                         team=team,
                         name=player['name'],
                         position=dict(Player.POSITION)[player['position']],
-                        jersey_number=int(player['jerseyNumber']) if player['jerseyNumber'] else None,
-                        date_of_birth=parse_date(player['dateOfBirth']) if player['dateOfBirth'] else None,
+                        jersey_number=player['jerseyNumber'] or None,
+                        date_of_birth=player['dateOfBirth'] or None,
                         nationality=dict(Player.NATIONALITY)[player['nationality']],
                         contract_until=parse_date(player['contractUntil']) if player['contractUntil'] else None,
-                        market_value=int(
-                            re.sub('[^0-9]', '', player['marketValue'])
-                        ) if player['marketValue'] else None,
+                        market_value=re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
                         image=get_wikipedia_image(player['name']),
                     )
                 )
@@ -80,19 +78,17 @@ def update_players():
             for player in players:
                 player_object, created = Player.objects.update_or_create(
                     name=player['name'],
-                    date_of_birth=parse_date(player['dateOfBirth']) if player['dateOfBirth'] else None,
+                    date_of_birth=player['dateOfBirth'] or None,
                     nationality=dict(Player.NATIONALITY)[player['nationality']],
                     defaults={
                         'team': team,
                         'name': player['name'],
                         'position': dict(Player.POSITION)[player['position']],
-                        'jersey_number': int(player['jerseyNumber']) if player['jerseyNumber'] else None,
-                        'date_of_birth': parse_date(player['dateOfBirth']) if player['dateOfBirth'] else None,
+                        'jersey_number': player['jerseyNumber'] or None,
+                        'date_of_birth': player['dateOfBirth'] or None,
                         'nationality': dict(Player.NATIONALITY)[player['nationality']],
-                        'contract_until': parse_date(player['contractUntil']) if player['contractUntil'] else None,
-                        'market_value': int(
-                            re.sub('[^0-9]', '', player['marketValue'])
-                        ) if player['marketValue'] else None,
+                        'contract_until': player['contractUntil'] or None,
+                        'market_value': re.sub('[^0-9]', '', player['marketValue']) if player['marketValue'] else None,
                         'image': get_wikipedia_image(player['name']),
                     }
                 )

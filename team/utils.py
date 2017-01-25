@@ -35,26 +35,20 @@ def create_teams():
 
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
-            # TODO Delte try block on fix
-            try:
-                team_object, created = Team.objects.create(
-                    id=int(re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]),
-                    name=team['name'],
-                    code=team['code'] or None,
-                    short_name=team['shortName'],
-                    squad_market_value=int(
-                        re.sub('[^0-9]', '', team['squadMarketValue'])
-                    ) if team['squadMarketValue'] else None,
-                    # TODO Add image check and fallback download from wikipedia
-                    crest_url=team['crestUrl'],
-                )
-                # TODO Optimize with bulk_create and ThroughModel
-                team_object.competition.add(competition)
+            team_object, created = Team.objects.create(
+                id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
+                name=team['name'],
+                code=team['code'] or None,
+                short_name=team['shortName'],
+                squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
+                # TODO Add image check and fallback download from wikipedia
+                crest_url=team['crestUrl'],
+            )
+            # TODO Optimize with bulk_create and ThroughModel
+            team_object.competition.add(competition)
 
-                if created:
-                    created_teams.append(team_object)
-            except TypeError:
-                logger.error(type(team))
+            if created:
+                created_teams.append(team_object)
 
     logger.info('Created ' + str(len(created_teams)) + ' teams')
     return created_teams
@@ -74,14 +68,14 @@ def update_teams():
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
             team_object, created = Team.objects.update_or_create(
-                id=int(re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]),
+                id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
                 defaults={
-                    'id': int(re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]),
+                    'id': re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
                     'name': team['name'],
                     'code': team['code'] or None,
                     'short_name': team['shortName'],
-                    'squad_market_value': int(
-                        re.sub('[^0-9]', '', team['squadMarketValue'])
+                    'squad_market_value': re.sub(
+                        '[^0-9]', '', team['squadMarketValue']
                     ) if team['squadMarketValue'] else None,
                     # TODO Add image check and fallback download from wikipedia
                     'crest_url': team['crestUrl'],

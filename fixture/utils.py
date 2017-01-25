@@ -34,7 +34,7 @@ def create_fixture(fixture):
     :return: Fixture database object created from *fixture* JSON representation
     """
     return Fixture.objects.create(
-        id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
+        id=int(re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:]),
         competition=Competition.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]),
         home_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
         away_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
@@ -109,9 +109,9 @@ def create_odds(fixture_object, fixture):
     """
     return Odd(
         fixture=fixture_object,
-        home_win=fixture['odds']['homeWin'],
-        draw=fixture['odds']['draw'],
-        away_win=fixture['odds']['awayWin'],
+        home_win=float(fixture['odds']['homeWin']),
+        draw=float(fixture['odds']['draw']),
+        away_win=float(fixture['odds']['awayWin']),
     )
 
 
@@ -200,9 +200,10 @@ def update_fixtures():
             fixture_object, created = Fixture.objects.update_or_create(
                 id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
                 defaults={
-                    'id': re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
+                    'id': int(re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:]),
                     'competition': Competition.objects.get(
-                        id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]),
+                        id=int(re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:])
+                    ),
                     'home_team': Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
                     'away_team': Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
                     'date': parse_datetime(fixture['date']),

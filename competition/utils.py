@@ -64,15 +64,15 @@ def create_competitions():
     for competition in fetch_competitions():
         competitions.append(
             Competition(
-                id=competition['id'],
+                id=int(competition['id']),
                 is_cup='standings' in fetch_table(competiton_id=competition['id']),
                 caption=competition['caption'],
                 league=competition['league'],
-                year=competition['year'],
-                current_matchday=competition['currentMatchday'],
-                number_of_matchdays=competition['numberOfMatchdays'],
-                number_of_teams=competition['numberOfTeams'],
-                number_of_games=competition['numberOfGames'],
+                year=int(competition['year']),
+                current_matchday=int(competition['currentMatchday']),
+                number_of_matchdays=int(competition['numberOfMatchdays']),
+                number_of_teams=int(competition['numberOfTeams']),
+                number_of_games=int(competition['numberOfGames']),
                 last_updated=parse_datetime(competition['lastUpdated']),
             )
         )
@@ -98,15 +98,15 @@ def update_competitions():
         competition_object, created = Competition.objects.update_or_create(
             id=competition['id'],
             defaults={
-                'id': competition['id'],
+                'id': int(competition['id']),
                 'is_cup': 'standings' in fetch_table(competiton_id=competition['id']),
                 'caption': competition['caption'],
                 'league': competition['league'],
-                'year': competition['year'],
-                'current_matchday': competition['currentMatchday'],
-                'number_of_matchdays': competition['numberOfMatchdays'],
-                'number_of_teams': competition['numberOfTeams'],
-                'number_of_games': competition['numberOfGames'],
+                'year': int(competition['year']),
+                'current_matchday': int(competition['currentMatchday']),
+                'number_of_matchdays': int(competition['numberOfMatchdays']),
+                'number_of_teams': int(competition['numberOfTeams']),
+                'number_of_games': int(competition['numberOfGames']),
                 'last_updated': parse_datetime(competition['lastUpdated']),
             }
         )

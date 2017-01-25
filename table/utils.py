@@ -40,7 +40,7 @@ def create_cup_table(table):
 
     table_object = Table.objects.create(
         competition=Competition.objects.get(caption=table['leagueCaption']),
-        matchday=table['matchday'],
+        matchday=int(table['matchday']),
     )
 
     for cup_group in table['standings']:
@@ -55,13 +55,14 @@ def create_cup_table(table):
                 GroupStanding(
                     group=group,
                     team=Team.objects.get(id=int(group_standing['teamId'])),
-                    rank=group_standing['rank'],
-                    played_games=group_standing['playedGames'],
+                    rank=int(group_standing['rank']),
+                    played_games=int(group_standing['playedGames']),
                     crest_uri=group_standing['crestURI'],
-                    points=group_standing['points'],
-                    goals=group_standing['goals'],
-                    goals_against=group_standing['goalsAgainst'],
-                    goal_difference=group_standing['goalDifference'],
+                    points=int(group_standing['points']),
+                    goals=int(group_standing['goals']),
+                    goals_against=int(group_standing['goalsAgainst']),
+                    # TODO Fix relation violation table_groupstanding_goal_difference_check
+                    goal_difference=int(group_standing['goalDifference']),
                 )
             )
 
@@ -80,7 +81,7 @@ def create_league_table(table):
     """
     table_object = Table.objects.create(
         competition=Competition.objects.get(caption=table['leagueCaption']),
-        matchday=table['matchday'],
+        matchday=int(table['matchday']),
     )
 
     standings = []
@@ -90,38 +91,38 @@ def create_league_table(table):
     for team in table['standing']:
         standing = Standing.objects.create(
             table=table_object,
-            position=team['position'],
+            position=int(team['position']),
             team=Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
-            played_games=team['playedGames'],
-            points=team['points'],
-            goals=team['goals'],
-            goals_against=team['goalsAgainst'],
-            goal_difference=team['goalDifference'],
-            wins=team['wins'],
-            draws=team['draws'],
-            losses=team['losses'],
+            played_games=int(team['playedGames']),
+            points=int(team['points']),
+            goals=int(team['goals']),
+            goals_against=int(team['goalsAgainst']),
+            goal_difference=int(team['goalDifference']),
+            wins=int(team['wins']),
+            draws=int(team['draws']),
+            losses=int(team['losses']),
         )
         standings.append(standing)
 
         home_standings.append(
             HomeStanding(
                 standing=standing,
-                goals=team['home']['goals'],
-                goals_against=team['home']['goalsAgainst'],
-                wins=team['home']['wins'],
-                draws=team['home']['draws'],
-                losses=team['home']['losses'],
+                goals=int(team['home']['goals']),
+                goals_against=int(team['home']['goalsAgainst']),
+                wins=int(team['home']['wins']),
+                draws=int(team['home']['draws']),
+                losses=int(team['home']['losses']),
             )
         )
 
         away_standings.append(
             AwayStanding(
                 standing=standing,
-                goals=team['away']['goals'],
-                goals_against=team['home']['goalsAgainst'],
-                wins=team['away']['wins'],
-                draws=team['away']['draws'],
-                losses=team['away']['losses'],
+                goals=int(team['away']['goals']),
+                goals_against=int(team['home']['goalsAgainst']),
+                wins=int(team['away']['wins']),
+                draws=int(team['away']['draws']),
+                losses=int(team['away']['losses']),
             )
         )
 
@@ -218,13 +219,13 @@ def update_or_create_group_standing(group, group_standing):
         defaults={
             'group': group,
             'team': Team.objects.get(id=int(group_standing['teamId'])),
-            'rank': group_standing['rank'],
-            'played_games': group_standing['playedGames'],
+            'rank': int(group_standing['rank']),
+            'played_games': int(group_standing['playedGames']),
             'crest_uri': group_standing['crestURI'],
-            'points': group_standing['points'],
-            'goals': group_standing['goals'],
-            'goals_against': group_standing['goalsAgainst'],
-            'goal_difference': group_standing['goalDifference'],
+            'points': int(group_standing['points']),
+            'goals': int(group_standing['goals']),
+            'goals_against': int(group_standing['goalsAgainst']),
+            'goal_difference': int(group_standing['goalDifference']),
         }
     )
 
@@ -280,15 +281,15 @@ def update_or_create_standing(table, team):
         defaults={
             'table': table,
             'team': Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
-            'position': team['position'],
-            'played_games': team['played_games'],
-            'points': team['points'],
-            'goals': team['goals'],
-            'goals_against': team['goals_against'],
-            'goal_difference': team['goal_difference'],
-            'wins': team['wins'],
-            'draws': team['draws'],
-            'losses': team['losses'],
+            'position': int(team['position']),
+            'played_games': int(team['played_games']),
+            'points': int(team['points']),
+            'goals': int(team['goals']),
+            'goals_against': int(team['goals_against']),
+            'goal_difference': int(team['goal_difference']),
+            'wins': int(team['wins']),
+            'draws': int(team['draws']),
+            'losses': int(team['losses']),
         }
     )
 
@@ -304,11 +305,11 @@ def update_or_create_home_standing(standing, team):
         standing=standing,
         defaults={
             'standing': standing,
-            'goals': team['home']['goals'],
-            'goals_against': team['home']['goalsAgainst'],
-            'wins': team['home']['wins'],
-            'draws': team['home']['draws'],
-            'losses': team['home']['losses'],
+            'goals': int(team['home']['goals']),
+            'goals_against': int(team['home']['goalsAgainst']),
+            'wins': int(team['home']['wins']),
+            'draws': int(team['home']['draws']),
+            'losses': int(team['home']['losses']),
         }
     )
 
@@ -324,11 +325,11 @@ def update_or_create_away_standing(standing, team):
         standing=standing,
         defaults={
             'standing': standing,
-            'goals': team['away']['goals'],
-            'goals_against': team['home']['goalsAgainst'],
-            'wins': team['away']['wins'],
-            'draws': team['away']['draws'],
-            'losses': team['away']['losses'],
+            'goals': int(team['away']['goals']),
+            'goals_against': int(team['home']['goalsAgainst']),
+            'wins': int(team['away']['wins']),
+            'draws': int(team['away']['draws']),
+            'losses': int(team['away']['losses']),
         }
     )
 
@@ -347,7 +348,7 @@ def update_league_table(table):
 
     table_object = Table.objects.get(
         competition=Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]),
-        matchday=table['matchday'],
+        matchday=int(table['matchday']),
     )
 
     for team in table['standing']:
@@ -549,3 +550,28 @@ def get_points_record():
     """
     from django.db.models import Max
     return Table.objects.all().aggregate(Max('standing__points'))['standing__points__max']
+
+
+def get_group_standing_goal_difference_violations():
+    from competition.utils import fetch_competitions
+
+    violations = set()
+
+    for competition in fetch_competitions():
+        for matchday in range(1, int(competition['currentMatchday']) + 1):
+            table = fetch_table(competition['id'], matchday)
+            # is cup
+            if 'standings' in table:
+                if 'error' not in table:
+                    for cup_group in table['standings']:
+                        for group_standing in table['standings'][cup_group]:
+                            try:
+                                int(group_standing['goalDifference'])
+                            except ValueError:
+                                violations.add({
+                                    'competition': table['leagueCaption'],
+                                    'group': cup_group,
+                                    'team': group_standing['team']
+                                })
+
+    return violations

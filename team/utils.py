@@ -35,12 +35,14 @@ def create_teams():
 
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
-            team_object, created = Team.objects.get_or_create(
-                id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
+            team_object, created = Team.objects.create(
+                id=int(re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]),
                 name=team['name'],
                 code=team['code'] or None,
                 short_name=team['shortName'],
-                squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
+                squad_market_value=int(
+                    re.sub('[^0-9]', '', team['squadMarketValue'])
+                ) if team['squadMarketValue'] else None,
                 # TODO Add image check and fallback download from wikipedia
                 crest_url=team['crestUrl'],
             )
@@ -68,14 +70,14 @@ def update_teams():
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
             team_object, created = Team.objects.update_or_create(
-                id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]
-                , defaults={
-                    'id': re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
+                id=int(re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]),
+                defaults={
+                    'id': int(re.sub('[^0-9]', '', team['_links']['self']['href'])[1:]),
                     'name': team['name'],
                     'code': team['code'] or None,
                     'short_name': team['shortName'],
-                    'squad_market_value': re.sub(
-                        '[^0-9]', '', team['squadMarketValue']
+                    'squad_market_value': int(
+                        re.sub('[^0-9]', '', team['squadMarketValue'])
                     ) if team['squadMarketValue'] else None,
                     # TODO Add image check and fallback download from wikipedia
                     'crest_url': team['crestUrl'],

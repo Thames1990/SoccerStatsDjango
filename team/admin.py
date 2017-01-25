@@ -4,7 +4,7 @@ from .models import Team
 from competition.models import Competition
 
 
-class CompetitionInline(admin.StackedInline):
+class CompetitionInline(admin.TabularInline):
     model = Competition
 
 

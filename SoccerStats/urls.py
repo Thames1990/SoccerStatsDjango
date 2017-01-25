@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.views.generic import TemplateView
 
 from . import views
 
@@ -13,10 +12,6 @@ urlpatterns = [
     url(r'^players/', include('player.urls')),
     url(r'^tables/', include('table.urls')),
     url(r'^teams/', include('team.urls')),
-    url(r'^football-data.events/api_token.txt', TemplateView.as_view(
-        template_name='SoccerStats/api_token.txt',
-        content_type='text/plain',
-    )),
 ]
 
 if settings.DEBUG:

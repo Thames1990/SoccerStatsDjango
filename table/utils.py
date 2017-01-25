@@ -184,6 +184,7 @@ def create_tables():
     created_home_standings = HomeStanding.objects.bulk_create(home_standings)
     created_away_standings = AwayStanding.objects.bulk_create(away_standings)
 
+    # TODO Check groups and group standings
     logger.debug(created_groups)
     logger.debug(group_standings)
 

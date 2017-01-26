@@ -29,7 +29,7 @@ class Standing(models.Model):
     goal_difference = models.SmallIntegerField()
     wins = models.PositiveSmallIntegerField()
     draws = models.PositiveSmallIntegerField()
-    losses = models.PositiveSmallIntegerField()
+    d = models.PositiveSmallIntegerField()
 
     class Meta:
         ordering = ['position']

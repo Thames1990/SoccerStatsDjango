@@ -26,7 +26,7 @@ class Standing(models.Model):
     points = models.PositiveSmallIntegerField()
     goals = models.PositiveSmallIntegerField()
     goals_against = models.PositiveSmallIntegerField()
-    goal_difference = models.PositiveSmallIntegerField()
+    goal_difference = models.SmallIntegerField()
     wins = models.PositiveSmallIntegerField()
     draws = models.PositiveSmallIntegerField()
     losses = models.PositiveSmallIntegerField()
@@ -126,7 +126,7 @@ class GroupStanding(models.Model):
     points = models.PositiveSmallIntegerField()
     goals = models.PositiveSmallIntegerField()
     goals_against = models.PositiveSmallIntegerField()
-    goal_difference = models.PositiveSmallIntegerField()
+    goal_difference = models.SmallIntegerField()
 
     class Meta:
         ordering = ['rank']

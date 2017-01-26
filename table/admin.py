@@ -62,7 +62,7 @@ class StandingAdmin(admin.ModelAdmin):
         'table__competition__year',
     )
     search_fields = [
-        'table__competition_caption',
+        'table__competition__caption',
         'team__name',
     ]
 
@@ -97,11 +97,11 @@ class HomeStandingAdmin(admin.ModelAdmin):
         'losses',
     )
     list_filter = (
-        'standing__table__competition_is_cup',
-        'standing__table__competition_is_year',
+        'standing__table__competition__is_cup',
+        'standing__table__competition__year',
     )
     search_fields = [
-        'standing__table__competition_caption',
+        'standing__table__competition__caption',
     ]
 
 
@@ -135,11 +135,11 @@ class AwayStandingAdmin(admin.ModelAdmin):
         'losses',
     )
     list_filter = (
-        'standing__table__competition_is_cup',
-        'standing__table__competition_is_year',
+        'standing__table__competition__is_cup',
+        'standing__table__competition__year',
     )
     search_fields = [
-        'standing__table__competition_caption',
+        'standing__table__competition__caption',
     ]
 
 
@@ -149,11 +149,11 @@ class GroupAdmin(admin.ModelAdmin):
         'name',
     )
     list_filter = (
-        'table__competition_is_cup',
-        'table__competition_is_year',
+        'table__competition__is_cup',
+        'table__competition__year',
     )
     search_fields = [
-        'table__competition_caption',
+        'table__competition__caption',
         'name',
     ]
 
@@ -174,7 +174,7 @@ class GroupStandingAdmin(admin.ModelAdmin):
         'group__table__competition__year',
     )
     search_fields = [
-        'group__table__competition_caption',
+        'group__table__competition__caption',
         'team__name',
     ]
 

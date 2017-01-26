@@ -26,7 +26,7 @@ class Fixture(models.Model):
         ('FT', 'FT'),
     )
     status = models.CharField(max_length=255, choices=STATUS, null=True)
-    matchday = models.IntegerField()
+    matchday = models.PositiveSmallIntegerField()
 
     def __str__(self):
         return '%s vs. %s playing in %s on %s (%s) is %s' % (

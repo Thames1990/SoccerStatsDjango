@@ -4,7 +4,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # TODO Use environment variable
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'etz%bq#5yic%o$&y)jrgz_dm9u$p0b4cz%aeqfa7@+oq#jbop$'
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'thomasmohr.xyz', '46.101.227.152']
 
@@ -86,17 +86,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'de'
-
 TIME_ZONE = 'Europe/Berlin'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'SoccerStats/static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": lambda request: True,

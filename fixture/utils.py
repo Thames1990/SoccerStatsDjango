@@ -355,3 +355,17 @@ def update_fixtures():
         'updated_penalty_shootouts': updated_penalty_shootouts,
         'updated_odds': updated_odds,
     }
+
+
+def get_biggest_matchday():
+    from competition.utils import fetch_competitions
+
+    biggest_matchday = 0
+
+    for competition in fetch_competitions():
+        for fixture in fetch_fixtures(competition['id']):
+            matchday = fixture['matchday']
+            if matchday > biggest_matchday:
+                biggest_matchday = matchday
+
+    return biggest_matchday

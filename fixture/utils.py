@@ -31,15 +31,22 @@ def create_fixture(fixture):
     :param fixture: JSON representation of a fixture
     :return: Fixture database object created from *fixture* JSON representation
     """
-    return Fixture.objects.create(
-        id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
-        competition=Competition.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]),
-        home_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
-        away_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
-        date=fixture['date'],
-        status=dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None,
-        matchday=fixture['matchday'],
-    )
+    from django.db.utils import DataError
+
+    try:
+        return Fixture.objects.create(
+            id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
+            competition=Competition.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]),
+            home_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
+            away_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
+            date=fixture['date'],
+            status=dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None,
+            matchday=fixture['matchday'],
+        )
+    except DataError:
+        logger.error('smallint out of range')
+        logger.error(fixture)
+        return None
 
 
 def create_result(fixture_object, fixture):
@@ -131,26 +138,27 @@ def create_fixtures():
     for competition in Competition.objects.all():
         for fixture in fetch_fixtures(competition.id):
             fixture_object = create_fixture(fixture)
-            fixtures.append(fixture_object)
+            if fixture_object:
+                fixtures.append(fixture_object)
 
-            if (
-                        (fixture['result']['goalsHomeTeam'] or fixture['result']['goalsHomeTeam'] == 0) and
-                        (fixture['result']['goalsAwayTeam'] or fixture['result']['goalsAwayTeam'] == 0)
-            ):
-                result = create_result(fixture_object, fixture)
-                results.append(result)
+                if (
+                            (fixture['result']['goalsHomeTeam'] or fixture['result']['goalsHomeTeam'] == 0) and
+                            (fixture['result']['goalsAwayTeam'] or fixture['result']['goalsAwayTeam'] == 0)
+                ):
+                    result = create_result(fixture_object, fixture)
+                    results.append(result)
 
-            if 'halfTime' in fixture['result']:
-                half_times.append(create_half_time(result, fixture))
+                if 'halfTime' in fixture['result']:
+                    half_times.append(create_half_time(result, fixture))
 
-            if 'extraTime' in fixture['result']:
-                extra_times.append(create_extra_time(result, fixture))
+                if 'extraTime' in fixture['result']:
+                    extra_times.append(create_extra_time(result, fixture))
 
-            if 'penaltyShootout' in fixture['result']:
-                penalty_shootouts.append(create_penalty_shootouts(result, fixture))
+                if 'penaltyShootout' in fixture['result']:
+                    penalty_shootouts.append(create_penalty_shootouts(result, fixture))
 
-            if fixture['odds']:
-                odds.append(create_odds(fixture_object, fixture))
+                if fixture['odds']:
+                    odds.append(create_odds(fixture_object, fixture))
 
     created_half_times = HalfTime.objects.bulk_create(half_times)
     created_extra_times = ExtraTime.objects.bulk_create(extra_times)
@@ -357,15 +365,13 @@ def update_fixtures():
     }
 
 
-def get_biggest_matchday():
+def get_available_matchdays():
     from competition.utils import fetch_competitions
 
-    biggest_matchday = 0
+    matchdays = set()
 
     for competition in fetch_competitions():
         for fixture in fetch_fixtures(competition['id']):
-            matchday = fixture['matchday']
-            if matchday > biggest_matchday:
-                biggest_matchday = matchday
+            matchdays.add(fixture['matchday'])
 
-    return biggest_matchday
+    return matchdays

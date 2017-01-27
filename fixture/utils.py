@@ -31,22 +31,15 @@ def create_fixture(fixture):
     :param fixture: JSON representation of a fixture
     :return: Fixture database object created from *fixture* JSON representation
     """
-    from django.db.utils import DataError
-
-    try:
-        return Fixture.objects.create(
-            id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
-            competition=Competition.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]),
-            home_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
-            away_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
-            date=fixture['date'],
-            status=dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None,
-            matchday=fixture['matchday'],
-        )
-    except DataError:
-        logger.error('smallint out of range')
-        logger.error(fixture)
-        return None
+    return Fixture.objects.create(
+        id=re.sub('[^0-9]', '', fixture['_links']['self']['href'])[1:],
+        competition=Competition.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['competition']['href'])[1:]),
+        home_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['homeTeam']['href'])[1:]),
+        away_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
+        date=fixture['date'],
+        status=dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None,
+        matchday=fixture['matchday'],
+    )
 
 
 def create_result(fixture_object, fixture):

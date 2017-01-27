@@ -41,7 +41,7 @@ def create_fixture(fixture):
             away_team=Team.objects.get(id=re.sub('[^0-9]', '', fixture['_links']['awayTeam']['href'])[1:]),
             date=fixture['date'],
             status=dict(Fixture.STATUS)[fixture['status']] if fixture['status'] else None,
-            matchday=int(fixture['matchday']),
+            matchday=fixture['matchday'],
         )
     except DataError:
         logger.error('smallint out of range')

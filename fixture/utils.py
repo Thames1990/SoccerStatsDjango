@@ -131,15 +131,14 @@ def create_fixtures():
     for competition in Competition.objects.all():
         for fixture in fetch_fixtures(competition.id):
             fixture_object = create_fixture(fixture)
-            if fixture_object:
-                fixtures.append(fixture_object)
+            fixtures.append(fixture_object)
 
-                if (
-                            (fixture['result']['goalsHomeTeam'] or fixture['result']['goalsHomeTeam'] == 0) and
-                            (fixture['result']['goalsAwayTeam'] or fixture['result']['goalsAwayTeam'] == 0)
-                ):
-                    result = create_result(fixture_object, fixture)
-                    results.append(result)
+            if (
+                        (fixture['result']['goalsHomeTeam'] or fixture['result']['goalsHomeTeam'] == 0) and
+                        (fixture['result']['goalsAwayTeam'] or fixture['result']['goalsAwayTeam'] == 0)
+            ):
+                result = create_result(fixture_object, fixture)
+                results.append(result)
 
                 if 'halfTime' in fixture['result']:
                     half_times.append(create_half_time(result, fixture))

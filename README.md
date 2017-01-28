@@ -9,6 +9,6 @@ This project is still WIP and aims to offer the following features on completion
 * Fully functional and intelligent search
 
 ## Used projects
-* [football-data](http://api.football-data.org/index)
-* [Django](https://www.djangoproject.com/)
-* [Bootstrap 4](http://v4-alpha.getbootstrap.com/)
+* [football-data](//api.football-data.org/index)
+* [Django](//www.djangoproject.com/)
+* [Bootstrap 4](//v4-alpha.getbootstrap.com/)

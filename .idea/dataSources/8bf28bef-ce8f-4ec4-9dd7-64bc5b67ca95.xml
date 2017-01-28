@@ -9,8 +9,8 @@
     </database>
     <schema id="3" parent="2" name="public">
       <ObjectId>2200</ObjectId>
-      <IntrospectionTimestamp>2017-01-27.10:20:10.533</IntrospectionTimestamp>
-      <IntrospectionStateNumber>34291</IntrospectionStateNumber>
+      <IntrospectionTimestamp>2017-01-28.14:59:07.657</IntrospectionTimestamp>
+      <IntrospectionStateNumber>34681</IntrospectionStateNumber>
       <Current>1</Current>
       <Visible>1</Visible>
     </schema>
@@ -187,7 +187,7 @@
     </table>
     <table id="41" parent="3" name="competition_competition">
       <ObjectId>16542</ObjectId>
-      <StateNumber>34118</StateNumber>
+      <StateNumber>34293</StateNumber>
     </table>
     <table id="42" parent="3" name="dashboard_userdashboardmodule">
       <ObjectId>20123</ObjectId>

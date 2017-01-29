@@ -20,7 +20,7 @@ def fetch_players(team_id):
     :return: JSON representation of players from a team with id *team_id* if players exist; *None* otherwise
     """
     json = requests.get(
-        url='api.football-data.org/v1/teams/' + str(team_id) + '/players',
+        url='https://api.football-data.org/v1/teams/' + str(team_id) + '/players',
         headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'},
     ).json()
     return json['players'] if 'players' in json else None

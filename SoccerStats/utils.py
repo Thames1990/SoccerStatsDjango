@@ -56,7 +56,7 @@ def get_wikipedia_image(query):
     from json.decoder import JSONDecodeError
 
     response = requests.get(
-        url='en.wikipedia.org/w/api.php',
+        url='https://en.wikipedia.org/w/api.php',
         params={
             'action': 'query',
             'format': 'json',

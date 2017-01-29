@@ -20,7 +20,7 @@ def fetch_fixtures(competition_id):
     import requests
 
     return requests.get(
-        url='http://api.football-data.org/v1/competitions/' + str(competition_id) + '/fixtures',
+        url='//api.football-data.org/v1/competitions/' + str(competition_id) + '/fixtures',
         headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
     ).json()['fixtures']
 

@@ -18,7 +18,7 @@ def fetch_teams(competition_id):
     import requests
 
     return requests.get(
-        url='//api.football-data.org/v1/competitions/' + str(competition_id) + '/teams',
+        url='api.football-data.org/v1/competitions/' + str(competition_id) + '/teams',
         headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'},
     ).json()['teams']
 

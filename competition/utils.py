@@ -18,7 +18,7 @@ def fetch_competition(competition_id=None, season=None):
     """
     import requests
 
-    base_url = '//api.football-data.org/v1/competitions/'
+    base_url = 'api.football-data.org/v1/competitions/'
     if competition_id:
         base_url += str(competition_id)
     if season:

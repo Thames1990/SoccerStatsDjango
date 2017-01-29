@@ -20,7 +20,7 @@ def fetch_table(competiton_id, matchday=None):
     """
     import requests
 
-    base_url = '//api.football-data.org/v1/competitions/' + str(competiton_id) + '/leagueTable'
+    base_url = 'api.football-data.org/v1/competitions/' + str(competiton_id) + '/leagueTable'
     if matchday:
         base_url += '?matchday=' + str(matchday)
     return requests.get(

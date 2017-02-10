@@ -2,13 +2,12 @@ import logging
 import re
 
 from competition.models import Competition
-from SoccerStats.utils import timing, rate_limited
+from SoccerStats.utils import timing
 from team.models import Team
 
 logger = logging.getLogger(__name__)
 
 
-@rate_limited(0.8)
 def fetch_teams(competition_id):
     """
     Fetches JSON representation of teams from football-data.org.
@@ -35,6 +34,7 @@ def create_teams():
 
     for competition in Competition.objects.all():
         for team in fetch_teams(competition.id):
+            # teams might already be created in another competition
             team_object, created = Team.objects.get_or_create(
                 id=re.sub('[^0-9]', '', team['_links']['self']['href'])[1:],
                 name=team['name'],

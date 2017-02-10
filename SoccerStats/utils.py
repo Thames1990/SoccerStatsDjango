@@ -97,7 +97,6 @@ def create_database():
     logger.info('Creating database...')
 
     competitions = create_competitions()
-    time.sleep(60)
     teams = create_teams()
     time.sleep(60)
     players = create_players()
@@ -130,7 +129,6 @@ def update_database():
     logger.info('Updating database...')
 
     competitions = update_competitions()
-    time.sleep(60)
     teams = update_teams()
     time.sleep(60)
     players = update_players()

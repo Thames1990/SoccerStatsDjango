@@ -1,13 +1,11 @@
 import logging
 
-from SoccerStats.utils import timing, rate_limited
+from SoccerStats.utils import timing
 from competition.models import Competition
-from table.utils import fetch_table
 
 logger = logging.getLogger(__name__)
 
 
-@rate_limited(0.8)
 def fetch_competition(competition_id=None, season=None):
     """
     Fetches JSON representation of competitions from football-data.org.
@@ -61,7 +59,7 @@ def create_competitions():
         competitions.append(
             Competition(
                 id=competition['id'],
-                is_cup='standings' in fetch_table(competiton_id=competition['id']),
+                is_cup=competition['numberOfGames'] < 300,
                 caption=competition['caption'],
                 league=competition['league'],
                 year=competition['year'],
@@ -95,7 +93,7 @@ def update_competitions():
             id=competition['id'],
             defaults={
                 'id': competition['id'],
-                'is_cup': 'standings' in fetch_table(competiton_id=competition['id']),
+                'is_cup': competition['numberOfGames'] < 300,
                 'caption': competition['caption'],
                 'league': competition['league'],
                 'year': competition['year'],

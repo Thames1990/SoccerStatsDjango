@@ -6,8 +6,6 @@
         offset: 60
     });
 
-    new WOW().init();
-
     $('a.page-scroll').bind('click', function (event) {
         var $ele = $(this);
         $('html, body').stop().animate({
@@ -17,7 +15,7 @@
     });
 
     $('#collapsingNavbar').find('li a').click(function () {
-        /* always close responsive nav after click */
+        // Always close responsive nav after click
         $('.navbar-toggler:visible').click();
     });
 })(jQuery);

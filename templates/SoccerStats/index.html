@@ -84,13 +84,11 @@
                     <hr class="accent">
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-4 col-md-4 text-center">
-                    <div class="feature">
-                        <i class="icon-lg ion-ios-grid-view-outline"></i>
-                        <h6 class="text-uppercase">Begegnungen</h6>
-                        <p class="text-muted m-b-0">{{ fixture_count }}</p>
-                    </div>
+            <div class="text-center">
+                <div class="feature">
+                    <i class="icon-lg ion-ios-grid-view-outline"></i>
+                    <h6 class="text-uppercase">Begegnungen</h6>
+                    <p class="text-muted m-b-0">{{ fixture_count }}</p>
                 </div>
             </div>
             <hr>
@@ -293,7 +291,7 @@
             <div class="row">
                 <div class="col-md-3 col-sm-6 col-12 text-center">
                     <div class="feature">
-                        <i class="icon-lg ion-ios-football"></i>
+                        <i class="icon-lg ion-ios-list-outline"></i>
                         <h6 class="text-uppercase">Tabellen</h6>
                         <p class="text-muted m-b-0">{{ table_count }}</p>
                     </div>
@@ -392,7 +390,7 @@
                     {% for team in best_ten_teams %}
                         <div class="card">
                             <img
-                                    class="card-img-top img-fluid img-thumbnail"
+                                    class="card-img-top img-fluid"
                                     src="{{ team.crest_url }}"
                                     alt="{{ team.name }}"
                                     onerror="this.src='{% static 'SoccerStats/img/team.svg' %}'"

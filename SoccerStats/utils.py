@@ -95,7 +95,7 @@ def create_index_content():
     competitions = Competition.objects.only('id', 'caption', 'current_matchday', 'last_updated')
     competition_count = len(competitions)
 
-    last_five_finished_fixtures = Fixture.objects.filter(status='FINISHED').order_by('-date')[:5]
+    last_five_finished_fixtures = Fixture.objects.filter(status='Beendet').order_by('-date')[:5]
     fixture_count = Fixture.objects.count()
 
     best_three_players = Player.objects.filter(market_value__isnull=False).order_by('-market_value')[:3]

@@ -294,6 +294,13 @@
                 <div class="col-md-4 col-sm-6 col-12 text-center">
                     <div class="feature">
                         <i class="icon-lg ion-ios-football"></i>
+                        <h6 class="text-uppercase">Tabellen</h6>
+                        <p class="text-muted m-b-0">{{ table_count }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12 text-center">
+                    <div class="feature">
+                        <i class="icon-lg ion-ios-football"></i>
                         <h6 class="text-uppercase">Torrekord</h6>
                         <p class="text-muted m-b-0">{{ goals_record|default_if_none:0 }}</p>
                     </div>
@@ -369,7 +376,7 @@
                     <div class="feature">
                         <i class="icon-lg ion-ios-people"></i>
                         <h6 class="text-uppercase">Mannschaften</h6>
-                        <p class="text-muted m-b-0">{{ team.count }}</p>
+                        <p class="text-muted m-b-0">{{ team_count }}</p>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 text-center">

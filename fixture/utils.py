@@ -355,15 +355,3 @@ def update_fixtures():
         'updated_penalty_shootouts': updated_penalty_shootouts,
         'updated_odds': updated_odds,
     }
-
-
-def get_available_matchdays():
-    from competition.utils import fetch_competitions
-
-    matchdays = set()
-
-    for competition in fetch_competitions():
-        for fixture in fetch_fixtures(competition['id']):
-            matchdays.add(fixture['matchday'])
-
-    return matchdays

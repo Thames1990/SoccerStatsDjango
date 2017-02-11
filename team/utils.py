@@ -102,3 +102,20 @@ def get_squad_market_value_average():
         return squad_market_value_average / teams
     else:
         return 0
+
+
+def update_crest_url_links():
+    """
+    Updates crest_url (logo) link of each team, if it isn't already secure (https)
+    :return:
+    """
+    updated_links = 0
+
+    for team in Team.objects.all():
+        if team.crest_url:
+            if not team.crest_url.startswith('https'):
+                updated_links += 1
+                team.crest_url.replace('http', 'https')
+                team.save()
+
+    return 'Updated ' + str(updated_links) + ' links'

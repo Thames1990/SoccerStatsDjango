@@ -9,7 +9,7 @@ class Fixture(models.Model):
     from competition.models import Competition
     from team.models import Team
 
-    id = models.PositiveSmallIntegerField(primary_key=True)
+    id = models.PositiveIntegerField(primary_key=True)
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_team')
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_team')

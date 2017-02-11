@@ -35,12 +35,12 @@
                 <div class="feature">
                     <i class="icon-lg ion-podium"></i>
                     <h6 class="text-uppercase">Wettbewerbe</h6>
-                    <p class="text-muted m-b-0">{{ competition.count }}</p>
+                    <p class="text-muted m-b-0">{{ competition_count }}</p>
                 </div>
             </div>
-            {% if competition.list %}
+            {% if competitions %}
                 <div class="card-columns">
-                    {% for competition in competition.list %}
+                    {% for competition in competitions %}
                         <div class="card">
                             <img
                                     class="card-img-top img-fluid img-thumbnail"
@@ -87,83 +87,71 @@
             <div class="row">
                 <div class="col-lg-4 col-md-4 text-center">
                     <div class="feature">
-                        <i class="icon-lg ion-ios-football"></i>
-                        <h6 class="text-uppercase">&#216; Tore</h6>
-                        <p class="text-muted m-b-0">{{ fixture.result_avg.goals_home_team|default_if_none:0 }}</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4 text-center">
-                    <div class="feature">
                         <i class="icon-lg ion-ios-grid-view-outline"></i>
                         <h6 class="text-uppercase">Begegnungen</h6>
-                        <p class="text-muted m-b-0">{{ fixture.count }}</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4 text-center">
-                    <div class="feature">
-                        <i class="icon-lg ion-ios-football-outline"></i>
-                        <h6 class="text-uppercase">&#216; Gegentore</h6>
-                        <p class="text-muted m-b-0">{{ fixture.result_avg.goals_away_team|default_if_none:0 }}</p>
+                        <p class="text-muted m-b-0">{{ fixture_count }}</p>
                     </div>
                 </div>
             </div>
             <hr>
-            {% for last_five in fixture.last_five %}
-                <div class="card text-center">
-                    <div class="card-header">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <a href="{% url 'team:detail' last_five.home_team.id %}">
-                                    <img
-                                            class="card-img-top img-thumbnail img-fluid"
-                                            src="{{ last_five.home_team.crest_url }}"
-                                            alt="={{ last_five.home_team.name }}"
-                                            style="max-height: 10em"
-                                            onerror="this.src='{% static 'SoccerStats/img/team.svg' %}'"
-                                    >
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a href="{% url 'fixture:detail' last_five.id %}">
-                                    <h5 class="card-title">{{ last_five.home_team.name }}</h5>
-                                    <h5 class="card-title">vs</h5>
-                                    <h5 class="card-title">{{ last_five.away_team.name }}</h5>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a href="{% url 'team:detail' last_five.away_team.id %}">
-                                    <img
-                                            class="card-img-top img-thumbnail img-fluid"
-                                            src="{{ last_five.away_team.crest_url }}"
-                                            alt="={{ last_five.away_team.name }}"
-                                            style="max-height: 10em"
-                                            onerror="this.src='{% static 'SoccerStats/img/team.svg' %}'"
-                                    >
-                                </a>
+            {% if last_five_finished_fixtures %}
+                {% for fixture in last_five_finished_fixtures %}
+                    <div class="card text-center">
+                        <div class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <a href="{% url 'team:detail' fixture.home_team.id %}">
+                                        <img
+                                                class="card-img-top img-thumbnail img-fluid"
+                                                src="{{ fixture.home_team.crest_url }}"
+                                                alt="={{ fixture.home_team.name }}"
+                                                style="max-height: 10em"
+                                                onerror="this.src='{% static 'SoccerStats/img/team.svg' %}'"
+                                        >
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <a href="{% url 'fixture:detail' fixture.id %}">
+                                        <h5 class="card-title">{{ fixture.home_team.name }}</h5>
+                                        <h5 class="card-title">vs</h5>
+                                        <h5 class="card-title">{{ fixture.away_team.name }}</h5>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <a href="{% url 'team:detail' fixture.away_team.id %}">
+                                        <img
+                                                class="card-img-top img-thumbnail img-fluid"
+                                                src="{{ fixture.away_team.crest_url }}"
+                                                alt="={{ fixture.away_team.name }}"
+                                                style="max-height: 10em"
+                                                onerror="this.src='{% static 'SoccerStats/img/team.svg' %}'"
+                                        >
+                                    </a>
+                                </div>
                             </div>
                         </div>
+                        <div class="card-block">
+                            <h6 class="card-text">
+                                {{ fixture.result_set.first.goals_home_team }}
+                                :
+                                {{ fixture.result_set.first.goals_away_team }}
+                            </h6>
+                            {% if fixture.result_set.first.halftime_set.all %}
+                                <p class="card-text">
+                                    <small>
+                                        (
+                                        {{ fixture.result_set.first.halftime_set.first.goals_home_team }}
+                                        :
+                                        {{ fixture.result_set.first.halftime_set.first.goals_away_team }}
+                                        )
+                                    </small>
+                                </p>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="card-block">
-                        <h6 class="card-text">
-                            {{ last_five.result_set.first.goals_home_team }}
-                            :
-                            {{ last_five.result_set.first.goals_away_team }}
-                        </h6>
-                        {% if last_five.result_set.first.halftime_set.all %}
-                            <p class="card-text">
-                                <small>
-                                    (
-                                    {{ last_five.result_set.first.halftime_set.first.goals_home_team }}
-                                    :
-                                    {{ last_five.result_set.first.halftime_set.first.goals_away_team }}
-                                    )
-                                </small>
-                            </p>
-                        {% endif %}
-                    </div>
-                </div>
-                <hr>
-            {% endfor %}
+                    <hr>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="container text-center">
             <a
@@ -189,21 +177,21 @@
                     <div class="feature">
                         <i class="icon-lg ion-ios-body"></i>
                         <h6 class="text-uppercase">Spieler</h6>
-                        <p class="text-muted m-b-0">{{ player.count }}</p>
+                        <p class="text-muted m-b-0">{{ player_count }}</p>
                     </div>
                 </div>
                 <div class="col text-center">
                     <div class="feature">
                         <i class="icon-lg ion-social-euro"></i>
                         <h6 class="text-uppercase">&#216; Marktwert</h6>
-                        <p class="text-muted m-b-0">{{ player.market_value.avg|intword|default_if_none:0 }}</p>
+                        <p class="text-muted m-b-0">{{ market_value_average|intword|default_if_none:0 }}</p>
                     </div>
                 </div>
             </div>
             <hr>
-            {% if player.best_three %}
+            {% if best_three_players %}
                 <div class="card-deck">
-                    {% for player in player.best_three %}
+                    {% for player in best_three_players %}
                         <div class="card">
                             <img class="card-img-top img-fluid"
                                  src="{{ player.image }}"
@@ -307,26 +295,26 @@
                     <div class="feature">
                         <i class="icon-lg ion-ios-football"></i>
                         <h6 class="text-uppercase">Torrekord</h6>
-                        <p class="text-muted m-b-0">{{ table.goals_record|default_if_none:0 }}</p>
+                        <p class="text-muted m-b-0">{{ goals_record|default_if_none:0 }}</p>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-6 col-12 text-center">
                     <div class="feature">
                         <i class="icon-lg ion-ios-pulse"></i>
                         <h6 class="text-uppercase">Punkterekord</h6>
-                        <p class="text-muted m-b-0">{{ table.points_record|default_if_none:0 }}</p>
+                        <p class="text-muted m-b-0">{{ points_record|default_if_none:0 }}</p>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-6 col-12 text-center">
                     <div class="feature">
                         <i class="icon-lg ion-ios-football-outline"></i>
                         <h6 class="text-uppercase">Gegentorrekord</h6>
-                        <p class="text-muted m-b-0">{{ table.goals_against_record|default_if_none:0 }}</p>
+                        <p class="text-muted m-b-0">{{ goals_against_record|default_if_none:0 }}</p>
                     </div>
                 </div>
             </div>
             <hr>
-            {% if table.list %}
+            {% if tables_current_matchday %}
                 <div class="card">
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -337,7 +325,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for table in table.list %}
+                            {% for table in tables_current_matchday %}
                                 <tr
                                         onclick="document.location = '{% url 'table:detail' table.id %}'"
                                         style="cursor: pointer"
@@ -388,13 +376,13 @@
                     <div class="feature">
                         <i class="icon-lg ion-social-euro"></i>
                         <h6 class="text-uppercase">&#216; Marktwert</h6>
-                        <p class="text-muted m-b-0">{{ team.squad_market_value|intword|default_if_none:0 }}</p>
+                        <p class="text-muted m-b-0">{{ squad_market_value_average|intword|default_if_none:0 }}</p>
                     </div>
                 </div>
             </div>
-            {% if team.best_ten %}
+            {% if best_ten_teams %}
                 <div class="card-columns">
-                    {% for team in team.best_ten %}
+                    {% for team in best_ten_teams %}
                         <div class="card">
                             <img
                                     class="card-img-top img-fluid img-thumbnail"

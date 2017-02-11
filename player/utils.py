@@ -139,8 +139,9 @@ def get_market_value_average():
     market_value_average = 0
     players = 0
     for player in Player.objects.all():
-        market_value_average += player.market_value
-        players += 1
+        if player.market_value:
+            market_value_average += player.market_value
+            players += 1
     # Division by zero
     if players:
         return market_value_average / players

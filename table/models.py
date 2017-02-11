@@ -134,7 +134,7 @@ class GroupStanding(models.Model):
     def __str__(self):
         return 'Group standing for %s in %s at rank %s on matchday %s' % (
             self.team.name,
-            self.table.competition.caption,
+            self.group.table.competition.caption,
             self.rank,
             self.table.matchday,
         )

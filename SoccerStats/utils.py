@@ -105,6 +105,8 @@ def create_database():
     time.sleep(60)
     tables = create_tables()
 
+    logger.info('Created database...')
+
     return {
         'competitions': competitions,
         'fixtures': fixtures,
@@ -136,6 +138,8 @@ def update_database():
     players = update_players()
     time.sleep(60)
     tables = update_tables()
+
+    logger.info('Updated database...')
 
     return {
         'competitions': competitions,

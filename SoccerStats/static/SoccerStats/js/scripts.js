@@ -6,6 +6,7 @@
         offset: 60
     });
 
+    // TODO Update
     $('a.page-scroll').bind('click', function (event) {
         var $ele = $(this);
         $('html, body').stop().animate({
@@ -14,6 +15,7 @@
         event.preventDefault();
     });
 
+    // TODO Update
     $('#collapsingNavbar').find('li a').click(function () {
         // Always close responsive nav after click
         $('.navbar-toggler:visible').click();

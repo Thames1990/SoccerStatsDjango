@@ -99,18 +99,18 @@ def create_database():
     competitions = create_competitions()
     teams = create_teams()
     time.sleep(60)
+    fixtures = create_fixtures()
+    time.sleep(60)
     players = create_players()
     time.sleep(60)
     tables = create_tables()
-    time.sleep(60)
-    fixtures = create_fixtures()
 
     return {
         'competitions': competitions,
-        'teams': teams,
+        'fixtures': fixtures,
         'players': players,
         'tables': tables,
-        'fixtures': fixtures,
+        'teams': teams,
     }
 
 
@@ -131,16 +131,16 @@ def update_database():
     competitions = update_competitions()
     teams = update_teams()
     time.sleep(60)
+    fixtures = update_fixtures()
+    time.sleep(60)
     players = update_players()
     time.sleep(60)
     tables = update_tables()
-    time.sleep(60)
-    fixtures = update_fixtures()
 
     return {
         'competitions': competitions,
-        'teams': teams,
+        'fixtures': fixtures,
         'players': players,
         'tables': tables,
-        'fixtures': fixtures,
+        'teams': teams,
     }

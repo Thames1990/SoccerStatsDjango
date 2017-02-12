@@ -90,13 +90,15 @@ def update_teams():
 def update_crest_url_links():
     """
     Updates crest_url (link of logo) of teams with an unsecure link (http)
-    :return:
+    :return: Number of updated links
     """
     from django.db.models import F, Func, Q, Value
 
-    return Team.objects.filter(~Q(crest_url__startswith='https'), crest_url__isnull=False).update(crest_url=Func(
-        F('crest_url'),
-        Value('http'),
-        Value('https'),
-        function='replace',
-    ))
+    return Team.objects.filter(~Q(crest_url__startswith='https'), crest_url__isnull=False).update(
+        crest_url=Func(
+            F('crest_url'),
+            Value('http'),
+            Value('https'),
+            function='replace',
+        )
+    )

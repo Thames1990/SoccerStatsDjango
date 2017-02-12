@@ -513,28 +513,16 @@ def get_tables_current_matchday():
     return Table.objects.filter(q_statement)
 
 
-def get_goals_record():
+def get_records():
     """
-    Get maximum of scored goals for a team for all competitions in all seasons
-    :return: Maximum of scored goals for a team for all competitions in all seasons
-    """
-    from django.db.models import Max
-    return Table.objects.all().aggregate(Max('standing__goals'))['standing__goals__max']
-
-
-def get_goals_against_record():
-    """
-    Get maximum of conceded goals for a team for all competitions in all seasons
-    :return: Maximum of conceded goals for a team for all competitions in all seasons
+    Calculates the records for scored/conceded goals and points for all competitions.
+    :return: Dictionary of records
     """
     from django.db.models import Max
-    return Table.objects.all().aggregate(Max('standing__goals_against'))['standing__goals_against__max']
 
-
-def get_points_record():
-    """
-    Get maximum of points a team gained for all competitions in all seasons
-    :return: Maximum of points a team gained for all competitions in all seasons
-    """
-    from django.db.models import Max
-    return Table.objects.all().aggregate(Max('standing__points'))['standing__points__max']
+    tables = Table.objects.all()
+    return {
+        'goals': tables.aggregate(Max('standing__goals'))['standing__goals__max'],
+        'goals_against': tables.aggregate(Max('standing__goals_against'))['standing__goals_against__max'],
+        'points': tables.aggregate(Max('standing__points'))['standing__points__max'],
+    }

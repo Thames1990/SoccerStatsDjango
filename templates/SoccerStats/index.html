@@ -35,7 +35,7 @@
                 <div class="feature">
                     <i class="icon-lg ion-podium"></i>
                     <h6 class="text-uppercase">Wettbewerbe</h6>
-                    <p class="text-muted m-b-0">{{ competition_count }}</p>
+                    <p class="text-muted m-b-0">{{ competitions|length }}</p>
                 </div>
             </div>
             {% if competitions %}
@@ -300,21 +300,21 @@
                     <div class="feature">
                         <i class="icon-lg ion-ios-football"></i>
                         <h6 class="text-uppercase">Torrekord</h6>
-                        <p class="text-muted m-b-0">{{ goals_record|default_if_none:0 }}</p>
+                        <p class="text-muted m-b-0">{{ records.goals|default_if_none:0 }}</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 col-12 text-center">
                     <div class="feature">
                         <i class="icon-lg ion-ios-pulse"></i>
                         <h6 class="text-uppercase">Punkterekord</h6>
-                        <p class="text-muted m-b-0">{{ points_record|default_if_none:0 }}</p>
+                        <p class="text-muted m-b-0">{{ records.points|default_if_none:0 }}</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 col-12 text-center">
                     <div class="feature">
                         <i class="icon-lg ion-ios-football-outline"></i>
                         <h6 class="text-uppercase">Gegentorrekord</h6>
-                        <p class="text-muted m-b-0">{{ goals_against_record|default_if_none:0 }}</p>
+                        <p class="text-muted m-b-0">{{ records.goals_against|default_if_none:0 }}</p>
                     </div>
                 </div>
             </div>

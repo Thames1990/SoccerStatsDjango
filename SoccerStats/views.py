@@ -18,7 +18,7 @@ def index(request):
     players = Player.objects.all()
     players_with_market_value = players.filter(market_value__isnull=False)
     best_three_players = players_with_market_value.order_by('-market_value')[:3]
-    market_value_average = players_with_market_value.aggregate(Avg('market_value')).values()[0]
+    market_value_average = players_with_market_value.aggregate(Avg('market_value'))['market_value__avg']
     player_count = len(players)
 
     tables_current_matchday = get_tables_current_matchday()
@@ -28,7 +28,9 @@ def index(request):
     teams = Team.objects.all()
     teams_with_squad_market_value = teams.filter(squad_market_value__isnull=False)
     best_ten_teams = teams_with_squad_market_value.order_by('-squad_market_value')[:10]
-    squad_market_value_average = teams_with_squad_market_value.aggregate(Avg('squad_market_value')).values()[0]
+    squad_market_value_average = teams_with_squad_market_value.aggregate(
+        Avg('squad_market_value')
+    )['squad_market_value__avg']
     team_count = len(teams)
 
     return render(request, 'SoccerStats/index.html', {

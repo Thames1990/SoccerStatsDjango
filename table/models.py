@@ -136,7 +136,7 @@ class GroupStanding(models.Model):
             self.team.name,
             self.group.table.competition.caption,
             self.rank,
-            self.table.matchday,
+            self.group.table.matchday,
         )
 
     def has_rank_changed(self, previous_matchday_group_standing):

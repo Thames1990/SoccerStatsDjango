@@ -41,7 +41,22 @@
         </div>
     </div>
 </nav>
+
+<nav class="navbar navbar-toggleable-sm fixed-bottom">
+    <div class="container">
+        <form
+                class="form-inline"
+                type="get"
+                action="{% url 'search' %}"
+        >
+            <input class="form-control" type="search" name="query" placeholder="Suchen" autocomplete="off">
+            <button class="btn btn-outline-success" type="submit">Suchen</button>
+        </form>
+    </div>
+</nav>
+
 {% block content %}{% endblock %}
+
 <footer id="footer">
     <div class="container">
         <div class="row">
@@ -70,6 +85,7 @@
         </span>
     </div>
 </footer>
+
 <script src="{% static 'SoccerStats/js/jquery.min.js' %}"></script>
 <script src="{% static 'SoccerStats/js/tether.min.js' %}"></script>
 <script src="{% static 'SoccerStats/js/bootstrap.min.js' %}"></script>

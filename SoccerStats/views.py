@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 
 
-@cache_page(60 * 60)
+# @cache_page(60 * 60)
 def index(request):
     from django.db.models import Avg
 
@@ -51,6 +51,54 @@ def index(request):
         'team_count': team_count,
         'squad_market_value_average': squad_market_value_average,
     })
+
+
+def search(request):
+    from itertools import chain
+
+    from django.contrib.postgres.search import SearchVector
+
+    from competition.models import Competition
+    from fixture.models import Fixture
+    from player.models import Player
+    from table.models import Table
+    from team.models import Team
+
+    if request.method == 'GET':
+        search_query = request.GET.get('query', None)
+
+        competitions = Competition.objects.filter(caption__search=search_query)
+        fixtures = Fixture.objects.annotate(search=SearchVector(
+            'competition__caption',
+            'home_team__name',
+            'away_team__name',
+            'status',
+        )).filter(search=search_query)
+        players = Player.objects.annotate(search=SearchVector(
+            'team__name',
+            'name',
+            'position',
+            'nationality',
+        )).filter(search=search_query)
+        tables = Table.objects.filter(competition__caption__search=search_query)
+        teams = Team.objects.annotate(search=SearchVector(
+            'competition__caption',
+            'name',
+        )).filter(search=search_query)
+
+        query = list(chain(competitions, fixtures, players, tables, teams))
+
+        if query:
+            if len(query) == 1:
+                return render(request, 'SoccerStats/search_detail.html', {
+                    'search_query': search_query,
+                    'query': query[0]
+                })
+            else:
+                return render(request, 'SoccerStats/search_list.html', {
+                    'search_query': search_query,
+                    'queries': query,
+                })
 
 
 def error403(request):

@@ -1,0 +1,30 @@
+{% extends 'SoccerStats/base.html' %}
+
+{% load model_extras %}
+
+{% block content %}
+    {% if queries %}
+        <section id="search_results">
+            <div class="container">
+                <ul class="list-group">
+                    {% for query in queries %}
+                        <li class="list-group-item">
+                            {% if query|to_class_name == 'Competition' %}
+                                Wettbewerb:
+                            {% elif query|to_class_name == 'Fixture' %}
+                                Begegnung:
+                            {% elif query|to_class_name == 'Player' %}
+                                Spieler:
+                            {% elif query|to_class_name == 'Table' %}
+                                Tabelle:
+                            {% elif query|to_class_name == 'Team' %}
+                                Mannschaft:
+                            {% endif %}
+                            {{ query }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

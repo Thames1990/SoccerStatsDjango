@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^players/', include('player.urls')),
     url(r'^tables/', include('table.urls')),
     url(r'^teams/', include('team.urls')),
+    url(r'^search/?$', views.search, name='search'),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,11 @@
+{% extends 'SoccerStats/base.html' %}
+
+{% block content %}
+    {% if query %}
+        <section id="search_result">
+            <div class="container">
+                {{ query }}
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

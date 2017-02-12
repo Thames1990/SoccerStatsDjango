@@ -6,6 +6,8 @@
         offset: 60
     });
 
+    new WOW().init();
+
     // TODO Update
     $('a.page-scroll').bind('click', function (event) {
         var $ele = $(this);

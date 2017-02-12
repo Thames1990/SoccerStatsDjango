@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from django.views.decorators.cache import cache_page
 
 
+@cache_page(60 * 60)
 def index(request):
     from django.db.models import Avg
 
@@ -10,6 +12,8 @@ def index(request):
     from team.models import Team
 
     from table.utils import get_tables_current_matchday, get_records
+
+    # TODO Optimize duplicated times query warnings
 
     fixtures = Fixture.objects.all()
     last_five_finished_fixtures = fixtures.filter(status='Beendet').order_by('-date')[:5]

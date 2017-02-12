@@ -94,7 +94,7 @@ def update_crest_url_links():
     """
     from django.db.models import F, Func, Q, Value
 
-    return Team.objects.filter(~Q(crest_url__startswith='https'), crest_url__isnull=False).update(
+    updated_links = Team.objects.filter(~Q(crest_url__startswith='https'), crest_url__isnull=False).update(
         crest_url=Func(
             F('crest_url'),
             Value('http'),
@@ -102,3 +102,6 @@ def update_crest_url_links():
             function='replace',
         )
     )
+
+    logger.debug('Updated ' + str(updated_links) + ' team logo links')
+    return updated_links

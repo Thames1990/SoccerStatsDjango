@@ -129,3 +129,23 @@ def get_nationalities():
                 for player in players:
                     nationalities.add(player['nationality'])
     return pprint(nationalities)
+
+
+def update_image_links():
+    """
+    Updates image link of players with an unsecure link (http)
+    :return: Number of updated links
+    """
+    from django.db.models import F, Func, Q, Value
+
+    updated_links = Player.objects.filter(~Q(image__startswith='https'), image__isnull=False).update(
+        crest_url=Func(
+            F('image'),
+            Value('http'),
+            Value('https'),
+            function='replace',
+        )
+    )
+
+    logger.info('Updated ' + str(updated_links) + ' player image links')
+    return updated_links

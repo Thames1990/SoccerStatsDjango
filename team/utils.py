@@ -87,23 +87,6 @@ def update_teams():
     return updated_teams
 
 
-def get_squad_market_value_average():
-    """
-    Calculates the average squad market value.
-    :return: Average squad market value
-    """
-    squad_market_value_average = 0
-    teams = 0
-    for team in Team.objects.all():
-        squad_market_value_average += team.get_squad_market_value()
-        teams += 1
-    # Division by zero
-    if teams:
-        return squad_market_value_average / teams
-    else:
-        return 0
-
-
 def update_crest_url_links():
     """
     Updates crest_url (logo) link of each team, if it isn't already secure (https)

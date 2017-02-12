@@ -2,29 +2,34 @@ from django.shortcuts import render
 
 
 def index(request):
+    from django.db.models import Avg
+
     from competition.models import Competition
     from fixture.models import Fixture
     from player.models import Player
     from team.models import Team
 
-    from player.utils import get_market_value_average
     from table.utils import get_tables_current_matchday, get_records
-    from team.utils import get_squad_market_value_average
 
-    last_five_finished_fixtures = Fixture.objects.filter(status='Beendet').order_by('-date')[:5]
-    fixture_count = Fixture.objects.count()
+    fixtures = Fixture.objects.all()
+    last_five_finished_fixtures = fixtures.filter(status='Beendet').order_by('-date')[:5]
+    fixture_count = len(fixtures)
 
-    best_three_players = Player.objects.filter(market_value__isnull=False).order_by('-market_value')[:3]
-    player_count = Player.objects.count()
-    market_value_average = get_market_value_average()
+    players = Player.objects.all()
+    players_with_market_value = players.filter(market_value__isnull=False)
+    best_three_players = players_with_market_value.order_by('-market_value')[:3]
+    market_value_average = players_with_market_value.aggregate(Avg('market_value')).values()[0]
+    player_count = len(players)
 
     tables_current_matchday = get_tables_current_matchday()
-    table_count = len(tables_current_matchday)
     records = get_records()
+    table_count = len(tables_current_matchday)
 
-    best_ten_teams = Team.objects.filter(squad_market_value__isnull=False).order_by('-squad_market_value')[:10]
-    team_count = Team.objects.count()
-    squad_market_value_average = get_squad_market_value_average()
+    teams = Team.objects.all()
+    teams_with_squad_market_value = teams.filter(squad_market_value__isnull=False)
+    best_ten_teams = teams_with_squad_market_value.order_by('-squad_market_value')[:10]
+    squad_market_value_average = teams_with_squad_market_value.aggregate(Avg('squad_market_value')).values()[0]
+    team_count = len(teams)
 
     return render(request, 'SoccerStats/index.html', {
         'competitions': Competition.objects.all(),

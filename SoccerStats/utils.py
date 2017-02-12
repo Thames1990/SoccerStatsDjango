@@ -98,7 +98,6 @@ def create_database():
 
     competitions = create_competitions()
     teams = create_teams()
-    time.sleep(60)
     fixtures = create_fixtures()
     time.sleep(60)
     players = create_players()
@@ -132,7 +131,6 @@ def update_database():
 
     competitions = update_competitions()
     teams = update_teams()
-    time.sleep(60)
     fixtures = update_fixtures()
     time.sleep(60)
     players = update_players()

@@ -129,21 +129,3 @@ def get_nationalities():
                 for player in players:
                     nationalities.add(player['nationality'])
     return pprint(nationalities)
-
-
-def get_market_value_average():
-    """
-    Calculates the average market value.
-    :return: Average market value
-    """
-    market_value_average = 0
-    players = 0
-    for player in Player.objects.all():
-        if player.market_value:
-            market_value_average += player.market_value
-            players += 1
-    # Division by zero
-    if players:
-        return market_value_average / players
-    else:
-        return 0

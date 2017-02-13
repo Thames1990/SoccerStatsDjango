@@ -101,11 +101,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "staticfiles"),
+    os.path.join(BASE_DIR, 'SoccerStats/static'),
 )
 
 DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": lambda request: True,
+    'SHOW_TOOLBAR_CALLBACK': lambda request: True,
 }
 
 SHELL_PLUS_PRE_IMPORTS = (

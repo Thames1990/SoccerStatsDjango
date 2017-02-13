@@ -338,7 +338,6 @@ def update_league_table(table):
     updated_away_standings = []
     created_away_standings = 0
 
-    # TODO Fix Table matchign Query does not exist
     table_object = Table.objects.get(
         competition=Competition.objects.get(id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]),
         matchday=table['matchday'],

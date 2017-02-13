@@ -13,7 +13,7 @@ def index(request):
 
     from table.utils import get_tables_current_matchday, get_records
 
-    # TODO Optimize duplicated times query warnings
+    # TODO Optimize queries
 
     fixtures = Fixture.objects.all()
     last_five_finished_fixtures = fixtures.filter(status='Beendet').order_by('-date')[:5]

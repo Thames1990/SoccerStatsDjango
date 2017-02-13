@@ -134,7 +134,6 @@ def get_nationalities():
     return pprint(nationalities)
 
 
-# TODO Fix weird FieldDoesNotExist exception
 def update_image_links():
     """
     Updates image link of players with an unsecure link (http)
@@ -143,7 +142,7 @@ def update_image_links():
     from django.db.models import F, Func, Q, Value
 
     updated_links = Player.objects.filter(~Q(image__startswith='https'), image__isnull=False).update(
-        crest_url=Func(
+        image=Func(
             F('image'),
             Value('http'),
             Value('https'),

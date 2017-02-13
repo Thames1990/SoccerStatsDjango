@@ -53,6 +53,10 @@ def index(request):
     })
 
 
+def error400(request):
+    return render(request, 'SoccerStats/400.html', status=400)
+
+
 def error403(request):
     return render(request, 'SoccerStats/403.html', status=403)
 

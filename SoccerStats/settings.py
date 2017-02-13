@@ -165,20 +165,15 @@ LOGGING = {
         }
     },
     'loggers': {
-        'django': {
-            'handlers': ['debug_log', 'production_log'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['mail_admins', 'debug_log', 'production_log'],
             'level': 'ERROR',
-            'propagate': False,
+            'propagate': True,
         },
         'django.security': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
-            'propagate': False,
+            'propagate': True,
         },
         'py.warnings': {
             'handlers': ['console'],

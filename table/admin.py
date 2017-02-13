@@ -5,7 +5,7 @@ from .models import Table, Standing, HomeStanding, AwayStanding, Group, GroupSta
 
 class TableAdmin(admin.ModelAdmin):
     list_display = (
-        'competition',
+        'competition__caption',
         'matchday',
     )
     list_filter = (

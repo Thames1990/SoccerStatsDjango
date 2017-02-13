@@ -355,12 +355,30 @@ def update_fixtures():
                 else:
                     updated_odds.append(odd)
 
-    logger.info('Updated ' + str(len(updated_fixtures)) + ', created ' + str(created_fixtures))
-    logger.info('Updated ' + str(len(updated_results)) + ', created ' + str(created_results))
-    logger.info('Updated ' + str(len(updated_half_times)) + ', created ' + str(created_half_times))
-    logger.info('Updated ' + str(len(updated_extra_times)) + ', created ' + str(created_extra_times))
-    logger.info('Updated ' + str(len(updated_penalty_shootouts)) + ', created ' + str(created_penalty_shootouts))
-    logger.info('Updated ' + str(len(updated_odds)) + ', created ' + str(created_odds))
+    logger.info(
+        'Updated ' + str(len(updated_fixtures)) + 'fixtures, ' +
+        'created ' + str(created_fixtures)
+    )
+    logger.info(
+        'Updated ' + str(len(updated_results)) + 'results, ' +
+        'created ' + str(created_results)
+    )
+    logger.info(
+        'Updated ' + str(len(updated_half_times)) + 'half times, ' +
+        'created ' + str(created_half_times)
+    )
+    logger.info(
+        'Updated ' + str(len(updated_extra_times)) + 'extra times, ' +
+        'created ' + str(created_extra_times)
+    )
+    logger.info(
+        'Updated ' + str(len(updated_penalty_shootouts)) + 'penalty shootouts, ' +
+        'created ' + str(created_penalty_shootouts)
+    )
+    logger.info(
+        'Updated ' + str(len(updated_odds)) + 'odds, ' +
+        'created ' + str(created_odds)
+    )
 
     return {
         'updated_fixtures': updated_fixtures,

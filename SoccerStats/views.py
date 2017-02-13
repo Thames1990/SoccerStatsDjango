@@ -54,12 +54,12 @@ def index(request):
 
 
 def error403(request):
-    return render(request, 'SoccerStats/403.html')
+    return render(request, 'SoccerStats/403.html', status=403)
 
 
 def error404(request):
-    return render(request, 'SoccerStats/404.html')
+    return render(request, 'SoccerStats/404.html', status=404)
 
 
 def error500(request):
-    return render(request, 'SoccerStats/500.html')
+    return render(request, 'SoccerStats/500.html', status=500)

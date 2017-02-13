@@ -134,6 +134,7 @@ def get_nationalities():
     return pprint(nationalities)
 
 
+# TODO Fix weird FieldDoesNotExist exception
 def update_image_links():
     """
     Updates image link of players with an unsecure link (http)

@@ -144,19 +144,12 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
-        'debug_log': {
+        'log': {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
             'class': 'logging.FileHandler',
-            'filename': '/var/log/SoccerStats/debug.log',
+            'filename': '/var/log/SoccerStats.log',
             'formatter': 'verbose',
-        },
-        'production_log': {
-            'level': 'INFO',
-            'filters': ['require_debug_false'],
-            'class': 'logging.FileHandler',
-            'filename': '/var/log/SoccerStats/production.log',
-            'formatter': 'simple',
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -166,36 +159,45 @@ LOGGING = {
         }
     },
     'loggers': {
+        'django': {
+            'handlers': ['console'],
+        },
         'django.request': {
-            'handlers': ['mail_admins', 'debug_log', 'production_log'],
+            'handlers': ['mail_admins'],
             'level': 'ERROR',
-            'propagate': True,
+            'propagate': False,
         },
         'django.security': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
-            'propagate': True,
+            'propagate': False,
         },
         'py.warnings': {
             'handlers': ['console'],
         },
         'SoccerStats': {
-            'handlers': ['debug_log', 'production_log'],
+            'handlers': ['log'],
+            'level': 'DEBUG',
         },
         'competition': {
-            'handlers': ['debug_log', 'production_log'],
+            'handlers': ['log'],
+            'level': 'DEBUG',
         },
         'fixture': {
-            'handlers': ['debug_log', 'production_log'],
+            'handlers': ['log'],
+            'level': 'DEBUG',
         },
         'player': {
-            'handlers': ['debug_log', 'production_log'],
+            'handlers': ['log'],
+            'level': 'DEBUG',
         },
         'table': {
-            'handlers': ['debug_log', 'production_log'],
+            'handlers': ['log'],
+            'level': 'DEBUG',
         },
         'team': {
-            'handlers': ['debug_log', 'production_log'],
+            'handlers': ['log'],
+            'level': 'DEBUG',
         },
     }
 }

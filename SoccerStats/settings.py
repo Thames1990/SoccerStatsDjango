@@ -143,12 +143,19 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
-        'log': {
+        'debug_log': {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
             'class': 'logging.FileHandler',
-            'filename': '/var/log/SoccerStats.log',
+            'filename': '/var/log/SoccerStats/debug.log',
             'formatter': 'verbose',
+        },
+        'production_log': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/SoccerStats/production.log',
+            'formatter': 'simple',
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -175,28 +182,22 @@ LOGGING = {
             'handlers': ['console'],
         },
         'SoccerStats': {
-            'handlers': ['log'],
-            'level': 'DEBUG',
+            'handlers': ['debug_log', 'production_log'],
         },
         'competition': {
-            'handlers': ['log'],
-            'level': 'DEBUG',
+            'handlers': ['debug_log', 'production_log'],
         },
         'fixture': {
-            'handlers': ['log'],
-            'level': 'DEBUG',
+            'handlers': ['debug_log', 'production_log'],
         },
         'player': {
-            'handlers': ['log'],
-            'level': 'DEBUG',
+            'handlers': ['debug_log', 'production_log'],
         },
         'table': {
-            'handlers': ['log'],
-            'level': 'DEBUG',
+            'handlers': ['debug_log', 'production_log'],
         },
         'team': {
-            'handlers': ['log'],
-            'level': 'DEBUG',
+            'handlers': ['debug_log', 'production_log'],
         },
     }
 }

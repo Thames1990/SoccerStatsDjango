@@ -4,7 +4,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = False
 
-ALLOWED_HOSTS = ['thomasmohr.xyz']
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -167,6 +167,8 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
+            'propagate': True,
         },
         'django.request': {
             'handlers': ['mail_admins'],

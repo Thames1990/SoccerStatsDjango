@@ -6,6 +6,8 @@
     {% if queries %}
         <section id="search_results">
             <div class="container">
+                <h1>Suche: {{ search_query }}</h1>
+                <h4>Gefundene Einträge: {{ queries|length }}</h4>
                 <ul class="list-group">
                     {% for query in queries %}
                         <li class="list-group-item">

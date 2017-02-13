@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 
 
-# @cache_page(60 * 60)
+@cache_page(60 * 60)
 def index(request):
     from django.db.models import Avg
 
@@ -54,6 +54,8 @@ def index(request):
 
 
 def search(request):
+    import time
+
     from itertools import chain
 
     from django.contrib.postgres.search import SearchVector

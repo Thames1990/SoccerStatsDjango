@@ -102,7 +102,7 @@ def create_database():
     fixtures = create_fixtures()
     time.sleep(60)
     players = create_players()
-    update_image_links()
+    # update_image_links()
     time.sleep(60)
     tables = create_tables()
 
@@ -137,7 +137,7 @@ def update_database():
     fixtures = update_fixtures()
     time.sleep(60)
     players = update_players()
-    update_image_links()
+    # update_image_links()
     time.sleep(60)
     tables = update_tables()
 

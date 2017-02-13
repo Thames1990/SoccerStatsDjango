@@ -106,5 +106,5 @@ def update_crest_url_links():
         )
     )
 
-    logger.debug('Updated ' + str(updated_links) + ' team logo links')
+    logger.info('Updated ' + str(updated_links) + ' team logo links')
     return updated_links

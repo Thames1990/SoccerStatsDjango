@@ -102,9 +102,10 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'SoccerStats/static'),
 )
 
-DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': lambda request: True,
-}
+if DEBUG:
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+    }
 
 SHELL_PLUS_PRE_IMPORTS = (
     'competition.utils',

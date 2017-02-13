@@ -178,24 +178,31 @@ LOGGING = {
         },
         'py.warnings': {
             'handlers': ['console'],
+            'level': 'WARNING',
         },
         'SoccerStats': {
             'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
         },
         'competition': {
             'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
         },
         'fixture': {
             'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
         },
         'player': {
             'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
         },
         'table': {
             'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
         },
         'team': {
             'handlers': ['debug_log', 'production_log'],
+            'level': 'DEBUG',
         },
     }
 }

@@ -345,13 +345,25 @@ def update_league_table(table):
 
     for team in table['standing']:
         standing, created = update_or_create_standing(table_object=table_object, team=team)
-        created_standings += 1 if created else updated_standings.append(standing)
+
+        if created:
+            created_standings += 1
+        else:
+            updated_standings.append(standing)
 
         home_standing, created = update_or_create_home_standing(standing=standing, team=team)
-        created_home_standings += 1 if created else updated_home_standings.append(home_standing)
+
+        if created:
+            created_home_standings += 1
+        else:
+            updated_home_standings.append(home_standing)
 
         away_standing, created = update_or_create_away_standing(standing=standing, team=team)
-        created_away_standings += 1 if created else updated_away_standings.append(away_standing)
+
+        if created:
+            created_away_standings += 1
+        else:
+            updated_away_standings.append(away_standing)
 
     return {
         'updated_standings': updated_standings,

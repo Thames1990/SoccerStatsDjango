@@ -105,7 +105,10 @@ def update_competitions():
             }
         )
 
-        created_competitions += 1 if created else updated_competitions.append(competition_object)
+        if created:
+            created_competitions += 1
+        else:
+            updated_competitions.append(competition_object)
 
     logger.info('Updated ' + str(len(updated_competitions)) + ' competitions, created ' + str(created_competitions))
     return updated_competitions

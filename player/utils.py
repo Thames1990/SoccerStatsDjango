@@ -91,7 +91,10 @@ def update_players():
                     }
                 )
 
-                created_players += 1 if created else updated_players.append(player_object)
+                if created:
+                    created_players += 1
+                else:
+                    updated_players.append(player_object)
 
     logger.info('Updated ' + str(len(updated_players)) + ' players, created ' + str(created_players))
     return updated_players

@@ -81,7 +81,10 @@ def update_teams():
                 }
             )
 
-            created_teams += 1 if created else updated_teams.append(team_object)
+            if created:
+                created_teams += 1
+            else:
+                updated_teams.append(team_object)
 
     logger.info('Updated ' + str(len(updated_teams)) + ' teams, created ' + str(created_teams))
     return updated_teams

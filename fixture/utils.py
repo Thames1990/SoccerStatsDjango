@@ -306,7 +306,11 @@ def update_fixtures():
     for competition in Competition.objects.all():
         for fixture in fetch_fixtures(competition.id):
             fixture_object, created = update_or_create_fixture(fixture=fixture)
-            created_fixtures += 1 if created else updated_fixtures.append(fixture_object)
+
+            if created:
+                created_fixtures += 1
+            else:
+                updated_fixtures.append(fixture_object)
 
             result = fixture['result']
             if (
@@ -319,17 +323,24 @@ def update_fixtures():
 
                     if 'halfTime' in result:
                         half_time, created = update_or_create_half_time(result_object=result_object, fixture=fixture)
-                        created_half_times += 1 if created else updated_half_times.append(half_time)
 
+                        if created:
+                            created_half_times += 1
+                        else:
+                            updated_half_times.append(half_time)
                     if 'extraTime' in result:
                         extra_time, created = update_or_create_extra_time(result_object=result_object, fixture=fixture)
-                        created_extra_times += 1 if created else updated_extra_times.append(extra_time)
 
+                        if created:
+                            created_extra_times += 1
+                        else:
+                            updated_extra_times.append(extra_time)
                     if 'penaltyShootout' in result:
                         penalty_shootout, created = update_or_create_penalty_shootout(
                             result_object=result_object,
                             fixture=fixture
                         )
+
                         if created:
                             created_penalty_shootouts += 1
                         else:
@@ -338,7 +349,11 @@ def update_fixtures():
                     updated_results.append(result_object)
             if fixture['odds']:
                 odd, created = update_or_create_odd(fixture_object=fixture_object, fixture=fixture)
-                created_odds += 1 if created else updated_odds.append(odd)
+
+                if created:
+                    created_odds += 1
+                else:
+                    updated_odds.append(odd)
 
     logger.info('Updated ' + str(len(updated_fixtures)) + ', created ' + str(created_fixtures))
     logger.info('Updated ' + str(len(updated_results)) + ', created ' + str(created_results))

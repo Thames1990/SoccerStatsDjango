@@ -166,7 +166,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
+            'handlers': ['debug_log', 'production_log'],
         },
         'django.request': {
             'handlers': ['mail_admins'],

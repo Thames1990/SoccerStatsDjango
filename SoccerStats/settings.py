@@ -2,6 +2,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ['SECRET_KEY']
+SOCCERSTATS_KEY = os.environ['SOCCERSTATS_KEY']
 DEBUG = False
 
 ALLOWED_HOSTS = ['46.101.227.152', 'thomasmohr.xyz']
@@ -62,7 +63,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'soccerstats',
         'USER': 'django',
-        'PASSWORD': 'VcfRh1879',
+        'PASSWORD': SOCCERSTATS_KEY,
         'HOST': 'localhost',
         'PORT': '',
     }

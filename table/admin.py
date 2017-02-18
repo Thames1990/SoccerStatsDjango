@@ -5,7 +5,7 @@ from .models import Table, Standing, HomeStanding, AwayStanding, Group, GroupSta
 
 class TableAdmin(admin.ModelAdmin):
     list_display = (
-        'competition__caption',
+        'get_competition_caption',
         'matchday',
     )
     list_filter = (
@@ -16,6 +16,11 @@ class TableAdmin(admin.ModelAdmin):
     search_fields = [
         'competition__caption',
     ]
+
+    def get_competition_caption(self, obj):
+        return obj.competition.caption
+    get_competition_caption.admin_order_field = 'competition'
+    get_competition_caption.short_description = 'Competition'
 
 
 class StandingAdmin(admin.ModelAdmin):

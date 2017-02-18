@@ -17,7 +17,7 @@
         </library>
       </libraries>
     </data-source>
-    <data-source source="LOCAL" name="soccerstats local" uuid="4d41abcc-5085-4f0a-9782-031587d0d070">
+    <data-source source="LOCAL" name="Soccerstats local" uuid="991de748-a7f6-4bbe-bf0c-9fe30cddcbc9">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

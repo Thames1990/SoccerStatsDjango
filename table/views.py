@@ -37,10 +37,6 @@ class TableListView(ListView):
             tables = paginator.page(paginator.num_pages)
 
         context['tables'] = tables
-
         # TODO Add table changes
-        # context['table_changes'] = []
-        # for table in self.object_list:
-        #     context['table_changes'].extend(get_table_changes(table))
 
         return context

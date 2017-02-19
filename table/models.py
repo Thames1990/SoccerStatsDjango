@@ -10,7 +10,6 @@ class Table(models.Model):
 
     class Meta:
         get_latest_by = 'matchday'
-        ordering = ['competition__caption']
 
     def __str__(self):
         return 'Table for %s on matchday %s' % (

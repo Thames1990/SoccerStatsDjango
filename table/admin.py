@@ -17,11 +17,10 @@ class TableAdmin(admin.ModelAdmin):
         'competition__caption',
     ]
 
-    def get_competition_caption(self, instance):
-        return instance.competition.caption
-
+    def get_competition_caption(self, obj):
+        return obj.competition.caption
+    get_competition_caption.admin_order_field = 'competition'
     get_competition_caption.short_description = 'Competition'
-    get_competition_caption.admin_order_field = 'competition__caption'
 
 
 class StandingAdmin(admin.ModelAdmin):

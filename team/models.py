@@ -1,4 +1,6 @@
 from django.db import models
+from imagekit.models import ImageSpecField
+from pilkit.processors import ResizeToFill
 
 from competition.models import Competition
 
@@ -10,7 +12,13 @@ class Team(models.Model):
     code = models.CharField(null=True, max_length=255)
     short_name = models.CharField(null=True, max_length=255)
     squad_market_value = models.PositiveIntegerField(null=True)
-    crest_url = models.URLField(null=True)
+    logo = models.ImageField(upload_to='logos', null=True)
+    logo_thumbnail = ImageSpecField(
+        source='avatar',
+        processors=[ResizeToFill(100, 50)],
+        format='JPEG',
+        options={'quality': 60}
+    )
 
     def get_squad_market_value(self):
         """

@@ -41,8 +41,7 @@ def create_teams():
                 code=team['code'] or None,
                 short_name=team['shortName'],
                 squad_market_value=re.sub('[^0-9]', '', team['squadMarketValue']) if team['squadMarketValue'] else None,
-                # TODO Add image check and fallback download from wikipedia
-                crest_url=team['crestUrl'],
+                logo=team['crestUrl'],
             )
             # TODO Optimize with bulk_create and ThroughModel
             team_object.competition.add(competition)
@@ -76,8 +75,7 @@ def update_teams():
                     'squad_market_value': re.sub(
                         '[^0-9]', '', team['squadMarketValue']
                     ) if team['squadMarketValue'] else None,
-                    # TODO Add image check and fallback download from wikipedia
-                    'crest_url': team['crestUrl'],
+                    'logo': team['crestUrl'],
                 }
             )
 
@@ -90,16 +88,16 @@ def update_teams():
     return updated_teams
 
 
-def update_crest_url_links():
+def update_logo_links():
     """
-    Updates crest_url (link of logo) of teams with an unsecure link (http)
+    Updates logo links of teams with an unsecure link (http)
     :return: Number of updated links
     """
     from django.db.models import F, Func, Q, Value
 
-    updated_links = Team.objects.filter(~Q(crest_url__startswith='https'), crest_url__isnull=False).update(
-        crest_url=Func(
-            F('crest_url'),
+    updated_links = Team.objects.filter(~Q(logo__startswith='https'), logo__isnull=False).update(
+        logo=Func(
+            F('logo'),
             Value('http'),
             Value('https'),
             function='replace',

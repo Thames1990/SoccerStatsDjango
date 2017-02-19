@@ -85,13 +85,13 @@ def create_database():
     from fixture.utils import create_fixtures
     from player.utils import create_players, update_image_links
     from table.utils import create_tables
-    from team.utils import create_teams, update_crest_url_links
+    from team.utils import create_teams, update_logo_links
 
     logger.info('Creating database...')
 
     competitions = create_competitions()
     teams = create_teams()
-    update_crest_url_links()
+    update_logo_links()
     fixtures = create_fixtures()
     time.sleep(60)
     players = create_players()
@@ -120,13 +120,13 @@ def update_database():
     from fixture.utils import update_fixtures
     from player.utils import update_players, update_image_links
     from table.utils import update_tables
-    from team.utils import update_teams, update_crest_url_links
+    from team.utils import update_teams, update_logo_links
 
     logger.info('Updating database...')
 
     competitions = update_competitions()
     teams = update_teams()
-    update_crest_url_links()
+    update_logo_links()
     fixtures = update_fixtures()
     time.sleep(60)
     players = update_players()

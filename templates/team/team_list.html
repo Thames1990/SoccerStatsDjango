@@ -22,7 +22,7 @@
                         {% for team in teams %}
                             <tbody>
                             <tr
-                                    onclick="document.location = '{% url 'team:detail' team.id %}'"
+                                    onclick="document.location = '{% url 'team:detail' team.slug %}'"
                                     style="cursor: pointer"
                             >
                                 <td>{{ team.name }}</td>

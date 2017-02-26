@@ -31,3 +31,8 @@ class Team(models.Model):
                 if player.market_value:
                     squad_market_value += player.market_value
             return squad_market_value
+
+    def slug(self):
+        from django.utils.text import slugify
+
+        return slugify(self.name)

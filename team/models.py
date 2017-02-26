@@ -12,6 +12,12 @@ class Team(models.Model):
     squad_market_value = models.PositiveIntegerField(null=True)
     crest_url = models.URLField(null=True)
 
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
     def get_squad_market_value(self):
         """
         Calculates the squad market value
@@ -25,6 +31,3 @@ class Team(models.Model):
                 if player.market_value:
                     squad_market_value += player.market_value
             return squad_market_value
-
-    def __str__(self):
-        return self.name

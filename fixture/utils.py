@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 
 from competition.models import Competition
@@ -21,7 +22,7 @@ def fetch_fixtures(competition_id):
 
     return requests.get(
         url='https://api.football-data.org/v1/competitions/' + str(competition_id) + '/fixtures',
-        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'}
+        headers={'X-Auth-Token': os.environ['X_AUTH_TOKEN']}
     ).json()['fixtures']
 
 

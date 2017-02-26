@@ -1,4 +1,5 @@
 import logging
+import os
 
 from SoccerStats.utils import timing
 from competition.models import Competition
@@ -24,7 +25,7 @@ def fetch_competition(competition_id=None, season=None):
 
     return requests.get(
         url=base_url,
-        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'},
+        headers={'X-Auth-Token': os.environ['X_AUTH_TOKEN']},
     ).json()
 
 

@@ -29,3 +29,10 @@ class Competition(models.Model):
 
     def is_last_matchday(self):
         return self.current_matchday == self.number_of_matchdays
+
+    def slug(self):
+        import re
+
+        from django.utils.text import slugify
+
+        return slugify(re.sub('(?<=[ ]).\d+', '', self.caption))

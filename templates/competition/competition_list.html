@@ -25,7 +25,7 @@
                             {% for competition in competitions %}
                                 <tbody>
                                 <tr
-                                        onclick="document.location = '{% url 'competition:detail' competition.id %}'"
+                                        onclick="document.location = '{% url 'competition:detail' competition.slug %}'"
                                         style="cursor: pointer"
                                 >
                                     {% if competition.is_cup %}

@@ -10,7 +10,7 @@ urlpatterns = [
         name='list'
     ),
     url(
-        r'^(?P<slug>[\w-]+)/$',
+        r'^(?P<pk>\d+)/$',
         CompetitionDetailView.as_view(),
         name='detail'
     ),

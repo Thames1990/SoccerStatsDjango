@@ -11,7 +11,7 @@ urlpatterns = [
         name='list'
     ),
     url(
-        r'^(?P<pk>[\w-]+)/$',
+        r'^(?P<pk>\d+)/$',
         PlayerDetailView.as_view(),
         name='detail'
     ),

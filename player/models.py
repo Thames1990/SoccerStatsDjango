@@ -198,8 +198,3 @@ class Player(models.Model):
 
         # TODO Use it
         return get_wikipedia_image('Flagge von ' + self.nationality)
-
-    def slug(self):
-        from django.utils.text import slugify
-
-        return slugify(self.name)

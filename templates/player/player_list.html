@@ -11,7 +11,7 @@
                 <div class="card-columns">
                     {% for player in players %}
                         <div class="card text-sm-center">
-                            <a href="{% url 'player:detail' player.id %}">
+                            <a href="{% url 'player:detail' player.slug %}">
                                 {% if player.image %}
                                     <img
                                             class="card-img-top img-fluid"

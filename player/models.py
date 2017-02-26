@@ -178,7 +178,7 @@ class Player(models.Model):
     image = models.URLField(null=True, max_length=2000)
 
     class Meta:
-        ordering = ['jersey_number']
+        ordering = ['name']
 
     def __str__(self):
         return '%s playing for %s' % (
@@ -195,4 +195,11 @@ class Player(models.Model):
 
     def get_nationality_flag(self):
         from SoccerStats.utils import get_wikipedia_image
+
+        # TODO Use it
         return get_wikipedia_image('Flagge von ' + self.nationality)
+
+    def slug(self):
+        from django.utils.text import slugify
+
+        return slugify(self.name)

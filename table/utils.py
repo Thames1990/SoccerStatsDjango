@@ -460,6 +460,8 @@ def update_tables():
                     else:
                         # Shouldn't happen!
                         logger.warning('I might think about the table update process')
+                        logger.warning(table)
+                        logger.warning('Competition is cup' if competition.is_cup else 'Competition is no cup')
 
     logger.info('Created ' + str(created_tables) + ' tables')
     logger.info('Created ' + str(created_groups) + ' groups')

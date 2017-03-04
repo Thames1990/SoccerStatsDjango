@@ -458,10 +458,12 @@ def update_tables():
                             created_home_standings += len(table_object['home_standings'])
                             created_away_standings += len(table_object['away_standings'])
                     else:
+                        import pprint
+
                         # Shouldn't happen!
-                        logger.warning('I might think about the table update process')
-                        logger.warning(table)
-                        logger.warning('Competition is cup' if competition.is_cup else 'Competition is no cup')
+                        logger.error('I might think about the table update process')
+                        logger.error(pprint.pformat(table))
+                        logger.error('Competition is cup' if competition.is_cup else 'Competition is no cup')
 
     logger.info('Created ' + str(created_tables) + ' tables')
     logger.info('Created ' + str(created_groups) + ' groups')

@@ -92,7 +92,7 @@
                             </h5>
                         </div>
                         <div id="collapseTables" class="collapse" role="tabpanel" aria-labelledby="tables">
-                            {% with table=competition.table_set.first %}
+                            {% with table=competition.table_set.last %}
                                 {% if table.competition.is_cup %}
                                     <div class="row">
                                         {% for group in table.group_set.all %}

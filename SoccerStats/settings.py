@@ -1,11 +1,11 @@
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# TODO Use environment variable
-SECRET_KEY = 'etz%bq#5yic%o$&y)jrgz_dm9u$p0b4cz%aeqfa7@+oq#jbop$'
-DEBUG = True
+SECRET_KEY = os.environ['SECRET_KEY']
+SOCCERSTATS_KEY = os.environ['SOCCERSTATS_KEY']
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'thomasmohr.xyz', '46.101.227.152']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '46.101.227.152', 'thomasmohr.xyz']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,11 +63,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'soccerstats',
         'USER': 'django',
-        'PASSWORD': 'VcfRh1879',
+        'PASSWORD': SOCCERSTATS_KEY,
         'HOST': 'localhost',
         'PORT': '',
     }
 }
+
+# Caching
 
 CACHES = {
     'default': {
@@ -97,15 +99,16 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-STATIC_URL = '/static/'
+STATIC_URL = '/staticfiles/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "staticfiles"),
+    os.path.join(BASE_DIR, 'SoccerStats/static'),
 )
 
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": lambda request: True,
-}
+if DEBUG:
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+    }
 
 SHELL_PLUS_PRE_IMPORTS = (
     'competition.utils',
@@ -144,12 +147,19 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
-        'log': {
+        'debug_log': {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
             'class': 'logging.FileHandler',
-            'filename': '/var/log/SoccerStats.log',
+            'filename': '/var/log/SoccerStats/debug.log',
             'formatter': 'verbose',
+        },
+        'production_log': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/SoccerStats/production.log',
+            'formatter': 'simple',
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -159,45 +169,48 @@ LOGGING = {
         }
     },
     'loggers': {
-        'django': {
-            'handlers': ['console'],
-        },
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['mail_admins', 'debug_log', 'production_log'],
             'level': 'ERROR',
-            'propagate': False,
+            'propagate': True,
         },
         'django.security': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
-            'propagate': False,
+            'propagate': True,
         },
         'py.warnings': {
             'handlers': ['console'],
+            'level': 'WARNING',
         },
         'SoccerStats': {
-            'handlers': ['log'],
+            'handlers': ['debug_log', 'production_log'],
             'level': 'DEBUG',
         },
         'competition': {
-            'handlers': ['log'],
+            'handlers': ['debug_log', 'production_log'],
             'level': 'DEBUG',
         },
         'fixture': {
-            'handlers': ['log'],
+            'handlers': ['debug_log', 'production_log'],
             'level': 'DEBUG',
         },
         'player': {
-            'handlers': ['log'],
+            'handlers': ['debug_log', 'production_log'],
             'level': 'DEBUG',
         },
         'table': {
-            'handlers': ['log'],
+            'handlers': ['debug_log', 'production_log'],
             'level': 'DEBUG',
         },
         'team': {
-            'handlers': ['log'],
+            'handlers': ['debug_log', 'production_log'],
             'level': 'DEBUG',
         },
     }
 }
+
+# Security
+
+CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True

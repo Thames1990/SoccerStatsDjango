@@ -28,6 +28,9 @@ class Fixture(models.Model):
     status = models.CharField(max_length=255, choices=STATUS, null=True)
     matchday = models.PositiveSmallIntegerField()
 
+    class Meta:
+        ordering = ['status', '-date']
+
     def __str__(self):
         return '%s vs. %s playing in %s on %s (%s) is %s' % (
             self.home_team.name,

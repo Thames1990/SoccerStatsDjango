@@ -18,7 +18,7 @@ class Competition(models.Model):
     last_updated = models.DateTimeField()
 
     class Meta:
-        ordering = ['caption']
+        ordering = ['-year', 'caption']
         get_latest_by = 'last_updated'
 
     def __str__(self):

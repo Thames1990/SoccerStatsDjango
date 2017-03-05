@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 
 from SoccerStats.utils import timing, rate_limited
@@ -25,7 +26,7 @@ def fetch_table(competiton_id, matchday=None):
         base_url += '?matchday=' + str(matchday)
     return requests.get(
         url=base_url,
-        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'},
+        headers={'X-Auth-Token': os.environ['X_AUTH_TOKEN']},
     ).json()
 
 
@@ -274,11 +275,11 @@ def update_or_create_standing(table_object, team):
             'table': table_object,
             'team': Team.objects.get(id=re.sub('[^0-9]', '', team['_links']['team']['href'])[1:]),
             'position': team['position'],
-            'played_games': team['played_games'],
+            'played_games': team['playedGames'],
             'points': team['points'],
             'goals': team['goals'],
-            'goals_against': team['goals_against'],
-            'goal_difference': team['goal_difference'],
+            'goals_against': team['goalsAgainst'],
+            'goal_difference': team['goalDifference'],
             'wins': team['wins'],
             'draws': team['draws'],
             'losses': team['losses'],
@@ -345,13 +346,25 @@ def update_league_table(table):
 
     for team in table['standing']:
         standing, created = update_or_create_standing(table_object=table_object, team=team)
-        created_standings += 1 if created else updated_standings.append(standing)
+
+        if created:
+            created_standings += 1
+        else:
+            updated_standings.append(standing)
 
         home_standing, created = update_or_create_home_standing(standing=standing, team=team)
-        created_home_standings += 1 if created else updated_home_standings.append(home_standing)
+
+        if created:
+            created_home_standings += 1
+        else:
+            updated_home_standings.append(home_standing)
 
         away_standing, created = update_or_create_away_standing(standing=standing, team=team)
-        created_away_standings += 1 if created else updated_away_standings.append(away_standing)
+
+        if created:
+            created_away_standings += 1
+        else:
+            updated_away_standings.append(away_standing)
 
     return {
         'updated_standings': updated_standings,
@@ -395,43 +408,65 @@ def update_tables():
     created_away_standings = 0
 
     for competition in Competition.objects.all():
-        current_matchday = Table.objects.filter(competition=competition).latest().matchday
-        for matchday in range(current_matchday, competition.current_matchday + 1):
-            table = fetch_table(competition.id, matchday)
-            if matchday == competition.current_matchday:
-                table_object = update_table(
-                    table=table,
-                    is_cup=competition.is_cup,
-                )
+        if Table.objects.filter(competition=competition).exists():
+            current_matchday = Table.objects.filter(competition=competition).latest().matchday
+            for matchday in range(current_matchday, competition.current_matchday + 1):
+                table = fetch_table(competition.id, matchday)
+                # DFB Pokal and Champions League with less specified matchdays than set in numberOfMatchdays
+                if 'error' not in table and '_links' in table:
+                    # Current matchday that exists
+                    if matchday == competition.current_matchday and Table.objects.filter(
+                            competition=Competition.objects.get(
+                                id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]
+                            ),
+                            matchday=table['matchday'],
+                    ).exists():
+                        table_object = update_table(
+                            table=table,
+                            is_cup=competition.is_cup,
+                        )
 
-                if competition.is_cup:
-                    updated_group_standings.extend(table_object['updated_group_standings'])
-                    created_group_standings.extend(table_object['created_group_standings'])
-                else:
-                    updated_standings.extend(table_object['updated_standings'])
-                    created_standings += table_object['created_standings']
-                    updated_home_standings.extend(table_object['updated_home_standings'])
-                    created_home_standings += table_object['created_home_standings']
-                    updated_away_standings.extend(table_object['updated_away_standings'])
-                    created_away_standings += table_object['created_away_standings']
-            else:
-                table_object = create_table(
-                    table=table,
-                    is_cup=competition.is_cup,
-                )
+                        if competition.is_cup:
+                            updated_group_standings.extend(table_object['updated_group_standings'])
+                            created_group_standings.extend(table_object['created_group_standings'])
+                        else:
+                            updated_standings.extend(table_object['updated_standings'])
+                            created_standings += table_object['created_standings']
+                            updated_home_standings.extend(table_object['updated_home_standings'])
+                            created_home_standings += table_object['created_home_standings']
+                            updated_away_standings.extend(table_object['updated_away_standings'])
+                            created_away_standings += table_object['created_away_standings']
+                    # Current matchday that doesn't exist. Prevents duplicates.
+                    elif not Table.objects.filter(
+                            competition=Competition.objects.get(
+                                id=re.sub('[^0-9]', '', table['_links']['competition']['href'])[1:]
+                            ),
+                            matchday=table['matchday'],
+                    ).exists():
+                        table_object = create_table(
+                            table=table,
+                            is_cup=competition.is_cup,
+                        )
 
-                if competition.is_cup:
-                    created_tables += 1
-                    created_groups += len(table_object['groups'])
-                    created_group_standings += len(table_object['group_standings'])
-                else:
-                    created_tables += 1
-                    created_standings += len(table_object['standings'])
-                    created_home_standings += len(table_object['home_standings'])
-                    created_away_standings += len(table_object['away_standings'])
+                        if competition.is_cup:
+                            created_tables += 1
+                            created_groups += len(table_object['groups'])
+                            created_group_standings += len(table_object['group_standings'])
+                        else:
+                            created_tables += 1
+                            created_standings += len(table_object['standings'])
+                            created_home_standings += len(table_object['home_standings'])
+                            created_away_standings += len(table_object['away_standings'])
+                    else:
+                        import pprint
 
-    logger.info('Created ' + str(len(created_tables)) + ' tables')
-    logger.info('Created ' + str(len(created_groups)) + ' groups')
+                        # Shouldn't happen!
+                        logger.error('I might think about the table update process')
+                        logger.error(pprint.pformat(table))
+                        logger.error('Competition is cup' if competition.is_cup else 'Competition is no cup')
+
+    logger.info('Created ' + str(created_tables) + ' tables')
+    logger.info('Created ' + str(created_groups) + ' groups')
     logger.info(
         'Updated ' + str(len(updated_group_standings)) + ' group standings, created ' + str(created_group_standings)
     )

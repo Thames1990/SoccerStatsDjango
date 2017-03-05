@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 import requests
 
@@ -21,7 +22,7 @@ def fetch_players(team_id):
     """
     json = requests.get(
         url='https://api.football-data.org/v1/teams/' + str(team_id) + '/players',
-        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'},
+        headers={'X-Auth-Token': os.environ['X_AUTH_TOKEN']},
     ).json()
     return json['players'] if 'players' in json else None
 
@@ -91,7 +92,10 @@ def update_players():
                     }
                 )
 
-                created_players += 1 if created else updated_players.append(player_object)
+                if created:
+                    created_players += 1
+                else:
+                    updated_players.append(player_object)
 
     logger.info('Updated ' + str(len(updated_players)) + ' players, created ' + str(created_players))
     return updated_players
@@ -139,7 +143,7 @@ def update_image_links():
     from django.db.models import F, Func, Q, Value
 
     updated_links = Player.objects.filter(~Q(image__startswith='https'), image__isnull=False).update(
-        crest_url=Func(
+        image=Func(
             F('image'),
             Value('http'),
             Value('https'),

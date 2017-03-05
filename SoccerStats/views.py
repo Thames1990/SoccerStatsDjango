@@ -13,7 +13,7 @@ def index(request):
 
     from table.utils import get_tables_current_matchday, get_records
 
-    # TODO Optimize duplicated times query warnings
+    # TODO Optimize queries
 
     fixtures = Fixture.objects.all()
     last_five_finished_fixtures = fixtures.filter(status='Beendet').order_by('-date')[:5]
@@ -102,14 +102,16 @@ def search(request):
                     'queries': query,
                 })
 
+def error400(request):
+    return render(request, 'SoccerStats/400.html', status=400)
 
 def error403(request):
-    return render(request, 'SoccerStats/403.html')
+    return render(request, 'SoccerStats/403.html', status=403)
 
 
 def error404(request):
-    return render(request, 'SoccerStats/404.html')
+    return render(request, 'SoccerStats/404.html', status=404)
 
 
 def error500(request):
-    return render(request, 'SoccerStats/500.html')
+    return render(request, 'SoccerStats/500.html', status=500)

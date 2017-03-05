@@ -5,7 +5,7 @@ from .models import Table, Standing, HomeStanding, AwayStanding, Group, GroupSta
 
 class TableAdmin(admin.ModelAdmin):
     list_display = (
-        'competition',
+        'get_competition_caption',
         'matchday',
     )
     list_filter = (
@@ -16,6 +16,11 @@ class TableAdmin(admin.ModelAdmin):
     search_fields = [
         'competition__caption',
     ]
+
+    def get_competition_caption(self, obj):
+        return obj.competition.caption
+    get_competition_caption.admin_order_field = 'competition'
+    get_competition_caption.short_description = 'Competition'
 
 
 class StandingAdmin(admin.ModelAdmin):
@@ -58,7 +63,6 @@ class StandingAdmin(admin.ModelAdmin):
         'losses',
     )
     list_filter = (
-        'table__competition__is_cup',
         'table__competition__year',
     )
     search_fields = [
@@ -97,7 +101,6 @@ class HomeStandingAdmin(admin.ModelAdmin):
         'losses',
     )
     list_filter = (
-        'standing__table__competition__is_cup',
         'standing__table__competition__year',
     )
     search_fields = [
@@ -135,7 +138,6 @@ class AwayStandingAdmin(admin.ModelAdmin):
         'losses',
     )
     list_filter = (
-        'standing__table__competition__is_cup',
         'standing__table__competition__year',
     )
     search_fields = [
@@ -170,7 +172,6 @@ class GroupStandingAdmin(admin.ModelAdmin):
         'goals_against',
     )
     list_filter = (
-        'group__table__competition__is_cup',
         'group__table__competition__year',
     )
     search_fields = [

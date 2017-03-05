@@ -1,4 +1,5 @@
 import logging
+import os
 
 from SoccerStats.utils import timing
 from competition.models import Competition
@@ -24,7 +25,7 @@ def fetch_competition(competition_id=None, season=None):
 
     return requests.get(
         url=base_url,
-        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'},
+        headers={'X-Auth-Token': os.environ['X_AUTH_TOKEN']},
     ).json()
 
 
@@ -105,7 +106,10 @@ def update_competitions():
             }
         )
 
-        created_competitions += 1 if created else updated_competitions.append(competition_object)
+        if created:
+            created_competitions += 1
+        else:
+            updated_competitions.append(competition_object)
 
     logger.info('Updated ' + str(len(updated_competitions)) + ' competitions, created ' + str(created_competitions))
     return updated_competitions

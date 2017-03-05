@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 
 from competition.models import Competition
@@ -18,7 +19,7 @@ def fetch_teams(competition_id):
 
     return requests.get(
         url='https://api.football-data.org/v1/competitions/' + str(competition_id) + '/teams',
-        headers={'X-Auth-Token': 'bf0513ea0ba6457fb4ae6d380cca8365'},
+        headers={'X-Auth-Token': os.environ['X_AUTH_TOKEN']},
     ).json()['teams']
 
 
@@ -81,7 +82,10 @@ def update_teams():
                 }
             )
 
-            created_teams += 1 if created else updated_teams.append(team_object)
+            if created:
+                created_teams += 1
+            else:
+                updated_teams.append(team_object)
 
     logger.info('Updated ' + str(len(updated_teams)) + ' teams, created ' + str(created_teams))
     return updated_teams
@@ -103,5 +107,5 @@ def update_crest_url_links():
         )
     )
 
-    logger.debug('Updated ' + str(updated_links) + ' team logo links')
+    logger.info('Updated ' + str(updated_links) + ' team logo links')
     return updated_links
